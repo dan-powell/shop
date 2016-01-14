@@ -1,0 +1,23 @@
+{
+    "name": "dan-powell/shop",
+    "description": "Super Simple Shop for Laravel 5",
+    "keywords": ["shop", "ecommerce", "laravel"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dan Powell",
+            "email": "dan@dan-powell.uk"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "laravel/framework": "5.1.*",
+        "fzaninotto/faker": "~1",
+        "alfredo-ramos/parsedown-extra-laravel": "~0.2"
+    },
+    "autoload": {
+		"psr-4": {
+			"DanPowell\\Shop\\": "/src/app"
+		}
+	}
+}

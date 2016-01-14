@@ -1,0 +1,12 @@
+/vendor/
+
+/node_modules
+/bower_components
+
+npm-debug.log
+typescript
+
+*.map
+
+gulpassets.json
+gulpconfig.json

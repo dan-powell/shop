@@ -1,0 +1,33 @@
+{
+  "name": "shop",
+  "version": "0.1.0",
+  "authors": [
+    "Dan Powell <dan@dan-powell.co.uk>"
+  ],
+  "description": "Frontend Assets",
+  "homepage": "https://github.com/dan-powell/shop",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.*",
+    "jquery-legacy": "jquery#^1",
+    "jquery": "~2.1.*",
+    "fontawesome": "~4.2.*",
+    "isotope": "~2.1.*",
+    "angular": "~1.4.4",
+    "ng-table": "~0.5.4",
+    "angular-ui-router": "~0.2.14",
+    "angular-bootstrap": "~0.13.0",
+    "angular-marked": "~0.0.12",
+    "ng-tags-input": "~2.3.0",
+    "angular-ui-tree": "=2.5.0",
+    "ng-file-upload": "~6.0.4",
+    "spin.js": "~2.3.2"
+  }
+}

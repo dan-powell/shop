@@ -1,0 +1,161 @@
+
+<div ng-controller="AssetController" ng-init="init('projects')" class="form-horizontal" role="form">
+
+<style>
+    .list-unstyled {
+        padding-left: 15px;
+    }
+    .btn-group {
+        margin-bottom: 5px;
+    }
+</style>
+
+<div class="row">
+    <div class="col-sm-4">
+
+        <h2>Folders <button class="btn btn-default btn-xs" ng-click="init('projects')"><i class="glyphicon glyphicon-refresh"></i></button></h2>
+
+        <div class="well">
+
+            <div ui-tree="ui_tree_options" id="tree-root" style="clear: both;">
+
+                <div class="controls clearfix">
+                    <button class="btn btn-primary btn-xs" ng-click="createDirectory(model.folder)"><i class="fa fa-plus"></i> Add new</button>
+                    <button href="" class="btn btn-default pull-right btn-xs" ng-click="collapseAll()"><i class="fa fa-compress"></i>Collapse</button>
+                    <button href="" class="btn btn-default pull-right btn-xs" ng-click="expandAll()"><i class="fa fa-expand"></i>Expand</button>
+                </div>
+
+                <button type="button" ng-click="changeDirectory(initial_path)" class="list-group-item">Root directory</button>
+
+                <ol ui-tree-nodes ng-model="model.folder.folders" class="Menu">
+                    <li ng-repeat="folder in model.folder.folders" ui-tree-node ng-include="'folderItem'" data-collapsed="true"></li>
+                </ol>
+            </div>
+
+            <script type="text/ng-template" id="folderItem">
+                <div ui-tree-handle>
+                    <span class="glyphicon glyphicon-align-justify">&nbsp;</span>
+
+                    <button class="btn btn-xs" data-nodrag ng-click="toggle(this)" ng-disabled='!folder.folders.length'>
+                        <span class="glyphicon" ng-class="{'glyphicon-chevron-right': collapsed, 'glyphicon-chevron-down': !collapsed}"></span>
+                    </button>
+
+                    <div class="btn-group" dropdown data-nodrag>
+                        <button type="button" class="btn btn-default btn-sm" ng-click="changeDirectory(folder.path + '/' + folder.name)">{{ folder.name }}</button>
+                        <button type="button" class="btn btn-info btn-sm" dropdown-toggle>
+                            <span class="caret"></span>
+                            <span class="sr-only">Actions</span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="split-button">
+                            <li role="menuitem"><a ng-click="createDirectory(this)">New Subfolder</a></li>
+                            <li role="menuitem"><a ng-click="deleteDirectory(this)">Delete</a></li>
+                            <li role="menuitem"><a ng-click="renameDirectory(this)">Rename</a></li>
+                        </ul>
+                    </div>
+
+                </div>
+
+                <ol ui-tree-nodes="options" ng-model="folder.folders" ng-class="{hidden: collapsed}">
+                    <li ng-repeat="folder in folder.folders" ui-tree-node ng-include="'folderItem'"></li>
+                </ol>
+            </script>
+
+
+
+
+
+        </div>
+    </div>
+    <div class="col-sm-8">
+
+        <h2>Files <button class="btn btn-default btn-xs" ng-click="changeDirectory(active_path)"><i class="glyphicon glyphicon-refresh"></i></button></h2>
+
+        <div class="well">
+            <div class="input-group">
+                <div class="input-group-addon">Current Folder</div>
+                <input type="text" class="form-control" ng-model="active_path" readonly="readonly"/>
+            </div>
+
+
+            <div class="row" ng-repeat="file in model.files">
+
+                <hr/>
+
+                <div class="col-sm-4">
+                    <a ng-href="/portfolio/{{ file.path }}/{{ file.filename }}" target="_blank">
+                        <img ng-show="image_types.indexOf(file.extension)+1" ng-src="/portfolio_assets/{{ file.path }}/{{ file.filename }}" style="width: 100%;"/>
+                        <div style="width: 100%;" ng-hide="image_types.indexOf(file.extension)+1" class="text-center">
+                            <img ng-src="/vendor/portfolio/admin/img/file_icons/48px/{{ file.extension}}.png" />
+                        </div>
+                    </a>
+                </div>
+                <div class="col-sm-8">
+
+                    <div dropdown class="btn-group pull-right">
+                        <button type="button" class="btn btn-info btn-sm" dropdown-toggle>
+                            <span class="caret"></span>
+                            <span class="sr-only">Actions</span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="split-button">
+                            <li role="menuitem"><a ng-click="deleteFile(file)">Delete</a></li>
+                            <li role="menuitem"><a ng-click="renameFile(file)">Rename</a></li>
+                        </ul>
+                    </div>
+
+                    <h4 class="media-heading pull-left">{{ file.filename }}</h4>
+
+                    <div class="clearfix"></div>
+
+                    <div class="input-group">
+                        <div class="input-group-addon">Path</div>
+                        <input type="text" class="form-control" value="{{ prefix_path }}/{{ file.path }}{{ file.filename }}" readonly="readonly" onClick="this.setSelectionRange(0, this.value.length)"/>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <hr/>
+
+
+        <button class="btn btn-info" ngf-select ng-model="files" ngf-change="addFile($files)" ngf-multiple="true">Add Files</button>
+        <button class="btn btn-primary pull-right" ng-click="uploadFile()">Upload</button>
+
+        <div class="panel panel-default" ng-repeat="file in files">
+
+            <div class="panel-body">
+                <div class="media">
+                    <div class="media-left">
+                        <img class="media-object" ngf-src="file" ngf-accept="'image/*'" style="width: 100px;">
+                    </div>
+                    <div class="media-body">
+
+                        <progressbar animate="true" value="file.progress" type="{{file.progress_type}}" class="progress-striped active">
+                            <b>&nbsp;{{file.progress}}%&nbsp;</b><i ng-show="file.progress_message"> {{ file.progress_message }}</i>
+                        </progressbar>
+
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <div class="input-group form-group-sm">
+                                    <div class="input-group-addon">Filename</div>
+                                    <input type="text" class="form-control" ng-model="file.filename"/>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <button class="btn btn-danger btn-block btn-sm" ng-click="removeFile(file)">Remove</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <hr/>
+
+    </div>
+</div>
