@@ -2,19 +2,23 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class Project extends Model {
+class Product extends Model {
 
     protected $fillable = [
-        'title',
-        'slug',
-        'seo_title',
-        'seo_description',
-        'markup',
-        'styles',
-        'scripts',
-        'url',
-        'featured',
-        'template'
+	    'title',
+	    'description',
+	    'slug',
+	    'price',
+	    'price_offer',
+	    'weight',
+	    'width',
+	    'height',
+	    'length',
+	    'quantity',
+	    'featured',
+	    'published',
+	    'meta_title',
+	    'meta_description'
     ];
 
 	public function rules($id = null)
@@ -47,6 +51,7 @@ class Project extends Model {
 
 
 
+/*
 	public function tags()
     {
         return $this->morphToMany('DanPowell\Shop\Models\Tag', 'taggable');
@@ -61,9 +66,11 @@ class Project extends Model {
     {
         return $this->morphMany('DanPowell\Shop\Models\Page', 'attachment');
     }
+*/
 
 
 
+/*
     protected static function boot() {
         parent::boot();
 
@@ -74,6 +81,7 @@ class Project extends Model {
              $project->tags()->detach();
         });
     }
+*/
 
 
 }

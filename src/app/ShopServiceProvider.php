@@ -17,10 +17,7 @@ class ShopServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->app->register('DanPowell\Shop\Providers\ViewComposerServiceProvider');
 
         // Create new instances of each command when called
-        $this->app->bindShared('command.portfolio.seed', function ($app) {
-            return new Seed();
-        });
-        $this->app->bindShared('command.portfolio.adduser', function ($app) {
+        $this->app->bindShared('command.shop.adduser', function ($app) {
             return new AddUser();
         });
 
@@ -48,7 +45,6 @@ class ShopServiceProvider extends \Illuminate\Support\ServiceProvider
     {
 
         // Setup some commands
-        $this->commands('command.shop.seed');
         $this->commands('command.shop.adduser');
 
         // Publish Frontend Assets
@@ -75,6 +71,12 @@ class ShopServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->publishes([
             __DIR__.'/../database/factories' => $this->app->databasePath().'/factories',
         ], 'factories');
+
+        // Publish Seeds
+        $this->publishes([
+            __DIR__.'/../database/seeds' => $this->app->databasePath().'/seeds',
+        ], 'seeds');
+
 
         // Publish Tests
         $this->publishes([

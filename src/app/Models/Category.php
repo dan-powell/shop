@@ -9,8 +9,9 @@ class Category extends Model {
         'title',
         'description',
         'slug',
+        'published',
         'meta_title',
-        'meta_description',
+        'meta_description'
     ];
 
     public function rules($id = null)
@@ -38,12 +39,13 @@ class Category extends Model {
     }
 
 
+/*
 	public function products()
     {
         return $this->morphedByMany('DanPowell\Shop\Models\Product', 'category');
     }
 
-    protected $touches = ['projects'];
+    protected $touches = ['products'];
 
 
     protected static function boot() {
@@ -59,5 +61,6 @@ class Category extends Model {
              $tag->slug = Str::slug($tag->title);
         });
     }
+*/
 
 }

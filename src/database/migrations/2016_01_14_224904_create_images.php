@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTag extends Migration {
+class CreateImages extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,20 +12,25 @@ class CreateTag extends Migration {
 	 */
 	public function up()
 	{
-    	Schema::create('tags', function($table)
+        Schema::create('images', function($table)
 		{
     		$table->increments('id');
-            $table->timestamps();
+    		$table->timestamps();
             $table->string('title', 255);
-            $table->string('slug', 255)->nullable();
+            $table->string('path', 255);
+            $table->string('filename', 255);
+            $table->string('alt', 255);
 		});
 
-		Schema::create('taggables', function($table)
+/*
+        Schema::create('categories_attachments', function($table)
 		{
-    		$table->integer('tag_id');
+    		$table->integer('category_id');
             $table->integer('taggable_id');
             $table->string('taggable_type', 255);
 		});
+*/
+
 	}
 
 	/**
@@ -35,9 +40,7 @@ class CreateTag extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('tags');
-
-		Schema::drop('taggables');
+		Schema::drop('images');
 	}
 
 }

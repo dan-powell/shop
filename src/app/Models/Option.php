@@ -2,15 +2,13 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class Section extends Model {
+class Option extends Model {
 
     protected $fillable = [
-        'markup',
-        'scripts',
-        'styles',
-        'container_classes',
-        'section_classes',
-        'rank'
+        'title',
+        'type',
+        'description',
+        'config'
     ];
 
     public function rules()
@@ -27,11 +25,13 @@ class Section extends Model {
 
 	public $timestamps = false;
 
+/*
 	public function attachment()
     {
         return $this->morphTo();
     }
 
     protected $touches = ['attachment'];
+*/
 
 }

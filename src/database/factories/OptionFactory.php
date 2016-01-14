@@ -11,10 +11,11 @@
 |
 */
 
-$factory->define(DanPowell\Shop\Models\Section::class, function (Faker\Generator $faker) {
+$factory->define(DanPowell\Shop\Models\Option::class, function (Faker\Generator $faker) {
     return [
-	    'markup' => $faker->paragraph(rand(3, 8)),
-	    'attachment_id' => $faker->numberBetween(1, 20),
-	    'attachment_type' => 'DanPowell\Shop\Models\Project'
+        'title' => $faker->word,
+        'type' => $faker->sentence(rand(1, 3)),
+        'description' => $faker->paragraph(3),
+        'config' => $faker->paragraph(1),
     ];
 });

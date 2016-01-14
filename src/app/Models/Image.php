@@ -2,17 +2,14 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class Page extends Model {
+class Image extends Model {
 
     protected $fillable = [
-        'title',
-        'slug',
-        'seo_title',
-        'seo_description',
-        'markup',
-        'styles',
-        'scripts',
-        'template'
+	    'title',
+	    'slug',
+	    'path',
+	    'filename',
+	    'alt'
     ];
 
 	public function rules($id = null)
@@ -40,6 +37,7 @@ class Page extends Model {
     }
 
 
+/*
 	public function attachment()
     {
         return $this->morphTo();
@@ -62,5 +60,6 @@ class Page extends Model {
              $model->sections()->delete();
         });
     }
+*/
 
 }

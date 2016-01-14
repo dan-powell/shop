@@ -11,10 +11,14 @@
 |
 */
 
-
-$factory->define(DanPowell\Shop\Models\Tag::class, function (Faker\Generator $faker) {
+$factory->define(DanPowell\Shop\Models\Category::class, function (Faker\Generator $faker) {
     return [
         'title' => $faker->word,
+        'description' => $faker->paragraph(3),
+        'slug' => $faker->slug,
+        'published' => $faker->randomElement([0, 1]),
+        'meta_title' => $faker->sentence(rand(1, 4)),
+        'meta_description' => $faker->paragraph(1),
         'created_at' => $faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now'),
         'updated_at' => $faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now'),
     ];

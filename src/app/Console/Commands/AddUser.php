@@ -14,7 +14,7 @@ class AddUser extends Command {
      *
      * @var string
      */
-    protected $name = 'portfolio:adduser';
+    protected $name = 'shop:adduser';
 
     /**
      * The console command description.
