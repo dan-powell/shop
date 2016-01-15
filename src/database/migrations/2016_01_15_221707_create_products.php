@@ -5,16 +5,16 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateProducts extends Migration {
 
-	/**
-	 * Run the migrations.
-	 *
-	 * @return void
-	 */
-	public function up()
-	{
-		Schema::create('products', function($table)
-		{
-    		$table->increments('id');
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('products', function($table)
+        {
+            $table->increments('id');
             $table->timestamps();
             $table->string('title', 255);
             $table->text('description');
@@ -30,17 +30,18 @@ class CreateProducts extends Migration {
             $table->tinyInteger('published')->default(1);
             $table->string('meta_title', 255);
             $table->string('meta_description', 255);
-		});
-	}
+            $table->integer('rank')->default(0);
+        });
+    }
 
-	/**
-	 * Reverse the migrations.
-	 *
-	 * @return void
-	 */
-	public function down()
-	{
-		Schema::drop('products');
-	}
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::drop('products');
+    }
 
 }

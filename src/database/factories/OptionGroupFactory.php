@@ -11,9 +11,10 @@
 |
 */
 
-$factory->define(DanPowell\Shop\Models\Option::class, function (Faker\Generator $faker) {
+$factory->define(DanPowell\Shop\Models\OptionGroup::class, function (Faker\Generator $faker) {
     return [
-        'label' => $faker->word,
-        'price_modifer' => $faker->randomElement([0.00, $faker->randomFloat(2, -50, 50)]),
+        'title' => $faker->word,
+        'type' => $faker->sentence(rand(1, 3)),
+        'description' => $faker->paragraph(3),
     ];
 });

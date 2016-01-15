@@ -5,33 +5,35 @@ use Illuminate\Database\Eloquent\Model;
 class Option extends Model {
 
     protected $fillable = [
-        'title',
-        'type',
-        'description',
-        'config'
+        'label',
+        'price_modifier',
     ];
 
     public function rules()
 	{
 	    return [
-    	    'markup' => 'required',
-	        'rank' => 'integer'
+    	    'label' => 'required',
+			'price_modifier' => 'integer',
 	    ];
 	}
 
     protected $casts = [
-        'id' => 'integer'
+        'id' => 'integer',
+		'price_modifier' => 'integer',
     ];
 
-	public $timestamps = false;
+    public $timestamps = false;
 
-/*
-	public function attachment()
-    {
-        return $this->morphTo();
-    }
 
-    protected $touches = ['attachment'];
-*/
+    // Relationships
+
+
+
+    // Inverse Relationships
+
+	public function optionGroup()
+	{
+		return $this->belongsTo('DanPowell\Shop\Models\optionGroup');
+	}
 
 }

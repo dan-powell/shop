@@ -18,23 +18,39 @@ class Product extends Model {
 	    'featured',
 	    'published',
 	    'meta_title',
-	    'meta_description'
+	    'meta_description',
+		'rank'
     ];
 
 	public function rules($id = null)
 	{
 	    return [
 	        'title' => 'required',
-	        'slug' => 'required|unique:projects,slug,' . $id,
+	        'slug' => 'required|unique:products,slug,' . $id,
+			'price' => 'required|numeric',
+			'price_offer' => 'numeric',
+			'width' => 'numeric',
+			'height' => 'numeric',
+			'length' => 'numeric',
+			'quantity' => 'integer',
 	        'featured' => 'integer',
-	        'url' => 'url'
+			'published' => 'integer',
+			'rank' => 'integer',
 	    ];
 	}
 
 
     protected $casts = [
         'id' => 'integer',
-        'featured' => 'integer',
+		'price' => 'float',
+		'price_offer' => 'float',
+		'width' => 'float',
+		'height' => 'float',
+		'length' => 'float',
+		'quantity' => 'integer',
+		'featured' => 'integer',
+		'published' => 'integer',
+		'rank' => 'integer',
     ];
 
     protected $appends = ['created_at_human', 'updated_at_human'];
@@ -50,23 +66,16 @@ class Product extends Model {
     }
 
 
+	// Relationships
 
-/*
-	public function tags()
-    {
-        return $this->morphToMany('DanPowell\Shop\Models\Tag', 'taggable');
-    }
+	public function optionGroups()
+	{
+		return $this->hasMany('DanPowell\Shop\Models\OptionGroup');
+	}
 
-    public function sections()
-    {
-        return $this->morphMany('DanPowell\Shop\Models\Section', 'attachment')->orderBy('rank', 'ASC');
-    }
+	// Inverse Relationships
 
-    public function pages()
-    {
-        return $this->morphMany('DanPowell\Shop\Models\Page', 'attachment');
-    }
-*/
+
 
 
 

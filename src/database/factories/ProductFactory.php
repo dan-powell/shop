@@ -30,5 +30,6 @@ $factory->define(DanPowell\Shop\Models\Product::class, function (Faker\Generator
 	    'published' => $faker->randomElement([0, 1]),
 	    'meta_title' => $faker->sentence(rand(1, 4)),
 	    'meta_description' => $faker->paragraph(1),
+		'rank' => $faker->numberBetween(0, 100),
     ];
 });
