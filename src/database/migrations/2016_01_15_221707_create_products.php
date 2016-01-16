@@ -32,6 +32,16 @@ class CreateProducts extends Migration {
             $table->string('meta_description', 255);
             $table->integer('rank')->default(0);
         });
+
+
+        Schema::create('product_categories', function($table)
+        {
+            $table->integer('product_id')->unsigned();
+            $table->integer('category_id')->unsigned();
+            $table->foreign('product_id')->references('id')->on('products');
+            $table->foreign('category_id')->references('id')->on('categories');
+        });
+
     }
 
     /**
@@ -41,7 +51,13 @@ class CreateProducts extends Migration {
      */
     public function down()
     {
+        Schema::table('product_categories', function($table) {
+            $table->dropForeign('product_categories_category_id_foreign');
+            $table->dropForeign('product_categories_product_id_foreign');
+        });
+
         Schema::drop('products');
+        Schema::drop('product_categories');
     }
 
 }

@@ -17,13 +17,13 @@ class ProductSeeder extends Seeder
 
         foreach($products as $product) {
 
+            // Create Option Groups
             $rand = rand(0, 4);
             for ($i = 0; $i < $rand; $i++) {
-
                 $product->optionGroups()->save(factory(DanPowell\Shop\Models\OptionGroup::class)->make());
-
             }
 
+            // For every optiuon group, create the Options
             foreach ($product->optionGroups as $optionGroup) {
 
                 $rand = rand(0, 4);
@@ -31,6 +31,18 @@ class ProductSeeder extends Seeder
                     $optionGroup->options()->save(factory(DanPowell\Shop\Models\Option::class)->make());
                 }
             };
+
+            // Create Personalizations
+            $rand = rand(0, 2);
+            for ($i = 0; $i < $rand; $i++) {
+                $product->personalizations()->save(factory(DanPowell\Shop\Models\Personalization::class)->make());
+            }
+
+            // Create Categories
+            $rand = rand(0, 2);
+            for ($i = 0; $i < $rand; $i++) {
+                $product->categories()->save(factory(DanPowell\Shop\Models\Category::class)->make());
+            }
 
 
         };

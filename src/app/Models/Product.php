@@ -73,8 +73,17 @@ class Product extends Model {
 		return $this->hasMany('DanPowell\Shop\Models\OptionGroup');
 	}
 
+	public function personalizations()
+	{
+		return $this->hasMany('DanPowell\Shop\Models\Personalization');
+	}
+
 	// Inverse Relationships
 
+	public function categories()
+	{
+		return $this->belongsToMany('DanPowell\Shop\Models\Category', 'product_categories', 'product_id', 'category_id');
+	}
 
 
 
