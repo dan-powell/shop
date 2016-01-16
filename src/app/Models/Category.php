@@ -39,28 +39,23 @@ class Category extends Model {
     }
 
 
-/*
-	public function products()
+    // Relationships
+
+    public function categories()
     {
-        return $this->morphedByMany('DanPowell\Shop\Models\Product', 'category');
+        return $this->hasMany('DanPowell\Shop\Models\Category');
     }
 
-    protected $touches = ['products'];
-
-
-    protected static function boot() {
-        parent::boot();
-
-        // When deleting a tag we should also clean up any relationships
-        static::deleting(function($tag) {
-             $tag->projects()->detach();
-        });
-
-        // When saving, the slug is always a sluggified version of the title
-        static::saving(function($tag) {
-             $tag->slug = Str::slug($tag->title);
-        });
+    public function products()
+    {
+        return $this->hasMany('DanPowell\Shop\Models\Product');
     }
-*/
+
+    // Inverse Relationships
+
+    public function parentCategory()
+    {
+        return $this->belongsTo('DanPowell\Shop\Models\Category');
+    }
 
 }

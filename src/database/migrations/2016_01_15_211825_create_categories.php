@@ -22,6 +22,8 @@ class CreateCategories extends Migration {
             $table->tinyInteger('published')->default(1);
             $table->string('meta_title', 255);
             $table->string('meta_description', 255);
+            $table->integer('category_id')->unsigned();
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
         });
 
 
