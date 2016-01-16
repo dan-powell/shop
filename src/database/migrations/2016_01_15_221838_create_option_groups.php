@@ -16,7 +16,7 @@ class CreateOptionGroups extends Migration {
         {
             $table->increments('id');
             $table->string('title', 255);
-            $table->tinyInteger('type')->default(0);
+            $table->text('type', 128);
             $table->text('description');
             $table->integer('product_id')->unsigned();
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');;
