@@ -45,7 +45,12 @@ class Image extends Model {
 
     public function products()
     {
-        return $this->morphMany('DanPowell\Shop\Models\Product', 'attachment')->withPivot('image_type')->orderBy('rank', 'ASC');
+        return $this->morphMany('DanPowell\Shop\Models\Product', 'attachment')->withPivot('image_type');
+    }
+
+    public function categories()
+    {
+        return $this->morphMany('DanPowell\Shop\Models\Category', 'attachment')->withPivot('image_type');
     }
 
 
@@ -54,7 +59,8 @@ class Image extends Model {
 
         // When deleting we should also clean up any relationships
         static::deleting(function($model) {
-             $model->products()->delete();
+             $model->products()->detach();
+            $model->categories()->detach();
         });
     }
 

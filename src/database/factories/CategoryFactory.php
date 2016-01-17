@@ -16,6 +16,7 @@ $factory->define(DanPowell\Shop\Models\Category::class, function (Faker\Generato
         'title' => $faker->word,
         'description' => $faker->paragraph(3),
         'slug' => $faker->slug,
+        'rank' => $faker->numberBetween(0, 100),
         'published' => $faker->randomElement([0, 1]),
         'meta_title' => $faker->sentence(rand(1, 4)),
         'meta_description' => $faker->paragraph(1),

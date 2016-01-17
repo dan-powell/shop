@@ -19,6 +19,7 @@ class CreateCategories extends Migration {
             $table->string('title', 255);
             $table->text('description');
             $table->string('slug', 80);
+            $table->integer('rank')->default(0);
             $table->tinyInteger('published')->default(1);
             $table->string('meta_title', 255);
             $table->string('meta_description', 255);

@@ -90,21 +90,13 @@ class Product extends Model {
 		return $this->belongsToMany('DanPowell\Shop\Models\Category', 'product_categories', 'product_id', 'category_id');
 	}
 
+	protected static function boot() {
+		parent::boot();
 
-
-
-/*
-    protected static function boot() {
-        parent::boot();
-
-        // When deleting a project we should also clean up any relationships
-        static::deleting(function($project) {
-             $project->sections()->delete();
-             $project->pages()->delete();
-             $project->tags()->detach();
-        });
-    }
-*/
-
+		// When deleting we should also clean up any relationships
+		static::deleting(function($model) {
+			$model->images()->detach();
+		});
+	}
 
 }
