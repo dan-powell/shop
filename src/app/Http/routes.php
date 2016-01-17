@@ -11,10 +11,18 @@
 |
 */
 
-/*
-Route::get(config('shop.routes.public.index'), array('as' => 'projects.index', 'uses' => 'DanPowell\Shop\Http\Controllers\ProjectController@index'));
 
-Route::get(config('shop.routes.public.show'), ['as' => 'projects.show', 'uses' => 'DanPowell\Shop\Http\Controllers\ProjectController@show']);
+Route::get(config('shop.routes.public.product.index'), array('as' => 'product.index', 'uses' => 'DanPowell\Shop\Http\Controllers\ProductController@index'));
+
+Route::get(config('shop.routes.public.product.show'), array('as' => 'product.show', 'uses' => 'DanPowell\Shop\Http\Controllers\ProductController@show'));
+
+Route::get(config('shop.routes.public.category.index'), ['as' => 'category.index', 'uses' => 'DanPowell\Shop\Http\Controllers\CategoryController@index']);
+
+Route::get(config('shop.routes.public.category.show'), ['as' => 'category.show', 'uses' => 'DanPowell\Shop\Http\Controllers\CategoryController@show']);
+
+
+
+/*
 
 Route::get(config('shop.routes.public.showPage'), ['as' => 'projects.page', 'uses' => 'DanPowell\Shop\Http\Controllers\ProjectController@page']);
 

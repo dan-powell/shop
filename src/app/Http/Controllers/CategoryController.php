@@ -4,11 +4,11 @@
 use Illuminate\Routing\Controller;
 
 // Load up the models
-use DanPowell\Shop\Models\Product;
+use DanPowell\Shop\Models\Category;
 
 use DanPowell\Shop\Repositories\ModelRepository;
 
-class ProductController extends Controller
+class CategoryController extends Controller
 {
 
     public function __construct(ModelRepository $modelRepository)
@@ -25,12 +25,11 @@ class ProductController extends Controller
 	{
 
     	// Get all the projects
-    	$products = $this->modelRepository->getAll(new Product, ['images', 'categories']);
-
+		$items = $this->modelRepository->getAll(new Category, ['products', 'images', 'categories']);
+		
         // Return view along with projects and filtered tags
-		return view('shop::product.index')->with([
-		    'products' => $products,
-		    //'tags' =>  $tags
+		return view('shop::category.index')->with([
+		    'categories' => $items,
         ]);
 
 	}
@@ -47,20 +46,20 @@ class ProductController extends Controller
 
         // check to see if id is valid then determine if it is an id or a slug
         if (is_numeric($slug)) {
-			return $this->modelRepository->redirectId(new Product, $slug, 'product.show');
+			return $this->modelRepository->redirectId(new Category, $slug, 'category.show');
         }
         else {
-			$product = $this->modelRepository->getBySlug(new Product, $slug, ['images', 'optionGroups', 'personalizations']);
+			$item = $this->modelRepository->getBySlug(new Category, $slug, ['products', 'images', 'categories']);
 
 			// Set the default template if not provided
-			if ($product->template == null || $product->template == 'default') {
-				$template = 'shop::product.show';
+			if ($item->template == null || $item->template == 'default') {
+				$template = 'shop::category.show';
 			} else {
-				$template = 'shop::templates.' . $product->template;
+				$template = 'shop::templates.' . $item->template;
 			}
 
 			// Return view with projects
-			return view($template)->with(['product' => $product]);
+			return view($template)->with(['category' => $item]);
 
         }
 	}

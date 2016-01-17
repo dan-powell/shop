@@ -6,7 +6,7 @@ class Image extends Model {
 
     protected $fillable = [
 	    'title',
-	    'file',
+	    'filename',
 	    'alt'
     ];
 
@@ -14,7 +14,6 @@ class Image extends Model {
 	{
 	    return [
 	        'title' => 'required',
-	        'slug' => 'required|unique:pages,slug,' . $id
 	    ];
 	}
 
@@ -59,7 +58,7 @@ class Image extends Model {
 
         // When deleting we should also clean up any relationships
         static::deleting(function($model) {
-             $model->products()->detach();
+            $model->products()->detach();
             $model->categories()->detach();
         });
     }

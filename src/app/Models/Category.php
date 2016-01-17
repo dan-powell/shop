@@ -51,7 +51,7 @@ class Category extends Model {
 
     public function products()
     {
-        return $this->hasMany('DanPowell\Shop\Models\Product');
+        return $this->belongsToMany('DanPowell\Shop\Models\Product', 'product_categories', 'product_id', 'category_id');
     }
 
     public function images()
