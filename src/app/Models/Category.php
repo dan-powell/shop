@@ -2,18 +2,11 @@
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Baum\Node;
 
-class Category extends Model {
+class Category extends Node {
 
-    protected $fillable = [
-        'title',
-        'description',
-        'slug',
-        'rank',
-        'published',
-        'meta_title',
-        'meta_description'
-    ];
+    protected $guarded = array('id', 'parent_id', 'lft', 'rgt', 'depth', 'created_at', 'updated_at');
 
     public function rules($id = null)
 	{
@@ -61,11 +54,9 @@ class Category extends Model {
 
     // Inverse Relationships
 
-    public function parentCategory()
-    {
-        return $this->belongsTo('DanPowell\Shop\Models\Category');
-    }
 
+
+    // Boot
 
     protected static function boot() {
         parent::boot();

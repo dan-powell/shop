@@ -23,8 +23,12 @@ class CreateCategories extends Migration {
             $table->tinyInteger('published')->default(1);
             $table->string('meta_title', 255);
             $table->string('meta_description', 255);
-            $table->integer('category_id')->unsigned();
-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
+
+            // BAUM nested set fields
+            $table->integer('parent_id')->nullable()->index();
+            $table->integer('lft')->nullable()->index();
+            $table->integer('rgt')->nullable()->index();
+            $table->integer('depth')->nullable();
         });
 
 
