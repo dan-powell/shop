@@ -6,9 +6,7 @@ class Image extends Model {
 
     protected $fillable = [
 	    'title',
-	    'slug',
-	    'path',
-	    'filename',
+	    'file',
 	    'alt'
     ];
 
@@ -36,20 +34,19 @@ class Image extends Model {
         return $this->created_at->toFormattedDateString();
     }
 
+    // Relationships
 
-/*
 	public function attachment()
     {
         return $this->morphTo();
     }
 
-    public function sections()
+    // Inverse Relationships
+
+    public function products()
     {
-        return $this->morphMany('DanPowell\Shop\Models\Section', 'attachment')->orderBy('rank', 'ASC');
+        return $this->morphMany('DanPowell\Shop\Models\Product', 'attachment')->withPivot('image_type')->orderBy('rank', 'ASC');
     }
-
-    protected $touches = ['attachment'];
-
 
 
     protected static function boot() {
@@ -57,9 +54,9 @@ class Image extends Model {
 
         // When deleting we should also clean up any relationships
         static::deleting(function($model) {
-             $model->sections()->delete();
+             $model->products()->delete();
         });
     }
-*/
+
 
 }

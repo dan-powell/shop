@@ -78,6 +78,11 @@ class Product extends Model {
 		return $this->hasMany('DanPowell\Shop\Models\Personalization');
 	}
 
+	public function images()
+	{
+		return $this->morphToMany('DanPowell\Shop\Models\Image', 'images_attachments');
+	}
+
 	// Inverse Relationships
 
 	public function categories()

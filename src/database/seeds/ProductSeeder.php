@@ -44,6 +44,16 @@ class ProductSeeder extends Seeder
                 $product->categories()->save(factory(DanPowell\Shop\Models\Category::class)->make());
             }
 
+            // Create Images
+            $rand = rand(0, 2);
+            $imagetypes = config('shop.image_types');
+            for ($i = 0; $i < $rand; $i++) {
+                $image = factory(DanPowell\Shop\Models\Image::class)->create();
+                $imagetypesnum = count(config('shop.image_types')) - 1;
+                $randType = rand(0, $imagetypesnum);
+                $product->images()->attach($image, ['image_type' => $imagetypes[$randType]]);
+            }
+
 
         };
 

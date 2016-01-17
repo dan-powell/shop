@@ -16,8 +16,7 @@ $factory->define(DanPowell\Shop\Models\Image::class, function (Faker\Generator $
         'created_at' => $faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now'),
         'updated_at' => $faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now'),
 	    'title' => $faker->sentence(rand(2, 5)),
-	    'path' => '/images/',
-	    'filename' => $faker->image('public/images/', 1280, 800, 'cats'),
+	    'filename' => $faker->image('public/images', 1280, 800, 'cats'),
 	    'alt' => $faker->sentence(rand(4, 10)),
     ];
 });

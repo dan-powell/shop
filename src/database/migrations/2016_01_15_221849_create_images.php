@@ -17,19 +17,17 @@ class CreateImages extends Migration {
             $table->increments('id');
             $table->timestamps();
             $table->string('title', 255);
-            $table->string('path', 255);
             $table->string('filename', 255);
             $table->string('alt', 255);
         });
 
-        /*
-                Schema::create('categories_attachments', function($table)
-                {
-                    $table->integer('category_id');
-                    $table->integer('taggable_id');
-                    $table->string('taggable_type', 255);
-                });
-        */
+        Schema::create('images_attachments', function($table)
+        {
+            $table->integer('image_id');
+            $table->integer('images_attachments_id');
+            $table->string('images_attachments_type', 255);
+            $table->string('image_type', 128);
+        });
 
     }
 
@@ -41,6 +39,7 @@ class CreateImages extends Migration {
     public function down()
     {
         Schema::drop('images');
+        Schema::drop('images_attachments');
     }
 
 }

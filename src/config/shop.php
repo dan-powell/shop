@@ -2,6 +2,13 @@
 
 return [
 
+    'image_types' => [
+        'main',
+        'thumb',
+        'hero',
+        'gallery'
+    ],
+
     'option_types' => [
         'radio',
         'select'
