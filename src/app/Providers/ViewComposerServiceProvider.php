@@ -12,7 +12,7 @@ class ViewComposerServiceProvider extends ServiceProvider {
      */
     public function register()
     {
-        $this->app->view->composer('shop::partials.list','DanPowell\Shop\Http\ViewComposers\ProductListComposer');
+        $this->app->view->composer('shop::category.partials.list','DanPowell\Shop\Http\ViewComposers\CategoryListComposer');
     }
 
 }

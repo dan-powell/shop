@@ -44,7 +44,7 @@ class Category extends Node {
 
     public function products()
     {
-        return $this->belongsToMany('DanPowell\Shop\Models\Product', 'product_categories', 'product_id', 'category_id');
+        return $this->belongsToMany('DanPowell\Shop\Models\Product', 'product_categories', 'product_id', 'category_id')->with(['images']);
     }
 
     public function images()

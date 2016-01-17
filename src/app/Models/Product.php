@@ -80,7 +80,7 @@ class Product extends Model {
 
 	public function images()
 	{
-		return $this->morphToMany('DanPowell\Shop\Models\Image', 'images_attachments');
+		return $this->morphToMany('DanPowell\Shop\Models\Image', 'images_attachments')->withPivot('image_type');
 	}
 
 	// Inverse Relationships

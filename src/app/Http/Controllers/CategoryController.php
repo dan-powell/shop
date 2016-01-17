@@ -24,12 +24,7 @@ class CategoryController extends Controller
 	public function index()
 	{
 
-    	// Get all the projects
-		//$items = $this->modelRepository->getAll(new Category, ['products', 'images', 'categories']);
-
-
 		$items = Category::all()->toHierarchy();
-
 
         // Return view along with projects and filtered tags
 		return view('shop::category.index')->with([
@@ -53,17 +48,30 @@ class CategoryController extends Controller
 			return $this->modelRepository->redirectId(new Category, $slug, 'category.show');
         }
         else {
-			$item = $this->modelRepository->getBySlug(new Category, $slug, ['products', 'images']);
 
-			// Set the default template if not provided
-			if ($item->template == null || $item->template == 'default') {
-				$template = 'shop::category.show';
+			$item = Category::with(['products', 'images'])
+				->where('slug', '=', $slug)
+				->where('published', '!=', '0')
+				->first();
+
+			//$item = $this->modelRepository->getBySlug(new Category, $slug, ['products', 'images']);
+
+			if($item) {
+				// Set the default template if not provided
+				if ($item->template == null || $item->template == 'default') {
+					$template = 'shop::category.show';
+				} else {
+					$template = 'shop::templates.' . $item->template;
+				}
+
+				// Return view with projects
+				return view($template)->with([
+					'category' => $item,
+					'category_children' => $item->children()->where('published', '!=', '0')->get()
+				]);
 			} else {
-				$template = 'shop::templates.' . $item->template;
+				abort('404', 'Invalid slug');
 			}
-
-			// Return view with projects
-			return view($template)->with(['category' => $item]);
 
         }
 	}

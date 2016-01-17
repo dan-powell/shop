@@ -17,6 +17,7 @@ class CreateImages extends Migration {
             $table->increments('id');
             $table->timestamps();
             $table->string('title', 255);
+            $table->string('path', 255);
             $table->string('filename', 255);
             $table->string('alt', 255);
         });
