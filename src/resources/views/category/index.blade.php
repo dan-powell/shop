@@ -15,6 +15,13 @@
                             <a href="{{ route('category.show', $category->slug) }}">
                                 {{ $category->title }}
                             </a>
+
+                            @if( isset($category->children) && count($category->children) )
+
+                                @include('shop::category.partials.children', ['children' => $category->children] )
+
+                            @endif
+
                         </div>
 
                         @if($key % 3 == 2)

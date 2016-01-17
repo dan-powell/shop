@@ -25,8 +25,12 @@ class CategoryController extends Controller
 	{
 
     	// Get all the projects
-		$items = $this->modelRepository->getAll(new Category, ['products', 'images', 'categories']);
-		
+		//$items = $this->modelRepository->getAll(new Category, ['products', 'images', 'categories']);
+
+
+		$items = Category::all()->toHierarchy();
+
+
         // Return view along with projects and filtered tags
 		return view('shop::category.index')->with([
 		    'categories' => $items,
@@ -49,7 +53,7 @@ class CategoryController extends Controller
 			return $this->modelRepository->redirectId(new Category, $slug, 'category.show');
         }
         else {
-			$item = $this->modelRepository->getBySlug(new Category, $slug, ['products', 'images', 'categories']);
+			$item = $this->modelRepository->getBySlug(new Category, $slug, ['products', 'images']);
 
 			// Set the default template if not provided
 			if ($item->template == null || $item->template == 'default') {
