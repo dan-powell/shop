@@ -65,7 +65,6 @@ class Product extends Model {
         return $this->created_at->toFormattedDateString();
     }
 
-
 	// Relationships
 
 	public function optionGroups()

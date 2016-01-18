@@ -21,10 +21,18 @@ return [
 
 
     'image_types' => [
-        'main',
-        'thumb',
-        'hero',
-        'gallery'
+        'main' => [
+            'title' => 'Main'
+        ],
+        'thumb' => [
+            'title' => 'Thumbnail'
+        ],
+        'hero' => [
+            'title' => 'Hero'
+        ],
+        'gallery' => [
+            'title' => 'Gallery'
+        ],
     ],
 
     'option_types' => [

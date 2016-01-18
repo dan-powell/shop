@@ -52,6 +52,8 @@ class ProductController extends Controller
         else {
 			$product = $this->modelRepository->getBySlug(new Product, $slug, ['images', 'optionGroups', 'personalizations', 'related']);
 
+			$product->image_types = $product->images->groupBy('pivot.image_type');
+
 			// Set the default template if not provided
 			if ($product->template == null || $product->template == 'default') {
 				$template = 'shop::product.show';

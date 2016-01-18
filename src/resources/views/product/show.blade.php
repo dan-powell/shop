@@ -4,11 +4,20 @@
     <div class="container">
         <h1>{{ $product->title }}</h1>
 
-        {{ $product }}
-
-
-        @foreach($product->images as $image)
-            <img src="{{ url() }}/{{ $image->path }}/{{ $image->filename }}" alt="{{ $image->alt }}"/>
+        @foreach($product->image_types as $key => $type)
+            <h4>{{ config('shop.image_types.' . $key . '.title') }}</h4>
+            <div class="row">
+                @foreach($type as $image)
+                
+                    <div class="col-sm-3">
+                
+                    <img src="{{ url() }}/{{ $image->path }}/{{ $image->filename }}" alt="{{ $image->alt }}" class="img-responsive"/>
+                    
+                    {{ $image->title }}
+                    
+                    </div>
+                @endforeach
+            </div>
         @endforeach
 
 
@@ -20,6 +29,10 @@
                 @endforeach
             </div>
         @endif
+        
+        <pre>
+            {{ $product }}
+        </pre>
 
     </div>
 @stop
