@@ -50,7 +50,7 @@ class ProductController extends Controller
 			return $this->modelRepository->redirectId(new Product, $slug, 'product.show');
         }
         else {
-			$product = $this->modelRepository->getBySlug(new Product, $slug, ['images', 'optionGroups', 'personalizations']);
+			$product = $this->modelRepository->getBySlug(new Product, $slug, ['images', 'optionGroups', 'personalizations', 'related']);
 
 			// Set the default template if not provided
 			if ($product->template == null || $product->template == 'default') {

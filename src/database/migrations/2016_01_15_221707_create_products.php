@@ -42,6 +42,14 @@ class CreateProducts extends Migration {
             $table->foreign('category_id')->references('id')->on('categories');
         });
 
+        Schema::create('product_related', function($table)
+        {
+            $table->integer('product_id')->unsigned();
+            $table->integer('related_id')->unsigned();
+            $table->foreign('product_id')->references('id')->on('products');
+            $table->foreign('related_id')->references('id')->on('products');
+        });
+
     }
 
     /**
@@ -54,10 +62,13 @@ class CreateProducts extends Migration {
         Schema::table('product_categories', function($table) {
             $table->dropForeign('product_categories_category_id_foreign');
             $table->dropForeign('product_categories_product_id_foreign');
+            $table->dropForeign('product_related_related_id_foreign');
+            $table->dropForeign('product_related_product_id_foreign');
         });
 
         Schema::drop('products');
         Schema::drop('product_categories');
+        Schema::drop('product_related');
     }
 
 }

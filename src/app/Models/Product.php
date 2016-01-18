@@ -90,6 +90,11 @@ class Product extends Model {
 		return $this->belongsToMany('DanPowell\Shop\Models\Category', 'product_categories', 'product_id', 'category_id');
 	}
 
+	public function related()
+	{
+		return $this->belongsToMany('DanPowell\Shop\Models\Product', 'product_related', 'product_id', 'related_id');
+	}
+
 	protected static function boot() {
 		parent::boot();
 
