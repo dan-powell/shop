@@ -33,8 +33,8 @@ class CategoryImageSeeder extends Seeder
         $images = Image::orderBy(DB::raw('RAND()'))->take($rand)->get();
 
         foreach($images as $image) {
-            $randType = rand(0, count($imagetypes) -1);
-            $category->images()->attach($image, ['image_type' => $imagetypes[$randType]]);
+            $randomType = array_search($imagetypes[array_rand($imagetypes)], $imagetypes);
+            $category->images()->attach($image, ['image_type' => $randomType]);
         }
 
     }
