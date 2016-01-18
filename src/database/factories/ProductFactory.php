@@ -33,3 +33,15 @@ $factory->define(DanPowell\Shop\Models\Product::class, function (Faker\Generator
 		'rank' => $faker->numberBetween(0, 100),
     ];
 });
+
+$factory->defineAs(DanPowell\Shop\Models\Product::class, 'featured', function ($faker) use ($factory) {
+	$model = $factory->raw(DanPowell\Shop\Models\Product::class);
+
+	return array_merge($model, ['featured' => 1, 'published' => 1]);
+});
+
+$factory->defineAs(DanPowell\Shop\Models\Product::class, 'published', function ($faker) use ($factory) {
+	$model = $factory->raw(DanPowell\Shop\Models\Product::class);
+
+	return array_merge($model, ['published' => 1]);
+});

@@ -80,7 +80,7 @@ class ShopServiceProvider extends \Illuminate\Support\ServiceProvider
 
         // Publish Tests
         $this->publishes([
-            __DIR__.'/../tests' => base_path('tests'),
+            __DIR__.'/../tests' => base_path('tests') . '/Shop',
         ], 'tests');
 
     }

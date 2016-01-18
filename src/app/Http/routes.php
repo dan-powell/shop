@@ -11,6 +11,7 @@
 |
 */
 
+Route::get(config('shop.routes.public.home'), ['as' => 'shop', 'uses' => 'DanPowell\Shop\Http\Controllers\ShopController@home']);
 
 Route::get(config('shop.routes.public.product.index'), array('as' => 'product.index', 'uses' => 'DanPowell\Shop\Http\Controllers\ProductController@index'));
 

@@ -5,6 +5,7 @@ return [
 
     'routes' => [
         'public' => [
+            'home' => 'shop',
             'category' => [
                 'index' => 'categories',
                 'show' => 'category/{slug}'
