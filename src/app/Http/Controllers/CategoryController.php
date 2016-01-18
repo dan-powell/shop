@@ -24,7 +24,7 @@ class CategoryController extends Controller
 	public function index()
 	{
 
-		$items = Category::all()->toHierarchy();
+		$items = Category::where('published', '!=', '0')->get()->toHierarchy();
 
         // Return view along with projects and filtered tags
 		return view('shop::category.index')->with([
