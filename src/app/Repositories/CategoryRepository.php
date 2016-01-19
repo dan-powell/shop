@@ -33,6 +33,7 @@ class CategoryRepository
         // Check if item was found
         if ($item != null) {
 
+            //TODO Need a cleaner way of retrieving only 'published' relationships
             $item->categories = $this->queryPublished($item->children())->get();
             $item->products = $this->queryPublished($item->products())->get();
 
