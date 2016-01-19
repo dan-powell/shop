@@ -23,7 +23,7 @@ class ProductsTest extends TestCase
         // Setup
 
         // Actions
-        $this->visit(route('product.index'));
+        $this->visit(route('shop.product.index'));
 
         // Assertions
         $this->assertResponseOk();
@@ -38,7 +38,7 @@ class ProductsTest extends TestCase
         $model = factory(DanPowell\Shop\Models\Product::class)->create();
 
         // Actions
-        $this->visit(route('product.show', $model->slug));
+        $this->visit(route('shop.product.show', $model->slug));
 
         // Assertions
         $this->assertResponseOk();

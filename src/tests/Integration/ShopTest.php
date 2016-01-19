@@ -24,7 +24,7 @@ class ShopTest extends TestCase
         $models = factory(DanPowell\Shop\Models\Product::class, 'featured', 3)->create();
 
         // Actions
-        $this->visit(route('shop'));
+        $this->visit(route('shop.home'));
 
         // Assertions
         $this->assertResponseOk();
@@ -39,7 +39,7 @@ class ShopTest extends TestCase
         // Setup
 
         // Actions
-        $this->call('GET', route('admin'));
+        $this->call('GET', route('shop.admin'));
 
         // Assertions
         $this->assertResponseStatus('302');
@@ -55,7 +55,7 @@ class ShopTest extends TestCase
 
         // Actions
         $this->actingAs($user);
-        $this->call('GET', route('admin'));
+        $this->call('GET', route('shop.admin'));
 
         // Assertions
         $this->assertResponseOk();
