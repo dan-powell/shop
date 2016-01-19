@@ -6,7 +6,7 @@
         <div class="row">
             <div class="col-sm-4">
 
-                @include('shop::category.partials.list')
+
 
             </div>
             <div class="col-sm-8">
@@ -39,7 +39,7 @@
                         <h2>Sub Categories</h2>
 
                         @foreach($category_children as $category)
-                            <a href="{{ route('category.show', $category->slug) }}" class="list-group-item">
+                            <a href="{{ route('shop.category.show', $category->slug) }}" class="list-group-item">
                                 {{ $category->title }}
                             </a>
                         @endforeach

@@ -12,6 +12,11 @@ This software is pre-alpha, don't bother to use it just yet...
 2. config/app.php
 
     DanPowell\Shop\ShopServiceProvider::class
+    
+Aliases
+
+    'String' => Illuminate\Support\Str::class,
+
 
 3. publish assets
 

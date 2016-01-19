@@ -1,32 +1,30 @@
 @extends('shop::base')
 
 @section('main')
-    <div class="container">
-        <h1>Product Index</h1>
 
-        @if(isset($products) && count($products) > 0)
-            <div class="well">
-                <h2>All Products</h2>
-                <div class="row">
-                    @foreach($products as $key => $product)
-                        <div class="col-md-4">
-                            {{--@include('portfolio::partials.thumb', ['project' => $project])--}}
+    <h1>Product Index</h1>
 
-                            <a href="{{ route('product.show', $product->slug) }}">
-                                {{ $product->title }}
-                            </a>
-                        </div>
+    @if(isset($products) && count($products) > 0)
+        <div class="well">
+            <h2>All Products</h2>
+            <div class="row">
+                @foreach($products as $key => $product)
+                    <div class="col-sm-6">
 
-                        @if($key % 3 == 2)
-                            <div class="clearfix visible-md-block visible-lg-block"></div>
-                        @endif
+                        @include('shop::product.partials.snippet', ['product' => $product])
+                    </div>
 
-                    @endforeach
-                </div>
+                    <!-- Every second iteration... -->
+                    @if ( ($key+1) % 2 == 0)
+                            <!-- Clear the row every 2 items for sm breakpoint -->
+                    <div class="visible-sm-block visible-md-block visible-lg-block clearfix"></div>
+                    @endif
+
+                @endforeach
             </div>
-        @else
-            <p>No Projects found</p>
-        @endif
+        </div>
+    @else
+        <p>No Projects found</p>
+    @endif
 
-    </div>
 @stop

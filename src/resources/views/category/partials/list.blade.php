@@ -2,7 +2,7 @@
     <div class="list-group list-group-root well">
         @foreach($categories as $key => $category)
 
-            <a href="{{ route('category.show', $category->slug) }}" class="list-group-item">
+            <a href="{{ route('shop.category.show', $category->slug) }}" class="list-group-item">
                 <i class="glyphicon glyphicon-chevron-right"></i> {{ $category->title }}
             </a>
 

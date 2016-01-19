@@ -1,10 +1,9 @@
 @extends('shop::base')
 
 @section('main')
-    <div class="container">
-        <h1>Shop</h1>
 
-        @include('shop::partials.featured')
+    <h1>Shop</h1>
 
-    </div>
+    @include('shop::partials.featured')
+
 @stop

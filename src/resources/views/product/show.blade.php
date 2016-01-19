@@ -25,7 +25,7 @@
             <div class="well">
                 <h2>Related Products</h2>
                 @foreach($product->related as $related)
-                    <a href="{{ route('product.show', $related->slug) }}">{{$related->title}}</a>
+                    <a href="{{ route('shop.product.show', $related->slug) }}">{{$related->title}}</a>
                 @endforeach
             </div>
         @endif

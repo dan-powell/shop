@@ -7,13 +7,16 @@ use Illuminate\Routing\Controller;
 use DanPowell\Shop\Models\Product;
 
 use DanPowell\Shop\Repositories\ModelRepository;
+use DanPowell\Shop\Repositories\ProductRepository;
 
 class ProductController extends Controller
 {
 
-    public function __construct(ModelRepository $modelRepository)
+	private $productRepository;
+
+    public function __construct(ProductRepository $ProductRepository)
     {
-        $this->modelRepository = $modelRepository;
+        $this->productRepository = $ProductRepository;
     }
 
     /**
@@ -24,8 +27,8 @@ class ProductController extends Controller
 	public function index()
 	{
 
-    	// Get all the projects
-    	$products = $this->modelRepository->getAll(new Product, ['images', 'categories']);
+    	// Get all the products
+    	$products = $this->productRepository->getAll();
 
         // Return view along with projects and filtered tags
 		return view('shop::product.index')->with([

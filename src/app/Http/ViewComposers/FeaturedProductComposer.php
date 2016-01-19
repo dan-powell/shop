@@ -1,9 +1,11 @@
 <?php namespace DanPowell\Shop\Http\ViewComposers;
 
 use Illuminate\Contracts\View\View;
-use DanPowell\Shop\Models\Product;
+use DanPowell\Shop\Repositories\ProductRepository;
 
 class FeaturedProductComposer {
+
+    private $productRepository;
 
     /**
      * Create a new profile composer.
@@ -11,9 +13,9 @@ class FeaturedProductComposer {
      * @param  UserRepository  $users
      * @return void
      */
-    public function __construct()
+    public function __construct(ProductRepository $ProductRepository)
     {
-
+        $this->productRepository = $ProductRepository;
     }
 
     /**
@@ -25,7 +27,8 @@ class FeaturedProductComposer {
     public function compose(View $view)
     {
 
-        $featured = Product::where('featured', '=', '1')->where('published', '!=', '0')->with(['images'])->get();
+        $featured = $this->productRepository->getFeatured();
+
         $view->with('featured', $featured);
 
     }

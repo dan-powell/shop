@@ -1,14 +1,15 @@
-<div class="thumbnail">
+<a href="{{ route('shop.product.show', $product->slug) }}" class="thumbnail">
 
-    @foreach($product->images as $image)
-        @if($image->pivot->image_type == 'thumb')
+    @if(isset($product->image_types['thumb']) && count($product->image_types['thumb']))
+        @foreach($product->image_types['thumb'] as $key => $image)
             <img src="{{ url() }}/{{ $image->path }}/{{ $image->filename }}" alt="{{ $image->alt }}"/>
-        @endif
-    @endforeach
+        @endforeach
+    @else
+        <img src="holder.js/320x200" alt="{{ $product->title }}">
+    @endif
 
     <div class="caption">
         <h3>{{ $product->title }}</h3>
-        <p>{{ $product->description }}</p>
-        <a href="{{ route('product.show', $product->slug) }}" class="btn btn-primary" role="button">View</a>
+        <p>{{ String::words($product->description, 10) }}</p>
     </div>
-</div>
+</a>

@@ -1,6 +1,6 @@
 <div class="list-group">
     @foreach($children as $child)
-        <a href="{{ route('category.show', $child->slug) }}" class="list-group-item">
+        <a href="{{ route('shop.category.show', $child->slug) }}" class="list-group-item">
             {{ $child->title }}
         </a>
 

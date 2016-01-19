@@ -12,7 +12,7 @@
                         <div class="col-md-4">
                             {{--@include('portfolio::partials.thumb', ['project' => $project])--}}
 
-                            <a href="{{ route('category.show', $category->slug) }}">
+                            <a href="{{ route('shop.category.show', $category->slug) }}">
                                 {{ $category->title }}
                             </a>
 
