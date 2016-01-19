@@ -27,14 +27,28 @@ class ProductRepository
             $m->image_types = $this->organiseImages($m);
         });
 
-
-
         return $products;
 
     }
 
 
+    public function getBySlug($slug)
+    {
+        $query = Product::with(['images', 'related', 'optionGroups', 'personalizations'])->where('slug', '=', $slug);
+        $item = $query->first();
 
+        // Check if a project was found
+        if ($item != null) {
+
+            $item->image_types = $this->organiseImages($item);
+
+            return $item;
+        } else {
+            // No project found, throw a 404.
+            abort('404', 'Invalid slug');
+        }
+
+    }
 
 
     public function getFeatured($limit = null)

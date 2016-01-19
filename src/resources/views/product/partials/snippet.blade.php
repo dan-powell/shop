@@ -2,7 +2,9 @@
 
     @if(isset($product->image_types['thumb']) && count($product->image_types['thumb']))
         @foreach($product->image_types['thumb'] as $key => $image)
-            <img src="{{ url() }}/{{ $image->path }}/{{ $image->filename }}" alt="{{ $image->alt }}"/>
+            @if($key < 1)
+                <img src="{{ url() }}/{{ $image->path }}/{{ $image->filename }}" alt="{{ $image->alt }}"/>
+            @endif
         @endforeach
     @else
         <img src="holder.js/320x200" alt="{{ $product->title }}">
