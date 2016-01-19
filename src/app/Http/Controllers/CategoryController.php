@@ -1,37 +1,40 @@
 <?php namespace DanPowell\Shop\Http\Controllers;
 
-
 use Illuminate\Routing\Controller;
+use DanPowell\Shop\Repositories\CategoryRepository;
 
-// Load up the models
-use DanPowell\Shop\Models\Category;
-
-use DanPowell\Shop\Repositories\ModelRepository;
 
 class CategoryController extends Controller
 {
 
-    public function __construct(ModelRepository $modelRepository)
+	private $categoryRepository;
+
+    public function __construct(CategoryRepository $categoryRepository)
     {
-        $this->modelRepository = $modelRepository;
+        $this->categoryRepository = $categoryRepository;
     }
 
-    /**
-    *   Return a view listing all of the projects
-	*
-	*   @return View - returns created page, or throws a 404 if slug is invalid or can't find a matching record
-	*/
+
+
+	/**
+	 * Show list of categories
+	 * @return View
+	 */
 	public function index()
 	{
 
-		$items = Category::where('published', '!=', '0')->get()->toHierarchy();
+		$items = $this->categoryRepository->getAll();
 
-        // Return view along with projects and filtered tags
+		// Return view along with projects and filtered tags
 		return view('shop::category.index')->with([
-		    'categories' => $items,
-        ]);
+			'categories' => $items,
+		]);
+
 
 	}
+
+
+
 
 
 	/**
@@ -43,88 +46,30 @@ class CategoryController extends Controller
 	public function show($slug)
 	{
 
-        // check to see if id is valid then determine if it is an id or a slug
-        if (is_numeric($slug)) {
-			return $this->modelRepository->redirectId(new Category, $slug, 'category.show');
-        }
-        else {
 
-			$item = Category::with(['products', 'images'])
-				->where('slug', '=', $slug)
-				->where('published', '!=', '0')
-				->first();
+		if (is_numeric($slug)) {
+			// Redirect to slug
+			return $this->categoryRepository->redirectId($slug, 'shop.category.show');
 
-			//$item = $this->modelRepository->getBySlug(new Category, $slug, ['products', 'images']);
+		} else {
+			$category = $this->categoryRepository->getBySlug($slug);
 
-			if($item) {
-				// Set the default template if not provided
-				if ($item->template == null || $item->template == 'default') {
-					$template = 'shop::category.show';
-				} else {
-					$template = 'shop::templates.' . $item->template;
-				}
-
-				// Return view with projects
-				return view($template)->with([
-					'category' => $item,
-					'category_children' => $item->children()->where('published', '!=', '0')->get()
-				]);
-			} else {
-				abort('404', 'Invalid slug');
-			}
-
-        }
-	}
-
-
-    /**
-    *   Return a view showing one of the pages
-	*
-	* @param String $slug - if numeric will be treated as an id, otherwise will search for matching slug
-	* @param String $pageSlug - if numeric will be treated as an id, otherwise will search for matching slug
-	* @return View - returns created page, or throws a 404 if slug is invalid or can't find a matching record
-	*/
-	/*
-	public function page($slug, $pageSlug)
-	{
-    	// Build query to find relevent Project
-        $query = Project::where('slug', '=', $slug)->with('pages');
-        $project = $query->first();
-
-        // Check if a project was found
-        if ($project == null) {
-            return abort('404', 'Invalid project slug');
-        } else {
-
-            // Filter related pages and return the one with the correct slug
-            $filteredPages = $project->pages->filter(function($page) use ($pageSlug)
-            {
-                if(isset($page->slug) && $page->slug == $pageSlug) {
-            	    return $page;
-            	}
-            });
-            $page = $filteredPages->first();
-
-            // Check if a page was found
-            if ($page != null) {
-
-                if ($page->template == null || $page->template == 'default') {
-    		        $template = 'portfolio::page';
-    		    } else {
-    			    $template = 'portfolio::pages.' . $page->template;
-    			}
-
-                // Return view with projects
-    			return view($template)->with(['page' => $page, 'project' => $project]);
-
-    	   	} else {
-    		   	// No project found, throw a 404.
-                return abort('404', 'Invalid page slug');
+			// Set the default template if not provided
+			/*
+            if ($product->template == null || $product->template == 'default') {
+                $template = 'shop::product.show';
+            } else {
+                $template = 'shop::templates.' . $product->template;
             }
-        }
+            */
+
+			// Return view models
+			return view('shop::category.show')->with([
+				'category' => $category
+			]);
+
+		}
 
 	}
-*/
-
 
 }

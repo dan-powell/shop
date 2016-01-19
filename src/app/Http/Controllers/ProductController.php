@@ -1,12 +1,6 @@
 <?php namespace DanPowell\Shop\Http\Controllers;
 
-
 use Illuminate\Routing\Controller;
-
-// Load up the models
-use DanPowell\Shop\Models\Product;
-
-use DanPowell\Shop\Repositories\ModelRepository;
 use DanPowell\Shop\Repositories\ProductRepository;
 
 class ProductController extends Controller

@@ -24,3 +24,9 @@ $factory->define(DanPowell\Shop\Models\Category::class, function (Faker\Generato
         'updated_at' => $faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now'),
     ];
 });
+
+$factory->defineAs(DanPowell\Shop\Models\Category::class, 'published', function ($faker) use ($factory) {
+    $model = $factory->raw(DanPowell\Shop\Models\Category::class);
+
+    return array_merge($model, ['published' => 1]);
+});

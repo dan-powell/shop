@@ -1,20 +1,17 @@
 <?php namespace DanPowell\Shop\Http\ViewComposers;
 
 use Illuminate\Contracts\View\View;
-use DanPowell\Shop\Models\Category;
+use DanPowell\Shop\Repositories\CategoryRepository;
 
 class CategoryListComposer {
 
-    /**
-     * Create a new profile composer.
-     *
-     * @param  UserRepository  $users
-     * @return void
-     */
-    public function __construct()
-    {
+    private $categoryRepository;
 
+    public function __construct(CategoryRepository $categoryRepository)
+    {
+        $this->categoryRepository = $categoryRepository;
     }
+
 
     /**
      * Bind data to the view.
@@ -25,7 +22,7 @@ class CategoryListComposer {
     public function compose(View $view)
     {
 
-        $items = Category::where('published', '!=', '0')->get()->toHierarchy();
+        $items = $this->categoryRepository->getAll();
         $view->with('categories', $items);
 
     }

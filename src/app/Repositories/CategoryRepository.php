@@ -1,8 +1,8 @@
 <?php namespace DanPowell\Shop\Repositories;
 
-use DanPowell\Shop\Models\Product;
+use DanPowell\Shop\Models\Category;
 
-class ProductRepository
+class CategoryRepository
 {
 
     /**
@@ -12,13 +12,13 @@ class ProductRepository
     public function getAll($limit = null)
     {
 
-        $products = $this->queryVisible(['images', 'categories'], null, $limit)->get();
+        $categories = $this->queryVisible(['images'], null, $limit)->get();
 
-        $products->each( function($m) {
+        $categories->each( function($m) {
             $m->image_types = $this->groupImagesByType($m);
         });
 
-        return $products;
+        return $categories->toHierarchy();
 
     }
 
@@ -28,10 +28,17 @@ class ProductRepository
      */
     public function getBySlug($slug)
     {
-        $item = $this->queryVisible(['images', 'related', 'optionGroups', 'personalizations'], ['slug' => $slug])->first();
+        $item = $this->queryVisible(['images'], ['slug' => $slug])->first();
 
-        // Check if a project was found
+        // Check if item was found
         if ($item != null) {
+
+            $item->categories = $this->queryPublished($item->children())->get();
+            $item->products = $this->queryPublished($item->products())->get();
+
+            $item->products->each( function($m) {
+                $m->image_types = $this->groupImagesByType($m);
+            });
 
             $item->image_types = $this->groupImagesByType($item);
             return $item;
@@ -44,28 +51,11 @@ class ProductRepository
     }
 
     /**
-     * @param null $limit
-     * @return mixed
-     */
-    public function getFeatured($limit = null)
-    {
-
-        $products = $this->queryVisible(['images'], ['featured' => '1'], $limit)->get();
-
-        $products->each( function($m) {
-            $m->image_types = $this->groupImagesByType($m);
-        });
-
-        return $products;
-
-    }
-
-    /**
      * @param $id
      * @param $route
      * @return \Illuminate\Http\RedirectResponse|void
      */
-    public function redirectId($id, $route = 'shop.product.show')
+    public function redirectId($id, $route = 'shop.category.show')
     {
 
         // If a number is supplied, use that to find project by ID
@@ -91,7 +81,7 @@ class ProductRepository
     public function queryVisible($with = [], array $where = null, $limit = null)
     {
 
-        $query = Product::where('published', '!=', '0');
+        $query = Category::where('published', '!=', '0');
 
         if ($where) {
             $query->where($where);
@@ -104,13 +94,21 @@ class ProductRepository
 
     }
 
+
+    public function queryPublished($query)
+    {
+        return $query->where('published', '!=', '0');
+    }
+
+
+
     /**
-     * @param $product
+     * @param $category
      * @return mixed
      */
-    private function groupImagesByType($product)
+    private function groupImagesByType($model)
     {
-        return $product->images->groupBy('pivot.image_type');
+        return $model->images->groupBy('pivot.image_type');
     }
 
 }
