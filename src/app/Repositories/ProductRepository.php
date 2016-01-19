@@ -28,7 +28,7 @@ class ProductRepository
      */
     public function getBySlug($slug)
     {
-        $item = $this->queryVisible(['images', 'related', 'optionGroups', 'personalizations'], ['slug' => $slug])->firstOrFail();
+        $item = $this->queryVisible(['images', 'related', 'optionGroups', 'personalizations'], ['slug' => $slug])->first();
 
         // Check if a project was found
         if ($item != null) {
@@ -65,7 +65,7 @@ class ProductRepository
      * @param $route
      * @return \Illuminate\Http\RedirectResponse|void
      */
-    public function redirectId($id, $route)
+    public function redirectId($id, $route = 'shop.product.show')
     {
 
         // If a number is supplied, use that to find project by ID
@@ -88,7 +88,7 @@ class ProductRepository
      * @param null $limit
      * @return mixed
      */
-    private function queryVisible($with = [], array $where = null, $limit = null)
+    public function queryVisible($with = [], array $where = null, $limit = null)
     {
 
         $query = Product::where('published', '!=', '0');

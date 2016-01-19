@@ -35,7 +35,7 @@ class ProductsTest extends TestCase
     public function testResponseShow()
     {
         // Setup
-        $model = factory(DanPowell\Shop\Models\Product::class)->create();
+        $model = factory(DanPowell\Shop\Models\Product::class, 'published')->create();
 
         // Actions
         $this->visit(route('shop.product.show', $model->slug));
