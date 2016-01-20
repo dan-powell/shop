@@ -42,17 +42,17 @@ class Category extends Node {
 
     public function categories()
     {
-        return $this->hasMany(\DanPowell\Shop\Models\Category::class);
+        return $this->hasMany('DanPowell\Shop\Models\Category');
     }
 
     public function products()
     {
-        return $this->belongsToMany(\DanPowell\Shop\Models\Product::class, 'product_categories', 'category_id', 'product_id');
+        return $this->belongsToMany('DanPowell\Shop\Models\Product', 'product_categories', 'category_id', 'product_id');
     }
 
     public function images()
     {
-        return $this->morphToMany(\DanPowell\Shop\Models\Image::class, 'images_attachments')->withPivot('image_type');
+        return $this->morphToMany('DanPowell\Shop\Models\Image', 'images_attachments')->withPivot('image_type');
     }
 
     // Inverse Relationships

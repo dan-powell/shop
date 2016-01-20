@@ -1,6 +1,7 @@
 <?php namespace DanPowell\Shop\Repositories;
 
 use DanPowell\Shop\Models\Product;
+use DanPowell\Shop\Models\ProductPublic;
 use DanPowell\Shop\Repositories\ImageRepository;
 
 class ProductRepository
@@ -28,7 +29,7 @@ class ProductRepository
         $products = $this->queryVisible(['images', 'categories'], null, $limit)->get();
 
         $products->each( function($m) {
-            $m->image_types = $this->groupImagesByType($m);
+            $m->image_types = $this->imageRepository->groupImagesByType($m);
         });
 
         return $products;
@@ -41,12 +42,20 @@ class ProductRepository
      */
     public function getBySlug($slug)
     {
-        $item = $this->queryVisible(['images', 'related', 'optionGroups', 'personalizations'], ['slug' => $slug])->first();
+        $item = $this->queryVisible(['images', 'related.images', 'optionGroups', 'personalizations'], ['slug' => $slug])->first();
 
         // Check if a project was found
         if ($item != null) {
 
             $item->image_types = $this->imageRepository->groupImagesByType($item);
+
+
+            // Product images need to be grouped by type
+            $item->related->each( function($m) {
+                $m->image_types = $this->imageRepository->groupImagesByType($m);
+            });
+
+
             return $item;
 
         } else {
@@ -66,7 +75,7 @@ class ProductRepository
         $products = $this->queryVisible(['images'], ['featured' => '1'], $limit)->get();
 
         $products->each( function($m) {
-            $m->image_types = $this->groupImagesByType($m);
+            $m->image_types = $this->imageRepository->groupImagesByType($m);
         });
 
         return $products;
@@ -104,7 +113,7 @@ class ProductRepository
     public function queryVisible($with = [], array $where = null, $limit = null)
     {
 
-        $query = Product::where('published', '!=', '0');
+        $query = ProductPublic::where('published', '!=', '0');
 
         if ($where) {
             $query->where($where);

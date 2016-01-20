@@ -27,4 +27,17 @@
         <p>No Projects found</p>
     @endif
 
+    @if(isset($products))
+        <hr/>
+
+        <a class="btn btn-primary" role="button" data-toggle="collapse" href="#modelArray" aria-expanded="false" aria-controls="modelArray">
+            Display Model Array
+        </a>
+        <div class="collapse" id="modelArray">
+            <pre class="">
+                {{ var_dump($products->toArray()) }}
+            </pre>
+        </div>
+    @endif
+
 @stop

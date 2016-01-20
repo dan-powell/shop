@@ -22,7 +22,7 @@ class CategoryListComposer {
     public function compose(View $view)
     {
 
-        $items = $this->categoryRepository->getAll();
+        $items = $this->categoryRepository->getAllWithoutImages();
         $view->with('categories', $items);
 
     }

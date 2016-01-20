@@ -8,10 +8,7 @@
     <div class="">
         {{ $category->description }}
     </div>
-    
-    {{ var_dump($category->images) }}
-    
-    
+
     @if(isset($category->image_types) && count($category->image_types))
         @foreach($category->image_types as $key => $type)
             <h4>{{ config('shop.image_types.' . $key . '.title') }}</h4>
@@ -47,6 +44,24 @@
     @endif
 
 
+
+    @if(isset($category->categories) && count($category->categories))
+        <div class="well">
+            <h2>Sub Categories</h2>
+            <div class="row">
+                @foreach($category->categories as $key => $category)
+
+                    <div class="col-sm-6">
+                        @include('shop::category.partials.snippet', ['category' => $category])
+                    </div>
+
+                @endforeach
+            </div>
+        </div>
+    @endif
+
+
+
     @if(isset($category->children) && count($category->children))
         <div class="well">
             <h2>Sub Categories</h2>
@@ -57,8 +72,22 @@
                 </a>
             @endforeach
         </div>
-
     @endif
 
+
+
+
+    @if(isset($category))
+        <hr/>
+
+        <a class="btn btn-primary" role="button" data-toggle="collapse" href="#modelArray" aria-expanded="false" aria-controls="modelArray">
+            Display Model Array
+        </a>
+        <div class="collapse" id="modelArray">
+            <pre class="">
+                {{ var_dump($category->toArray()) }}
+            </pre>
+        </div>
+    @endif
 
 @stop

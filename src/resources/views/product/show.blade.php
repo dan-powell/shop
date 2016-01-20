@@ -25,13 +25,29 @@
     @if(isset($product->related) && count($product->related))
         <div class="well">
             <h2>Related Products</h2>
-            @foreach($product->related as $related)
-                <a href="{{ route('shop.product.show', $related->slug) }}">{{$related->title}}</a>
-            @endforeach
+            <div class="row">
+                @foreach($product->related as $key => $product)
+
+                    <div class="col-sm-6">
+                        @include('shop::product.partials.snippet', ['product' => $product])
+                    </div>
+
+                @endforeach
+            </div>
         </div>
     @endif
 
-    <code>
-        {{ $product }}
-    </code>
+
+    @if(isset($product))
+        <hr/>
+
+        <a class="btn btn-primary" role="button" data-toggle="collapse" href="#modelArray" aria-expanded="false" aria-controls="modelArray">
+            Display Model Array
+        </a>
+        <div class="collapse" id="modelArray">
+            <pre class="">
+                {{ var_dump($product->toArray()) }}
+            </pre>
+        </div>
+    @endif
 @stop

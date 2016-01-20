@@ -4,6 +4,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model {
 
+	protected $table = 'products';
+
+	protected $morphClass = 'DanPowell\Shop\Models\Product';
+
     protected $fillable = [
 	    'title',
 	    'description',
@@ -69,12 +73,12 @@ class Product extends Model {
 
 	public function optionGroups()
 	{
-		return $this->hasMany('DanPowell\Shop\Models\OptionGroup');
+		return $this->hasMany('DanPowell\Shop\Models\OptionGroup', 'product_id');
 	}
 
 	public function personalizations()
 	{
-		return $this->hasMany('DanPowell\Shop\Models\Personalization');
+		return $this->hasMany('DanPowell\Shop\Models\Personalization', 'product_id');
 	}
 
 	public function images()
