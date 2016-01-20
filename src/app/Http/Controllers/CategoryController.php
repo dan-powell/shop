@@ -15,7 +15,6 @@ class CategoryController extends Controller
     }
 
 
-
 	/**
 	 * Show list of categories
 	 * @return View
@@ -30,11 +29,7 @@ class CategoryController extends Controller
 			'categories' => $items,
 		]);
 
-
 	}
-
-
-
 
 
 	/**

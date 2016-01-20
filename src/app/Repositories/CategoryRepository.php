@@ -1,9 +1,19 @@
 <?php namespace DanPowell\Shop\Repositories;
 
+use DanPowell\Shop\Models\Category;
 use DanPowell\Shop\Models\CategoryPublished;
+use DanPowell\Shop\Repositories\ImageRepository;
 
 class CategoryRepository
 {
+    
+    private $imageRepository;
+
+    public function __construct(ImageRepository $imageRepository)
+    {
+        $this->imageRepository = $imageRepository;
+    }
+    
 
     /**
      * @param null|int
@@ -15,7 +25,7 @@ class CategoryRepository
         $categories = $this->queryVisible(['images'], null, $limit)->get();
 
         $categories->each( function($m) {
-            $m->image_types = $this->groupImagesByType($m);
+            $m->image_types = $this->imageRepository->groupImagesByType($m);
         });
 
         return $categories->toHierarchy();
@@ -28,7 +38,7 @@ class CategoryRepository
      */
     public function getBySlug($slug)
     {
-        $item = $this->queryVisible(['images', 'products', 'children'], ['slug' => $slug])->first();
+        $item = $this->queryVisible(['images', 'products.images', 'children'], ['slug' => $slug])->first();
 
         // Check if item was found
         if ($item != null) {
@@ -38,10 +48,10 @@ class CategoryRepository
             //$item->products = $this->queryPublished($item->products())->get();
 
             $item->products->each( function($m) {
-                $m->image_types = $this->groupImagesByType($m);
+                $m->image_types = $this->imageRepository->groupImagesByType($m);
             });
 
-            $item->image_types = $this->groupImagesByType($item);
+            $item->image_types = $this->imageRepository->groupImagesByType($item);
             return $item;
 
         } else {
@@ -101,15 +111,5 @@ class CategoryRepository
         return $query->where('published', '!=', '0');
     }
 
-
-
-    /**
-     * @param $category
-     * @return mixed
-     */
-    private function groupImagesByType($model)
-    {
-        return $model->images->groupBy('pivot.image_type');
-    }
 
 }

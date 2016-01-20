@@ -1,12 +1,13 @@
 <?php namespace DanPowell\Shop\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Baum\Node;
 
 class Category extends Node {
     
     protected $table = 'categories';
+    
+    protected $morphClass = 'DanPowell\Shop\Models\Category';
 
     protected $guarded = array('id', 'parent_id', 'lft', 'rgt', 'depth', 'created_at', 'updated_at');
 
@@ -51,7 +52,7 @@ class Category extends Node {
 
     public function images()
     {
-        return $this->morphToMany(\DanPowell\Shop\Models\Image::class, 'images_attachments');
+        return $this->morphToMany(\DanPowell\Shop\Models\Image::class, 'images_attachments')->withPivot('image_type');
     }
 
     // Inverse Relationships

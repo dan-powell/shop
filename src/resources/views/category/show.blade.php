@@ -8,6 +8,28 @@
     <div class="">
         {{ $category->description }}
     </div>
+    
+    {{ var_dump($category->images) }}
+    
+    
+    @if(isset($category->image_types) && count($category->image_types))
+        @foreach($category->image_types as $key => $type)
+            <h4>{{ config('shop.image_types.' . $key . '.title') }}</h4>
+            <div class="row">
+                @foreach($type as $image)
+    
+                    <div class="col-sm-3">
+    
+                    <img src="{{ url() }}/{{ $image->path }}/{{ $image->filename }}" alt="{{ $image->alt }}" class="img-responsive"/>
+    
+                    {{ $image->title }}
+    
+                    </div>
+                @endforeach
+            </div>
+        @endforeach
+    @endif
+    
 
     @if(isset($category->products) && count($category->products))
         <div class="well">

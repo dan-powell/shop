@@ -1,9 +1,22 @@
 <?php namespace DanPowell\Shop\Repositories;
 
 use DanPowell\Shop\Models\Product;
+use DanPowell\Shop\Repositories\ImageRepository;
 
 class ProductRepository
 {
+    
+    
+    private $imageRepository;
+
+    public function __construct(ImageRepository $imageRepository)
+    {
+        $this->imageRepository = $imageRepository;
+    }
+    
+    
+    
+    
 
     /**
      * @param null|int
@@ -33,7 +46,7 @@ class ProductRepository
         // Check if a project was found
         if ($item != null) {
 
-            $item->image_types = $this->groupImagesByType($item);
+            $item->image_types = $this->imageRepository->groupImagesByType($item);
             return $item;
 
         } else {
@@ -102,15 +115,6 @@ class ProductRepository
 
         return $query;
 
-    }
-
-    /**
-     * @param $product
-     * @return mixed
-     */
-    private function groupImagesByType($product)
-    {
-        return $product->images->groupBy('pivot.image_type');
     }
 
 }
