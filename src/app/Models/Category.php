@@ -39,17 +39,17 @@ class Category extends Node {
 
     public function categories()
     {
-        return $this->hasMany('DanPowell\Shop\Models\Category');
+        return $this->hasMany(DanPowell\Shop\Models\Category::class);
     }
 
     public function products()
     {
-        return $this->belongsToMany('DanPowell\Shop\Models\Product', 'product_categories', 'category_id', 'product_id')->with(['images']);
+        return $this->belongsToMany(DanPowell\Shop\Models\Product::class, 'product_categories', 'category_id', 'product_id')->with(['images']);
     }
 
     public function images()
     {
-        return $this->morphToMany('DanPowell\Shop\Models\Image', 'images_attachments');
+        return $this->morphToMany(DanPowell\Shop\Models\Image::class, 'images_attachments');
     }
 
     // Inverse Relationships
