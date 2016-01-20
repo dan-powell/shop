@@ -3,7 +3,6 @@
 @section('main')
 
 
-
     <h1>{{ $category->title }}</h1>
 
     <div class="">
@@ -26,12 +25,11 @@
     @endif
 
 
-
-    @if(isset($category->categories) && count($category->categories))
+    @if(isset($category->children) && count($category->children))
         <div class="well">
             <h2>Sub Categories</h2>
 
-            @foreach($category->categories as $category)
+            @foreach($category->children as $category)
                 <a href="{{ route('shop.category.show', $category->slug) }}" class="list-group-item">
                     {{ $category->title }}
                 </a>
@@ -39,8 +37,6 @@
         </div>
 
     @endif
-
-
 
 
 @stop

@@ -1,6 +1,6 @@
 <?php namespace DanPowell\Shop\Repositories;
 
-use DanPowell\Shop\Models\Category;
+use DanPowell\Shop\Models\CategoryPublished;
 
 class CategoryRepository
 {
@@ -28,14 +28,14 @@ class CategoryRepository
      */
     public function getBySlug($slug)
     {
-        $item = $this->queryVisible(['images'], ['slug' => $slug])->first();
+        $item = $this->queryVisible(['images', 'products', 'children'], ['slug' => $slug])->first();
 
         // Check if item was found
         if ($item != null) {
 
             //TODO Need a cleaner way of retrieving only 'published' relationships
-            $item->categories = $this->queryPublished($item->children())->get();
-            $item->products = $this->queryPublished($item->products())->get();
+            //$item->children = $this->queryPublished($item->children())->get();
+            //$item->products = $this->queryPublished($item->products())->get();
 
             $item->products->each( function($m) {
                 $m->image_types = $this->groupImagesByType($m);
@@ -82,7 +82,7 @@ class CategoryRepository
     public function queryVisible($with = [], array $where = null, $limit = null)
     {
 
-        $query = Category::where('published', '!=', '0');
+        $query = CategoryPublished::where('published', '!=', '0');
 
         if ($where) {
             $query->where($where);
