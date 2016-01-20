@@ -18,9 +18,9 @@ class ProductControllerTest extends TestCase
     public function setUp()
     {
 
-        $this->productRepository = $this->getMock(
-            'DanPowell\Shop\Repositories\ProductRepository'
-        );
+        $this->productRepository = $this->getMockBuilder('DanPowell\Shop\Repositories\ProductRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->controller = new ProductController($this->productRepository);
 

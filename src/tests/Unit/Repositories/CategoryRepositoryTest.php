@@ -4,7 +4,9 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
+use DanPowell\Shop\Repositories\ImageRepository;
 use DanPowell\Shop\Repositories\CategoryRepository;
+
 
 class CategoryRepositoryTest extends TestCase
 {
@@ -16,7 +18,7 @@ class CategoryRepositoryTest extends TestCase
     public function setUp()
     {
 
-        $this->repository = new CategoryRepository();
+        $this->repository = new CategoryRepository(new ImageRepository);
 
         parent::setUp();
     }

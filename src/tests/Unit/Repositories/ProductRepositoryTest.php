@@ -5,6 +5,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 use DanPowell\Shop\Repositories\ProductRepository;
+use DanPowell\Shop\Repositories\ImageRepository;
 
 class ProductRepositoryTest extends TestCase
 {
@@ -16,7 +17,7 @@ class ProductRepositoryTest extends TestCase
     public function setUp()
     {
 
-        $this->repository = new ProductRepository();
+        $this->repository = new ProductRepository(new ImageRepository);
 
         parent::setUp();
     }

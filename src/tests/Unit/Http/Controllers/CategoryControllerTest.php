@@ -17,9 +17,10 @@ class CategoryControllerTest extends TestCase
     public function setUp()
     {
 
-        $this->categoryRepository = $this->getMock(
-            'DanPowell\Shop\Repositories\CategoryRepository'
-        );
+        $this->categoryRepository = $this->getMockBuilder('DanPowell\Shop\Repositories\CategoryRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
 
         $this->controller = new CategoryController($this->categoryRepository);
 
