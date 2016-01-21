@@ -76,9 +76,9 @@ class Product extends Model {
 		return $this->hasMany('DanPowell\Shop\Models\OptionGroup', 'product_id')->with(['options']);
 	}
 
-	public function personalizations()
+	public function personalisations()
 	{
-		return $this->hasMany('DanPowell\Shop\Models\Personalization', 'product_id');
+		return $this->hasMany('DanPowell\Shop\Models\Personalisation', 'product_id');
 	}
 
 	public function images()

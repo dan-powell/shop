@@ -21,6 +21,7 @@ class ProductSeeder extends Seeder
             $rand = rand(0, 4);
             for ($i = 0; $i < $rand; $i++) {
                 $product->optionGroups()->save(factory(DanPowell\Shop\Models\OptionGroup::class)->make());
+
             }
 
             // For every option group, create the Options
@@ -35,7 +36,7 @@ class ProductSeeder extends Seeder
             // Create Personalizations
             $rand = rand(0, 2);
             for ($i = 0; $i < $rand; $i++) {
-                $product->personalizations()->save(factory(DanPowell\Shop\Models\Personalization::class)->make());
+                $product->personalisations()->save(factory(DanPowell\Shop\Models\Personalisation::class)->make());
             }
 
         };

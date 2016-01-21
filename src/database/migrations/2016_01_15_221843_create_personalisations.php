@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePersonalizations extends Migration {
+class CreatePersonalisations extends Migration {
 
     /**
      * Run the migrations.
@@ -12,7 +12,7 @@ class CreatePersonalizations extends Migration {
      */
     public function up()
     {
-        Schema::create('personalizations', function($table)
+        Schema::create('personalisations', function($table)
         {
             $table->increments('id');
             $table->string('label', 255);
@@ -30,7 +30,7 @@ class CreatePersonalizations extends Migration {
      */
     public function down()
     {
-        Schema::drop('personalizations');
+        Schema::drop('personalisations');
     }
 
 }

@@ -44,44 +44,48 @@
                 @endif
             </ul>
             
+
+            <form>
+                <div class="panel panel-default">
+
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            @if(isset($product->quantity) && $product->quantity > 0)
+                                In Stock | <span class="badge">{{ $product->quantity }}</span> Available
+                            @else
+                                Out of Stock
+                            @endif
+                        </h3>
+                    </div>
+
+                    @foreach($product->optionGroups as $optionGroup)
+                        @if (isset($optionGroup->options) && count($optionGroup->options))
+                            <div class="panel-body">
+                                @include('shop::optionGroups.types.' . $optionGroup->type, ['optionGroup' => $optionGroup])
+                            </div>
+                        @endif
+                    @endforeach
+
+                    @foreach($product->personalisations as $personalisation)
+                        <div class="panel-body">
+                            @include('shop::personalisations.types.' . $personalisation->type, ['personalisation' => $personalisation])
+                        </div>
+                    @endforeach
+
+                    <div class="panel-body">
+                        <label for="">Quantity</label>
+                        <input type="number" class="form-control" value="1"/>
+                    </div>
+
+                    <div class="panel-footer clearfix">
+                        <button class="btn btn-primary pull-right">Add to Cart</button>
+                    </div>
+                </div>
+            </form>
+
         </div>
+
     </div>
-    
-    
-    <div class="panel panel-default">
-        
-        <div class="panel-heading"> 
-            <h3 class="panel-title">
-                @if(isset($product->quantity) && $product->quantity > 0)
-                    In Stock | <span class="badge">{{ $product->quantity }}</span> Available
-                @else
-                    Out of Stock
-                @endif
-            </h3>
-        </div>
-        
-        
-        @foreach($product->optionGroups as $optionGroup)
-            <div class="panel-body">
-                <label for="">{{ $optionGroup->title }}</label>
-                @include('shop::optionGroups.types.' . $optionGroup->type, ['optionGroup' => $optionGroup])
-                
-            </div>
-        @endforeach
-        
-        <div class="panel-body">
-            <label for="">Quantity</label>
-            <input type="number" class="form-control" value="1"/>
-        </div>
-            
-        <div class="panel-footer clearfix">
-            
-            <a href="#" class="btn btn-primary pull-right">Add to Cart</a>
-            
-        </div>
-    </div>
-        
-    
 
     @if(isset($product->image_types) && count($product->image_types))
         @include('shop::partials.imageTypes', ['image_types' => $product->image_types])

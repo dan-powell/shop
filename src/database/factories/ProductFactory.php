@@ -17,7 +17,7 @@ $factory->define(DanPowell\Shop\Models\Product::class, function (Faker\Generator
         'created_at' => $faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now'),
         'updated_at' => $faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now'),
 	    'title' => $faker->sentence(rand(2, 5)),
-	    'description' => $faker->paragraphs(6),
+	    'description' => $faker->paragraphs(6, true),
 	    'slug' => $faker->slug,
 	    'price' => $faker->randomFloat(2, 0, 9999),
 	    'price_offer' => $faker->randomElement([$faker->randomFloat(2, 0, 9999), NULL]),

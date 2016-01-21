@@ -12,15 +12,19 @@ This software is pre-alpha, don't bother to use it just yet...
 2. config/app.php
 
     DanPowell\Shop\ShopServiceProvider::class
+    AlfredoRamos\ParsedownExtra\ParsedownExtraServiceProvider::class
     
 Aliases
 
     'String' => Illuminate\Support\Str::class,
+    'Markdown'  => AlfredoRamos\ParsedownExtra\Facades\ParsedownExtra::class
 
 
 3. publish assets
 
     php artisan vendor:publish --tag='migrations'
+    
+    php artisan vendor:publish --provider='AlfredoRamos\ParsedownExtra\ParsedownExtraServiceProvider' --force
 
 4. migrations
 

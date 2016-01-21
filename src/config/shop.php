@@ -41,7 +41,7 @@ return [
         'select'
     ],
 
-    'personalization_types' => [
+    'personalisation_types' => [
         'text',
         'textarea'
     ],

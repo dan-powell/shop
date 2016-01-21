@@ -42,7 +42,7 @@ class ProductRepository
      */
     public function getBySlug($slug)
     {
-        $item = $this->queryVisible(['images', 'related.images', 'optionGroups', 'personalizations'], ['slug' => $slug])->first();
+        $item = $this->queryVisible(['images', 'related.images', 'optionGroups', 'personalisations'], ['slug' => $slug])->first();
 
         // Check if a project was found
         if ($item != null) {

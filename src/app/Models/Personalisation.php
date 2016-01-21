@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class Personalization extends Model {
+class Personalisation extends Model {
 
     protected $fillable = [
         'label',

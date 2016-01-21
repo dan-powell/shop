@@ -11,9 +11,9 @@
 |
 */
 
-$factory->define(DanPowell\Shop\Models\Personalization::class, function (Faker\Generator $faker) {
+$factory->define(DanPowell\Shop\Models\Personalisation::class, function (Faker\Generator $faker) {
     return [
         'label' => $faker->word,
-        'type' => $faker->randomElement(config('shop.personalization_types')),
+        'type' => $faker->randomElement(config('shop.personalisation_types')),
     ];
 });
