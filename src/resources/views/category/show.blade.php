@@ -3,30 +3,26 @@
 @section('main')
 
 
-    <h1>{{ $category->title }}</h1>
-
-    <div class="">
-        {{ $category->description }}
-    </div>
-
-    @if(isset($category->image_types) && count($category->image_types))
-        @foreach($category->image_types as $key => $type)
-            <h4>{{ config('shop.image_types.' . $key . '.title') }}</h4>
-            <div class="row">
-                @foreach($type as $image)
-    
-                    <div class="col-sm-3">
-    
-                    <img src="{{ url() }}/{{ $image->path }}/{{ $image->filename }}" alt="{{ $image->alt }}" class="img-responsive"/>
-    
-                    {{ $image->title }}
-    
-                    </div>
-                @endforeach
-            </div>
-        @endforeach
+    @if(isset($category->image_types['hero']))
+        <div class="jumbotron" style="background-image: url('{{ url() }}/{{ $category->image_types['hero'][0]->path }}/{{ $category->image_types['hero'][0]->filename }}'); background-size: cover;">
+            <h1>{{ $category->title }}</h1>
+        </div>
+    @else
+        <h1>{{ $category->title }}</h1>
     @endif
     
+
+    @if(isset($category->description) && $category->description != '')
+        <hr/>
+            {!! Markdown::parse($category->description) !!}
+        <hr/>
+    @endif
+    
+
+    @if(isset($category->image_types) && count($category->image_types))
+        @include('shop::partials.imageTypes', ['image_types' => $category->image_types])
+    @endif
+
 
     @if(isset($category->products) && count($category->products))
         <div class="well">
@@ -42,7 +38,6 @@
             </div>
         </div>
     @endif
-
 
 
     @if(isset($category->categories) && count($category->categories))

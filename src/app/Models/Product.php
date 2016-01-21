@@ -73,7 +73,7 @@ class Product extends Model {
 
 	public function optionGroups()
 	{
-		return $this->hasMany('DanPowell\Shop\Models\OptionGroup', 'product_id');
+		return $this->hasMany('DanPowell\Shop\Models\OptionGroup', 'product_id')->with(['options']);
 	}
 
 	public function personalizations()

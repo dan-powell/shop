@@ -9,17 +9,20 @@
             <div class="row">
                 @foreach($categories as $key => $category)
                     <div class="col-md-4">
-                        {{--@include('portfolio::partials.thumb', ['project' => $project])--}}
-
-                        <a href="{{ route('shop.category.show', $category->slug) }}">
-                            {{ $category->title }}
-                        </a>
-
-                        @if( isset($category->children) && count($category->children) )
-
-                            @include('shop::category.partials.children', ['children' => $category->children] )
-
-                        @endif
+                        <div class="list-group">
+                        <div class="list-group-item">
+                            <a href="{{ route('shop.category.show', $category->slug) }}">
+                                {{ $category->title }}
+                            </a>
+    
+                            @if( isset($category->children) && count($category->children) )
+    
+                                @include('shop::category.partials.children', ['children' => $category->children] )
+    
+                            @endif
+                        
+                        </div>
+                        </div>
 
                     </div>
 

@@ -1,30 +1,96 @@
 @extends('shop::base')
 
 @section('main')
-    <h1>{{ $product->title }}</h1>
+    
+    
 
-    @if(isset($product->image_types) && count($product->image_types))
-        @foreach($product->image_types as $key => $type)
-            <h4>{{ config('shop.image_types.' . $key . '.title') }}</h4>
-            <div class="row">
-                @foreach($type as $image)
+
+
     
-                    <div class="col-sm-3">
+    @if(isset($product->image_types['hero']))
+        <div class="jumbotron" style="background-image: url('{{ url() }}/{{ $product->image_types['hero'][0]->path }}/{{ $product->image_types['hero'][0]->filename }}'); background-size: cover;">
+            <h1>{{ $product->title }}</h1>
+        </div>
+    @else
+        <h1>{{ $product->title }}</h1>
+    @endif
     
-                    <img src="{{ url() }}/{{ $image->path }}/{{ $image->filename }}" alt="{{ $image->alt }}" class="img-responsive"/>
     
-                    {{ $image->title }}
+    <div class="row">
+        <div class="col-sm-6">
     
-                    </div>
-                @endforeach
+            @if(isset($product->description) && $product->description != '')
+                <hr/>
+                    {!! Markdown::parse($product->description) !!}
+                <hr/>
+            @endif
+            
+        </div>
+        <div class="col-sm-6">
+            
+            <h3>Specifications</h3>
+            <ul class="list-group">
+                @if(isset($product->weight) && $product->weight != '')
+                    <li class="list-group-item">Weight <span class="badge">{{ $product->weight }} kg</span></li>
+                @endif
+                @if(isset($product->width) && $product->width != '')
+                    <li class="list-group-item">Width <span class="badge">{{ $product->width }} cm</span></li>
+                @endif
+                @if(isset($product->height) && $product->height != '')
+                    <li class="list-group-item">Height <span class="badge">{{ $product->height }} cm</span></li>
+                @endif
+                @if(isset($product->length) && $product->length != '')
+                    <li class="list-group-item">Length <span class="badge">{{ $product->length }} cm</span></li>
+                @endif
+            </ul>
+            
+        </div>
+    </div>
+    
+    
+    <div class="panel panel-default">
+        
+        <div class="panel-heading"> 
+            <h3 class="panel-title">
+                @if(isset($product->quantity) && $product->quantity > 0)
+                    In Stock | <span class="badge">{{ $product->quantity }}</span> Available
+                @else
+                    Out of Stock
+                @endif
+            </h3>
+        </div>
+        
+        
+        @foreach($product->optionGroups as $optionGroup)
+            <div class="panel-body">
+                <label for="">{{ $optionGroup->title }}</label>
+                @include('shop::optionGroups.types.' . $optionGroup->type, ['optionGroup' => $optionGroup])
+                
             </div>
         @endforeach
+        
+        <div class="panel-body">
+            <label for="">Quantity</label>
+            <input type="number" class="form-control" value="1"/>
+        </div>
+            
+        <div class="panel-footer clearfix">
+            
+            <a href="#" class="btn btn-primary pull-right">Add to Cart</a>
+            
+        </div>
+    </div>
+        
+    
+
+    @if(isset($product->image_types) && count($product->image_types))
+        @include('shop::partials.imageTypes', ['image_types' => $product->image_types])
     @endif
 
 
     @if(isset($product->related) && count($product->related))
         <div class="well">
-            <h2>Related Products</h2>
+            <h3>Related Products</h3>
             <div class="row">
                 @foreach($product->related as $key => $product)
 
