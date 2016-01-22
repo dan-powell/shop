@@ -9,7 +9,15 @@
         <ul>
             @foreach($cart->products as $product)
 
-                <li>{{ $product->product->title }}</li>
+                <li>
+                    {{ $product->product->title }}
+                
+                    <ul>
+                        @foreach($product->options as $option)
+                            <li>{{ $option->value }}</li>
+                        @endforeach
+                    </ul>
+                </li>
 
             @endforeach
         </ul>

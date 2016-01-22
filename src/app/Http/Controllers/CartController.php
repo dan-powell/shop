@@ -24,7 +24,7 @@ class CartController extends Controller {
     public function index(Request $request)
     {
 
-        $cart = $this->getCart($with = ['products', 'products.product']);
+        $cart = $this->getCart($with = ['products.options', 'products.product']);
 
         $cart->groupedProducts = $cart->products->groupBy('product_id');
 
