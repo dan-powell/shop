@@ -109,9 +109,7 @@ class CartController extends Controller {
         $session = $request->session()->all();
 
         return view('shop::cart.index')->with([
-            'data1' => $session,
             'data2' => $request->all(),
-            'data3' => $product
         ]);
 
 

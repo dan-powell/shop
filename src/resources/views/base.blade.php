@@ -80,7 +80,7 @@
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">Cart</a></li>
+                <li><a href="{{ route('shop.cart.index') }}">Cart</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->

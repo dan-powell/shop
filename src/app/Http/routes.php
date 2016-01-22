@@ -29,7 +29,15 @@ Route::get(config('shop.routes.public.category.show'),
 Route::resource(
     config('shop.routes.public.cart.index'),
     'DanPowell\Shop\Http\Controllers\CartController',
-    ['except' => ['create', 'show']]
+    [
+        'except' => ['create', 'show'],
+        'names' => [
+            'index' => 'shop.cart.index',
+            'create' => 'shop.cart.create',
+            'delete' => 'shop.cart.delete',
+            'update' => 'shop.cart.update'
+        ],
+    ]
 );
 
 
