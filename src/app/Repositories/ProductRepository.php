@@ -36,6 +36,28 @@ class ProductRepository
 
     }
 
+
+    /**
+     * @param $slug
+     * @return mixed
+     */
+    public function getById($id)
+    {
+        $item = $this->queryVisible([], ['id' => $id])->first();
+
+        // Check if a project was found
+        if ($item != null) {
+
+            return $item;
+
+        } else {
+            // None found, throw a 404.
+            abort('404', 'Invalid slug');
+        }
+
+    }
+
+
     /**
      * @param $slug
      * @return mixed

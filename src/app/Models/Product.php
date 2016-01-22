@@ -86,6 +86,11 @@ class Product extends Model {
 		return $this->morphToMany('DanPowell\Shop\Models\Image', 'images_attachments')->withPivot('image_type');
 	}
 
+	public function cartProducts()
+	{
+		return $this->hasMany('DanPowell\Shop\Models\cartProduct', 'product_id');
+	}
+
 	// Inverse Relationships
 
 	public function categories()

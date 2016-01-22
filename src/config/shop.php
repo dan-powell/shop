@@ -14,6 +14,9 @@ return [
                 'index' => 'products',
                 'show' => 'product/{slug}'
             ],
+            'cart' => [
+                'index' => 'cart',
+            ]
         ]
     ],
 

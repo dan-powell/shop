@@ -11,16 +11,26 @@
 |
 */
 
-Route::get(config('shop.routes.public.home'), ['as' => 'shop.home', 'uses' => 'DanPowell\Shop\Http\Controllers\ShopController@home']);
+Route::get(config('shop.routes.public.home'),
+    ['as' => 'shop.home', 'uses' => 'DanPowell\Shop\Http\Controllers\ShopController@home']);
 
-Route::get(config('shop.routes.public.product.index'), array('as' => 'shop.product.index', 'uses' => 'DanPowell\Shop\Http\Controllers\ProductController@index'));
+Route::get(config('shop.routes.public.product.index'),
+    ['as' => 'shop.product.index', 'uses' => 'DanPowell\Shop\Http\Controllers\ProductController@index']);
 
-Route::get(config('shop.routes.public.product.show'), array('as' => 'shop.product.show', 'uses' => 'DanPowell\Shop\Http\Controllers\ProductController@show'));
+Route::get(config('shop.routes.public.product.show'),
+    ['as' => 'shop.product.show', 'uses' => 'DanPowell\Shop\Http\Controllers\ProductController@show']);
 
-Route::get(config('shop.routes.public.category.index'), ['as' => 'shop.category.index', 'uses' => 'DanPowell\Shop\Http\Controllers\CategoryController@index']);
+Route::get(config('shop.routes.public.category.index'),
+    ['as' => 'shop.category.index', 'uses' => 'DanPowell\Shop\Http\Controllers\CategoryController@index']);
 
-Route::get(config('shop.routes.public.category.show'), ['as' => 'shop.category.show', 'uses' => 'DanPowell\Shop\Http\Controllers\CategoryController@show']);
+Route::get(config('shop.routes.public.category.show'),
+    ['as' => 'shop.category.show', 'uses' => 'DanPowell\Shop\Http\Controllers\CategoryController@show']);
 
+Route::resource(
+    config('shop.routes.public.cart.index'),
+    'DanPowell\Shop\Http\Controllers\CartController',
+    ['except' => ['create', 'show']]
+);
 
 
 /*

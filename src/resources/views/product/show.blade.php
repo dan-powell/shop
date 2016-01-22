@@ -43,9 +43,12 @@
                     <li class="list-group-item">Length <span class="badge">{{ $product->length }} cm</span></li>
                 @endif
             </ul>
-            
 
-            <form>
+
+            <form action="{{ route('cart.store') }}" method="post">
+
+                <input type="hidden" name="product_id" value="{{ $product->id }}"/>
+
                 <div class="panel panel-default">
 
                     <div class="panel-heading">
