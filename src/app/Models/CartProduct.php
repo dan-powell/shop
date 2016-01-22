@@ -26,6 +26,10 @@ class CartProduct extends Model {
     // Relationships
 
 
+	public function options()
+	{
+		return $this->hasMany('DanPowell\Shop\Models\CartOption');
+	}
 
     // Inverse Relationships
 

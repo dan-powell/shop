@@ -46,6 +46,8 @@
 
 
             <form action="{{ route('cart.store') }}" method="post">
+                
+                {!! csrf_field() !!}
 
                 <input type="hidden" name="product_id" value="{{ $product->id }}"/>
 
@@ -60,7 +62,8 @@
                             @endif
                         </h3>
                     </div>
-
+                    
+                    
                     @foreach($product->optionGroups as $optionGroup)
                         @if (isset($optionGroup->options) && count($optionGroup->options))
                             <div class="panel-body">
@@ -77,7 +80,7 @@
 
                     <div class="panel-body">
                         <label for="">Quantity</label>
-                        <input type="number" class="form-control" value="1"/>
+                        <input type="number" class="form-control" name="quantity" value="1"/>
                     </div>
 
                     <div class="panel-footer clearfix">

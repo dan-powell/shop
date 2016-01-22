@@ -7,7 +7,7 @@ use DanPowell\Shop\Repositories\ProductRepository;
 
 use DanPowell\Shop\Models\Cart;
 use DanPowell\Shop\Models\CartProduct;
-
+use DanPowell\Shop\Models\CartOption;
 
 class CartController extends Controller {
 
@@ -84,7 +84,28 @@ class CartController extends Controller {
         ]);
 
         $cart_product->save();
+        
+        
+        
+        $option_fields = $request->get('optionGroup');
+        
+        if($option_fields != null && count($option_fields)) {
 
+            foreach($option_fields as $option) {
+            
+                $arr = [
+                    'value' => $option
+                ];
+            
+                $cartOption = new CartOption;
+                
+                $cartOption->fill($arr);
+            
+                $cart_product->options()->save($cartOption);
+            }
+
+        }
+        
 
         //$cart_product = $cart->products()->save($product);
 
