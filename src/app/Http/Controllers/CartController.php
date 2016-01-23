@@ -1,6 +1,5 @@
 <?php namespace DanPowell\Shop\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use DanPowell\Shop\Repositories\ProductPublicRepository;
@@ -10,11 +9,10 @@ use DanPowell\Shop\Models\CartProduct;
 use DanPowell\Shop\Models\CartOption;
 use DanPowell\Shop\Models\CartPersonalisation;
 
-class CartController extends Controller {
-
+class CartController extends BaseController
+{
 
     protected $productRepository;
-
 
     public function __construct(ProductPublicRepository $ProductPublicRepository)
     {

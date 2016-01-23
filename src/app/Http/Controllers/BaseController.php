@@ -1,11 +1,21 @@
-<?php namespace DanPowell\Shop\Traits;
+<?php namespace DanPowell\Shop\Http\Controllers;
 
 
-trait ControllerTrait
+use Illuminate\Routing\Controller;
+
+class BaseController extends Controller
 {
 
+    public function __construct()
+    {
 
-    private function findItemOrFail($slug, array $with = [])
+    }
+
+
+
+
+
+    protected function findItemOrFail($slug, array $with = [])
     {
 
         $item = $this->repository->getBySlug($slug, $with);
@@ -21,7 +31,7 @@ trait ControllerTrait
 
     }
 
-    private function redirectById($id, $route)
+    protected function redirectById($id, $route)
     {
 
         $item = $this->repository->getById($id);
@@ -38,4 +48,13 @@ trait ControllerTrait
 
 
     }
+
 }
+
+
+
+
+
+
+
+

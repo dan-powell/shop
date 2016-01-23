@@ -1,9 +1,6 @@
 <?php namespace DanPowell\Shop\Http\Controllers;
 
-
-use Illuminate\Routing\Controller;
-
-class ShopController extends Controller
+class ShopController extends BaseController
 {
 
     public function __construct()

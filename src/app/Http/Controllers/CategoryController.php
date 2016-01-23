@@ -1,18 +1,15 @@
 <?php namespace DanPowell\Shop\Http\Controllers;
 
-use Illuminate\Routing\Controller;
 use DanPowell\Shop\Repositories\CategoryPublicRepository;
 
 use DanPowell\Shop\Traits\ImageTrait;
-use DanPowell\Shop\Traits\ControllerTrait;
 
-class CategoryController extends Controller
+class CategoryController extends BaseController
 {
 
 	use ImageTrait;
-	use ControllerTrait;
 
-	private $repository;
+	protected $repository;
 
 	public function __construct(CategoryPublicRepository $CategoryPublicRepository)
 	{
