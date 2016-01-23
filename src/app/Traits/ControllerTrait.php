@@ -5,10 +5,10 @@ trait ControllerTrait
 {
 
 
-    private function findItemOrFail($slug)
+    private function findItemOrFail($slug, array $with = [])
     {
 
-        $item = $this->repository->getBySlug($slug);
+        $item = $this->repository->getBySlug($slug, $with);
 
         // Check if a project was found
         if ($item) {

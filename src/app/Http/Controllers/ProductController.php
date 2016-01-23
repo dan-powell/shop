@@ -20,13 +20,13 @@ class ProductController extends Controller
     }
 
     /**
-     * Show list of products
+     * Show list of items
      * @return View
      */
 	public function index()
 	{
 
-    	$products = $this->repository->getAll();
+    	$products = $this->repository->getAll($with = ['images']);
 
 		$this->addImageTypes($products);
 
@@ -38,9 +38,9 @@ class ProductController extends Controller
 
 
     /**
-     * Show a product
+     * Show a single item
      * @param $slug
-     * @return RedirectResponse
+     * @return $this|\Illuminate\Http\RedirectResponse
      */
 	public function show($slug)
 	{
@@ -52,9 +52,16 @@ class ProductController extends Controller
 
 		} else {
 
-			$product = $this->findItemOrFail($slug);
+			$product = $this->findItemOrFail($slug, ['images', 'related.images', 'optionGroups', 'personalisations']);
 
+			// Group images on product
 			$this->addImageTypes($product);
+
+			// Group images on related products
+			$product->related->each(function ($m) {
+				$this->addImageTypes($m);
+			});
+
 
 			// Set the default template if not provided
 			/*

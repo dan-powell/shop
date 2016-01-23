@@ -1,53 +1,74 @@
 <?php namespace DanPowell\Shop\Http\Controllers;
 
 use Illuminate\Routing\Controller;
-use DanPowell\Shop\Repositories\CategoryRepository;
+use DanPowell\Shop\Repositories\CategoryPublicRepository;
 
+use DanPowell\Shop\Traits\ImageTrait;
+use DanPowell\Shop\Traits\ControllerTrait;
 
 class CategoryController extends Controller
 {
 
-	private $categoryRepository;
+	use ImageTrait;
+	use ControllerTrait;
 
-    public function __construct(CategoryRepository $categoryRepository)
-    {
-        $this->categoryRepository = $categoryRepository;
-    }
+	private $repository;
 
+	public function __construct(CategoryPublicRepository $CategoryPublicRepository)
+	{
+		$this->repository = $CategoryPublicRepository;
+	}
 
 	/**
-	 * Show list of categories
+	 * Show list of items
 	 * @return View
 	 */
 	public function index()
 	{
 
-		$items = $this->categoryRepository->getAll();
+		$categories = $this->repository->getAll(['images'])->toHierarchy();
 
-		// Return view along with projects and filtered tags
+		$this->addImageTypes($categories);
+
 		return view('shop::category.index')->with([
-			'categories' => $items,
+			'categories' => $categories,
 		]);
 
 	}
 
 
 	/**
-    *   Return a view showing one of the projects
-	*
-	* @param String $slug - if numeric will be treated as an id, otherwise will search for matching slug
-	* @return View - returns created page, or throws a 404 if slug is invalid or can't find a matching record
-	*/
+	 * Show a single item
+	 * @param $slug
+	 * @return $this|\Illuminate\Http\RedirectResponse
+	 */
 	public function show($slug)
 	{
 
-
 		if (is_numeric($slug)) {
+
 			// Redirect to slug
-			return $this->categoryRepository->redirectId($slug, 'shop.category.show');
+			return $this->redirectById($slug, 'shop.category.show');
 
 		} else {
-			$category = $this->categoryRepository->getBySlug($slug);
+
+			$item = $this->findItemOrFail($slug, ['images', 'products.images']);
+
+			// Group images on product
+			$this->addImageTypes($item);
+
+			// Group images on related products
+			$item->products->each(function ($m) {
+				$this->addImageTypes($m);
+			});
+
+
+			$item->categories = $item->children()->where('published', '!=', '0')->with(['images'])->get();
+
+			$item->categories->each(function ($m) {
+				$this->addImageTypes($m);
+			});
+
 
 			// Set the default template if not provided
 			/*
@@ -58,11 +79,8 @@ class CategoryController extends Controller
             }
             */
 
-			// Return view models
-			return view('shop::category.show')->with([
-				'category' => $category
-			]);
-
+			// Return view with projects
+			return view('shop::category.show')->with(['category' => $item]);
 		}
 
 	}

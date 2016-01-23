@@ -1,12 +1,7 @@
 @extends('shop::base')
 
 @section('main')
-    
-    
 
-
-
-    
     @if(isset($product->image_types['hero']))
         <div class="jumbotron" style="background-image: url('{{ url() }}/{{ $product->image_types['hero'][0]->path }}/{{ $product->image_types['hero'][0]->filename }}'); background-size: cover;">
             <h1>{{ $product->title }}</h1>
@@ -14,20 +9,20 @@
     @else
         <h1>{{ $product->title }}</h1>
     @endif
-    
-    
+
+
     <div class="row">
         <div class="col-sm-6">
-    
+
             @if(isset($product->description) && $product->description != '')
                 <hr/>
                     {!! Markdown::parse($product->description) !!}
                 <hr/>
             @endif
-            
+
         </div>
         <div class="col-sm-6">
-            
+
             <h3>Specifications</h3>
             <ul class="list-group">
                 @if(isset($product->weight) && $product->weight != '')
@@ -46,7 +41,7 @@
 
 
             <form action="{{ route('cart.store') }}" method="post">
-                
+
                 {!! csrf_field() !!}
 
                 <input type="hidden" name="product_id" value="{{ $product->id }}"/>
@@ -62,8 +57,8 @@
                             @endif
                         </h3>
                     </div>
-                    
-                    
+
+
                     @foreach($product->optionGroups as $optionGroup)
                         @if (isset($optionGroup->options) && count($optionGroup->options))
                             <div class="panel-body">

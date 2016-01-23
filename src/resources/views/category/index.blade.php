@@ -7,23 +7,10 @@
         <div class="well">
             <h2>All Categories</h2>
             <div class="row">
+
                 @foreach($categories as $key => $category)
                     <div class="col-md-4">
-                        <div class="list-group">
-                        <div class="list-group-item">
-                            <a href="{{ route('shop.category.show', $category->slug) }}">
-                                {{ $category->title }}
-                            </a>
-    
-                            @if( isset($category->children) && count($category->children) )
-    
-                                @include('shop::category.partials.children', ['children' => $category->children] )
-    
-                            @endif
-                        
-                        </div>
-                        </div>
-
+                        @include('shop::category.partials.snippet', ['category' => $category] )
                     </div>
 
                     @if($key % 3 == 2)
@@ -36,6 +23,7 @@
     @else
         <p>No Categories found</p>
     @endif
+
 
     @if(isset($categories))
         <hr/>

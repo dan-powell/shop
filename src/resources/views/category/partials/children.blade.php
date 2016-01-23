@@ -1,12 +1,14 @@
-<div class="list-group">
+<ul>
     @foreach($children as $child)
-        <a href="{{ route('shop.category.show', $child->slug) }}" class="list-group-item">
-            {{ $child->title }}
-        </a>
+        <li>
+            <a href="{{ route('shop.category.show', $child->slug) }}">
+                {{ $child->title }}
+            </a>
 
-        @if( isset($child->children) && count($child->children) )
-            @include('shop::category.partials.children', ['children' => $child->children] )
-        @endif
+            @if( isset($child->children) && count($child->children) )
+                @include('shop::category.partials.children', ['children' => $child->children] )
+            @endif
 
+        </li>
     @endforeach
-</div>
+</ul>

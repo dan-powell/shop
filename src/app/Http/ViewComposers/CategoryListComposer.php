@@ -1,15 +1,15 @@
 <?php namespace DanPowell\Shop\Http\ViewComposers;
 
 use Illuminate\Contracts\View\View;
-use DanPowell\Shop\Repositories\CategoryRepository;
+use DanPowell\Shop\Repositories\CategoryPublicRepository;
 
 class CategoryListComposer {
 
     private $categoryRepository;
 
-    public function __construct(CategoryRepository $categoryRepository)
+    public function __construct(CategoryPublicRepository $CategoryPublicRepository)
     {
-        $this->categoryRepository = $categoryRepository;
+        $this->repository = $CategoryPublicRepository;
     }
 
 
@@ -22,7 +22,7 @@ class CategoryListComposer {
     public function compose(View $view)
     {
 
-        $items = $this->categoryRepository->getAllWithoutImages();
+        $items = $this->repository->getAll()->toHierarchy();
         $view->with('categories', $items);
 
     }

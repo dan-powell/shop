@@ -2,7 +2,7 @@
 
 use DanPowell\Shop\Models\ProductPublic;
 
-class ProductPublicRepository extends AbstractRepository
+class ProductPublicRepository extends ProductRepository
 {
 
     protected $model;

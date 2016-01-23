@@ -5,21 +5,21 @@ abstract class AbstractRepository
 
 
 
-    public function getAll($limit = null)
+    public function getAll(array $with = [], integer $limit = null)
     {
-        return $this->makeQuery(['images', 'categories'], [], $limit)->get();
+        return $this->makeQuery($with, [], $limit)->get();
     }
 
 
-    public function getById($id)
+    public function getById(integer $id, array $with = [])
     {
-        return $this->makeQuery(['optionGroups', 'personalisations'], ['id' => $id])->first();
+        return $this->makeQuery($with, ['id' => $id])->first();
     }
 
 
-    public function getBySlug($slug)
+    public function getBySlug($slug, array $with = [])
     {
-        return $this->makeQuery(['images', 'related.images', 'optionGroups', 'personalisations'], ['slug' => $slug])->first();
+        return $this->makeQuery($with, ['slug' => $slug])->first();
 
     }
 
