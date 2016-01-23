@@ -3,7 +3,11 @@
 use Illuminate\Contracts\View\View;
 use DanPowell\Shop\Repositories\ProductRepository;
 
+use DanPowell\Shop\Traits\ImageTrait;
+
 class FeaturedProductComposer {
+
+    use ImageTrait;
 
     private $productRepository;
 
@@ -28,6 +32,8 @@ class FeaturedProductComposer {
     {
 
         $featured = $this->productRepository->getFeatured();
+
+        $this->getImageTypes($featured);
 
         $view->with('featured', $featured);
 

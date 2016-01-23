@@ -1,16 +1,22 @@
 <?php namespace DanPowell\Shop\Http\Controllers;
 
 use Illuminate\Routing\Controller;
-use DanPowell\Shop\Repositories\ProductRepository;
+use DanPowell\Shop\Repositories\ProductPublicRepository;
+
+use DanPowell\Shop\Traits\ImageTrait;
+use DanPowell\Shop\Traits\ControllerTrait;
 
 class ProductController extends Controller
 {
 
-	private $productRepository;
+	use ImageTrait;
+	use ControllerTrait;
 
-    public function __construct(ProductRepository $ProductRepository)
+	private $repository;
+
+    public function __construct(ProductPublicRepository $ProductPublicRepository)
     {
-        $this->productRepository = $ProductRepository;
+        $this->repository = $ProductPublicRepository;
     }
 
     /**
@@ -20,7 +26,9 @@ class ProductController extends Controller
 	public function index()
 	{
 
-    	$products = $this->productRepository->getAll();
+    	$products = $this->repository->getAll();
+
+		$this->addImageTypes($products);
 
 		return view('shop::product.index')->with([
 		    'products' => $products,
@@ -37,26 +45,30 @@ class ProductController extends Controller
 	public function show($slug)
 	{
 
-        if (is_numeric($slug)) {
-            // Redirect to slug
-			return $this->productRepository->redirectId($slug, 'shop.product.show');
+		if (is_numeric($slug)) {
 
-        } else {
-			$product = $this->productRepository->getBySlug($slug);
+			// Redirect to slug
+			return $this->redirectById($slug, 'shop.product.show');
+
+		} else {
+
+			$product = $this->findItemOrFail($slug);
+
+			$this->addImageTypes($product);
 
 			// Set the default template if not provided
-            /*
-			if ($product->template == null || $product->template == 'default') {
-				$template = 'shop::product.show';
-			} else {
-				$template = 'shop::templates.' . $product->template;
-			}
+			/*
+            if ($product->template == null || $product->template == 'default') {
+                $template = 'shop::product.show';
+            } else {
+                $template = 'shop::templates.' . $product->template;
+            }
             */
 
 			// Return view with projects
 			return view('shop::product.show')->with(['product' => $product]);
+		}
 
-        }
 	}
 
 }
