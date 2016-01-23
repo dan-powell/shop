@@ -2,11 +2,11 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class CartProduct extends Model {
+class CartPersonalisation extends Model {
 
     protected $fillable = [
-		'product_id',
-		'cart_id'
+		'personalisation_id',
+		'value'
     ];
 
     public function rules()
@@ -26,21 +26,11 @@ class CartProduct extends Model {
     // Relationships
 
 
-	public function cartOptions()
-	{
-		return $this->hasMany('DanPowell\Shop\Models\CartOption');
-	}
-
-	public function cartPersonalisations()
-	{
-		return $this->hasMany('DanPowell\Shop\Models\CartPersonalisation');
-	}
-
     // Inverse Relationships
 
-	public function product()
+	public function personalisation()
 	{
-		return $this->belongsTo('DanPowell\Shop\Models\Product', 'product_id');
+		return $this->belongsTo('DanPowell\Shop\Models\Personalisation', 'personalisation_id');
 	}
 
 	public function cart()

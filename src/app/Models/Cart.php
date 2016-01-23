@@ -23,7 +23,7 @@ class Cart extends Model {
 
     // Relationships
 
-	public function products()
+	public function cartProducts()
 	{
 		return $this->hasMany('DanPowell\Shop\Models\CartProduct')->with(['product']);
 	}

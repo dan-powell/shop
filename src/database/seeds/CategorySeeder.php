@@ -35,7 +35,7 @@ class CategorySeeder extends Seeder
 
         $root = [];
 
-        $rand = rand(1, 3);
+        $rand = rand(2, 5);
         for ($i = 0; $i < $rand; $i++) {
             array_push($root, $this->makeRootNode() );
         }

@@ -20,15 +20,6 @@ class CreateCartProducts extends Migration {
             $table->integer('product_id')->unsigned();
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
         });
-
-        Schema::create('cart_options', function($table)
-        {
-            $table->increments('id');
-            $table->string('value', 255);
-            $table->integer('cart_product_id')->unsigned();
-            $table->foreign('cart_product_id')->references('id')->on('cart_products')->onDelete('cascade');
-        });
-
     }
 
     /**
@@ -38,8 +29,12 @@ class CreateCartProducts extends Migration {
      */
     public function down()
     {
+        Schema::table('cart_products', function($table) {
+            $table->dropForeign('cart_products_product_id_foreign');
+            $table->dropForeign('cart_products_cart_id_foreign');
+        });
+
         Schema::drop('cart_products');
-        Schema::drop('cart_options');
     }
 
 }

@@ -7,14 +7,22 @@
 
         <h4>All Items</h4>
         <ul>
-            @foreach($cart->products as $product)
+            @foreach($cart->cartProducts as $product)
 
                 <li>
                     {{ $product->product->title }}
                 
                     <ul>
-                        @foreach($product->options as $option)
-                            <li>{{ $option->value }}</li>
+                        <li><strong>Options</strong></li>
+                        @foreach($product->cartOptions as $option)
+                            <li>{{ $option->option->optionGroup->title }}: {{ $option->option->label }}</li>
+                        @endforeach
+                    </ul>
+
+                    <ul>
+                        <li><strong>Personalisations</strong></li>
+                        @foreach($product->cartPersonalisations as $personalisation)
+                            <li>{{ $personalisation->personalisation->label }}: {{ $personalisation->value }}</li>
                         @endforeach
                     </ul>
                 </li>

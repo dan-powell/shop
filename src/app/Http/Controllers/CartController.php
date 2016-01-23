@@ -8,6 +8,7 @@ use DanPowell\Shop\Repositories\ProductRepository;
 use DanPowell\Shop\Models\Cart;
 use DanPowell\Shop\Models\CartProduct;
 use DanPowell\Shop\Models\CartOption;
+use DanPowell\Shop\Models\CartPersonalisation;
 
 class CartController extends Controller {
 
@@ -24,11 +25,16 @@ class CartController extends Controller {
     public function index(Request $request)
     {
 
-        $cart = $this->getCart($with = ['products.options', 'products.product']);
+        // Load the cart (and relations)
+        // If there is'nt a cart for this session, make one
 
-        $cart->groupedProducts = $cart->products->groupBy('product_id');
+        $cart = $this->getCart(['cartProducts.cartOptions.option.optionGroup', 'cartProducts.product', 'cartProducts.cartPersonalisations.personalisation']);
 
-        //dd(\Session::getId());
+        // Group products together by type
+        // Ideally, it would be great if only items with options were displayed on thier own - identical products should be displayed with quantity
+
+        $cart->groupedProducts = $cart->cartProducts->groupBy('product_id');
+
 
         return view('shop::cart.index')->with([
             'cart' => $cart
@@ -70,64 +76,91 @@ class CartController extends Controller {
     public function store(Request $request)
     {
 
+        // Get the cart (or make one)
         $cart = $this->getCart();
 
+        // Find the product to be added
+        $product = $this->productRepository->getById(
+            $request->get('product_id')
+        );
 
-        $product = $this->productRepository->getById($request->get('product_id'));
 
-
+        // create new product
         $cart_product = new CartProduct;
+
+
+        // validate the product against model
 
         $cart_product->fill([
             'product_id' => $product->id,
             'cart_id' => $cart->id
         ]);
 
+
+        // Validate options
+        // Check that the option exists AND is related to the product we want to save
+        // Loop of the Product optionGroups and find one with same key as in post data option
+        // Loop of the optionGroup options and find one with same key as in post data option
+
+        // Validate personalisations
+        // * Same as options
+
+
+        // Save the cart
         $cart_product->save();
         
         
-        
+
+
+
         $option_fields = $request->get('optionGroup');
-        
+
         if($option_fields != null && count($option_fields)) {
 
             foreach($option_fields as $option) {
-            
+
+
                 $arr = [
-                    'value' => $option
+                    'option_id' => $option
                 ];
+
+                //dd($arr);
             
                 $cartOption = new CartOption;
                 
                 $cartOption->fill($arr);
             
-                $cart_product->options()->save($cartOption);
+                $cart_product->cartOptions()->save($cartOption);
+            }
+
+        }
+
+
+
+        $personalisation_fields = $request->get('personalisation');
+
+        if($personalisation_fields != null && count($personalisation_fields)) {
+
+            foreach($personalisation_fields as $key => $personalisation_field) {
+
+
+                $arr = [
+                    'personalisation_id' => $key,
+                    'value' => $personalisation_field
+                ];
+
+                //dd($arr);
+
+                $cartPersonalisation = new CartPersonalisation;
+
+                $cartPersonalisation->fill($arr);
+
+                $cart_product->cartOptions()->save($cartPersonalisation);
             }
 
         }
         
 
-        //$cart_product = $cart->products()->save($product);
-
-
-
-
-
-
-
-
-
-        //$request->session()->put('cart_products', $cart);
-
-
-        //$request->all();
-
-
-        //$value = $request->session()->get('key');
-
-        //return $this->sectionRepository->storeSection(new Page, $page_id, $request);
-
-        $session = $request->session()->all();
 
         return view('shop::cart.index')->with([
             'data2' => $request->all(),

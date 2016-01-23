@@ -62,9 +62,13 @@ class CreateProducts extends Migration {
         Schema::table('product_categories', function($table) {
             $table->dropForeign('product_categories_category_id_foreign');
             $table->dropForeign('product_categories_product_id_foreign');
+        });
+
+        Schema::table('product_related', function($table) {
             $table->dropForeign('product_related_related_id_foreign');
             $table->dropForeign('product_related_product_id_foreign');
         });
+
 
         Schema::drop('products');
         Schema::drop('product_categories');

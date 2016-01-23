@@ -1,2 +1,2 @@
 <label for="">{{ $personalisation->label }}</label>
-<input type="text" class="form-control"/>
+<input type="text" name="personalisation[{{ $personalisation->id }}]" class="form-control"/>

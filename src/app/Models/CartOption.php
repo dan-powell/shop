@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 class CartOption extends Model {
 
     protected $fillable = [
-        'value'
+		'option_id'
     ];
 
     public function rules()
@@ -27,6 +27,11 @@ class CartOption extends Model {
 
 
     // Inverse Relationships
+
+	public function option()
+	{
+		return $this->belongsTo('DanPowell\Shop\Models\Option', 'option_id');
+	}
 
 	public function cartProduct()
 	{
