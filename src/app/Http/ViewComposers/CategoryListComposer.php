@@ -5,7 +5,7 @@ use DanPowell\Shop\Repositories\CategoryPublicRepository;
 
 class CategoryListComposer {
 
-    private $categoryRepository;
+    private $repository;
 
     public function __construct(CategoryPublicRepository $CategoryPublicRepository)
     {

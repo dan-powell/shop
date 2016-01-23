@@ -1,7 +1,7 @@
 <?php namespace DanPowell\Shop\Http\ViewComposers;
 
 use Illuminate\Contracts\View\View;
-use DanPowell\Shop\Repositories\ProductRepository;
+use DanPowell\Shop\Repositories\ProductPublicRepository;
 
 use DanPowell\Shop\Traits\ImageTrait;
 
@@ -17,9 +17,9 @@ class FeaturedProductComposer {
      * @param  UserRepository  $users
      * @return void
      */
-    public function __construct(ProductRepository $ProductRepository)
+    public function __construct(ProductPublicRepository $ProductPublicRepository)
     {
-        $this->productRepository = $ProductRepository;
+        $this->productRepository = $ProductPublicRepository;
     }
 
     /**
@@ -33,7 +33,7 @@ class FeaturedProductComposer {
 
         $featured = $this->productRepository->getFeatured();
 
-        $this->getImageTypes($featured);
+        $this->addImageTypes($featured);
 
         $view->with('featured', $featured);
 

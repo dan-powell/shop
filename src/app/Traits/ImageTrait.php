@@ -22,10 +22,10 @@ trait ImageTrait
     private function groupImagesByType($collection)
     {
 
-        if(count($collection->images)) {
+        if(isset($collection->images) && count($collection->images)) {
             $collection->image_types = $collection->images->groupBy('pivot.image_type');
         } else {
-            $collection->image_types = [];
+            //$collection->image_types = [];
         }
 
     }

@@ -5,13 +5,13 @@ abstract class AbstractRepository
 
 
 
-    public function getAll(array $with = [], integer $limit = null)
+    public function getAll(array $with = [], $limit = null)
     {
         return $this->makeQuery($with, [], $limit)->get();
     }
 
 
-    public function getById(integer $id, array $with = [])
+    public function getById($id, array $with = [])
     {
         return $this->makeQuery($with, ['id' => $id])->first();
     }

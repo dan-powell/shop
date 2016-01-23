@@ -26,7 +26,11 @@ class CategoryController extends Controller
 	public function index()
 	{
 
-		$categories = $this->repository->getAll(['images'])->toHierarchy();
+		$categories = $this->repository->getAll(['images']);
+
+		if($categories){
+			$categories = $categories->toHierarchy();
+		}
 
 		$this->addImageTypes($categories);
 

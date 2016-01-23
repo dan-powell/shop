@@ -3,7 +3,7 @@
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use DanPowell\Shop\Repositories\ProductRepository;
+use DanPowell\Shop\Repositories\ProductPublicRepository;
 
 use DanPowell\Shop\Models\Cart;
 use DanPowell\Shop\Models\CartProduct;
@@ -16,9 +16,9 @@ class CartController extends Controller {
     protected $productRepository;
 
 
-    public function __construct(ProductRepository $productRepository)
+    public function __construct(ProductPublicRepository $ProductPublicRepository)
     {
-        $this->productRepository = $productRepository;
+        $this->productRepository = $ProductPublicRepository;
     }
 
 
@@ -79,10 +79,10 @@ class CartController extends Controller {
         // Get the cart (or make one)
         $cart = $this->getCart();
 
+        $id = $request->get('product_id');
+
         // Find the product to be added
-        $product = $this->productRepository->getById(
-            $request->get('product_id')
-        );
+        $product = $this->productRepository->getById($id);
 
 
         // create new product

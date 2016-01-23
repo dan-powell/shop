@@ -3,17 +3,12 @@
 
 use Illuminate\Routing\Controller;
 
-// Load up the models
-use DanPowell\Shop\Models\Product;
-
-use DanPowell\Shop\Repositories\ModelRepository;
-
 class ShopController extends Controller
 {
 
-    public function __construct(ModelRepository $modelRepository)
+    public function __construct()
     {
-        $this->modelRepository = $modelRepository;
+
     }
 
     /**
