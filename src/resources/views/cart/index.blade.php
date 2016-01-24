@@ -49,6 +49,47 @@
                                 @endforeach
                             </ul>
 
+                            <form action="{{ route('shop.cart.product.update', $product->id) }}" method="POST">
+                                {!! csrf_field() !!}
+
+                                <input type="hidden" name="product_id" value="{{ $product->product->id }}"/>
+
+                                <input type="hidden" name="_method" value="PUT">
+
+                                <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapseExample{{$product->id}}" aria-expanded="false" aria-controls="collapseExample{{$product->id}}">
+                                    Edit
+                                </a>
+
+                                <div class="collapse" id="collapseExample{{$product->id}}">
+                                    <div class="well">
+
+
+                                        @foreach($product->product->optionGroups as $optionGroup)
+                                            @if (isset($optionGroup->options) && count($optionGroup->options))
+                                                <div class="panel-body">
+                                                    @include('shop::optionGroups.types.' . $optionGroup->type, ['optionGroup' => $optionGroup])
+                                                </div>
+                                            @endif
+                                        @endforeach
+
+
+                                        @foreach($product->product->personalisations as $personalisation)
+
+                                            <div class="panel-body">
+                                                @include('shop::personalisations.types.' . $personalisation->type, ['personalisation' => $personalisation, 'value' => $product->cartPersonalisations->keyBy('personalisation_id')->get($personalisation->id)->value])
+                                            </div>
+                                        @endforeach
+
+
+                                        <button class="btn btn-danger">
+                                            Update
+                                        </button>
+
+
+                                    </div>
+                                </div>
+                            </form>
+
                             <form action="{{ route('shop.cart.product.delete', $product->id) }}" method="POST">
                                 {!! csrf_field() !!}
                                 <input type="hidden" name="_method" value="DELETE">

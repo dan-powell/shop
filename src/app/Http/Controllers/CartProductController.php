@@ -35,7 +35,15 @@ class CartProductController extends BaseController
 		// Find the product to be added
 		$product = $this->productPublicRepository->getById($id);
 
-		for($i=0; $i < $request->get('quantity'); $i++){
+
+		if($request->get('quantity') != null){
+			$loop = $request->get('quantity');
+		} else {
+			$loop = 1;
+		}
+
+
+		for($i=0; $i < $loop; $i++){
 
 			// create new product
 			$cart_product = new CartProduct;
@@ -113,6 +121,22 @@ class CartProductController extends BaseController
 
 
 	}
+
+
+
+	public function update($id, Request $request)
+	{
+
+		$this->destroy($id, $request);
+
+		$this->store($request);
+
+		return redirect()->route('shop.cart.index', 301)->withInput(['success' => 'Product has been updated']);
+
+	}
+
+
+
 
 	public function destroy($id, Request $request)
 	{
