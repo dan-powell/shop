@@ -46,7 +46,8 @@ class CartProductController extends BaseController
 
 			$cartProduct->fill([
 				'cart_id' => $cart->id,
-				'product_id' => $product->id
+				'product_id' => $product->id,
+				//'price' => $product->price
 			]);
 
 			$cartProduct->save();
@@ -66,13 +67,28 @@ class CartProductController extends BaseController
 			$m->option = $m->options->keyBy('id')->get($submittedOptionGroups[$m->id]);
 		});
 
-		$submittedPersonalisations = $request->get('personalisation');
 
-		//dd($submittedPersonalisations);
+		if($request->get('personalisation') != null && count($request->get('personalisation'))) {
 
-		$product->personalisations->each(function($m) use ($submittedPersonalisations) {
-			$m->value = $submittedPersonalisations[$m->id];
-		});
+			$submittedPersonalisations = $request->get('personalisation');
+
+			$product->personalisations = $product->personalisations->filter(function ($m) use ($submittedPersonalisations) {
+				if($submittedPersonalisations[$m->id] != '') {
+					return $m;
+				}
+			});
+
+
+
+			$product->personalisations->each(function ($m) use ($submittedPersonalisations) {
+				$m->value = $submittedPersonalisations[$m->id];
+			});
+
+		} else {
+
+			$product->personalisations = [];
+
+		}
 
 
 

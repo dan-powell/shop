@@ -19,107 +19,131 @@
     @if(isset($cart))
 
         <div class="row">
-            <div class="col-sm-8">
+            <div class="col-sm-12">
 
                 <h4>All Items</h4>
-                <ul>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Sub Total</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
                     @foreach($cart->cartProducts as $cartProduct)
-
-                        <li>
-                            <a href="{{ route('shop.product.show', $cartProduct->product->slug) }}">
-                                {{ $cartProduct->product->title }}<span class="badge">x{{ count($cartProduct->configs) }}</span>
-                            </a>
-
-                            @if(isset($cartProduct->product->image_types['thumb']))
-                                <img src="{{ url() }}/{{ $cartProduct->product->image_types['thumb'][0]->path }}/{{ $cartProduct->product->image_types['thumb'][0]->filename }}" class="thumbnail img-responsive" style="max-width: 120px;"/>
-                            @endif
+                        <tr>
 
 
-                            @foreach($cartProduct->configs as $config)
-                            <ul>
-                                <li><strong>Options</strong></li>
-                                @foreach(json_decode($config->options, true) as $optionGroup)
-                                    <li><strong>{{ $optionGroup['title'] }}</strong>: {{ $optionGroup['option']['label'] }}</li>
-                                @endforeach
-                            </ul>
-
-                            <ul>
-                                <li><strong>Personalisations</strong></li>
-                                @foreach(json_decode($config->personalisations, true) as $personalisation)
-
-                                    <li><strong>{{ $personalisation['label'] }}</strong>: {{ $personalisation['value'] }}</li>
-                                @endforeach
-                            </ul>
-
-                            @endforeach
-
-                            {{--<form action="{{ route('shop.cart.product.update', $product->id) }}" method="POST">--}}
-                                {{--{!! csrf_field() !!}--}}
-
-                                {{--<input type="hidden" name="product_id" value="{{ $product->product->id }}"/>--}}
-
-                                {{--<input type="hidden" name="_method" value="PUT">--}}
-
-                                {{--<a class="btn btn-success" role="button" data-toggle="collapse" href="#collapseExample{{$product->id}}" aria-expanded="false" aria-controls="collapseExample{{$product->id}}">--}}
-                                    {{--Edit--}}
-                                {{--</a>--}}
-
-                                {{--<div class="collapse" id="collapseExample{{$product->id}}">--}}
-                                    {{--<div class="well">--}}
+                            <td>
+                                <!-- Image -->
+                                @if(isset($cartProduct->product->image_types['thumb']))
+                                    <img src="{{ url() }}/{{ $cartProduct->product->image_types['thumb'][0]->path }}/{{ $cartProduct->product->image_types['thumb'][0]->filename }}" class="thumbnail img-responsive" style="max-width: 120px;"/>
+                                @endif
+                            </td>
 
 
-                                        {{--@foreach($product->product->optionGroups as $optionGroup)--}}
-                                            {{--@if (isset($optionGroup->options) && count($optionGroup->options))--}}
-                                                {{--<div class="panel-body">--}}
-                                                    {{--@include('shop::optionGroups.types.' . $optionGroup->type, ['optionGroup' => $optionGroup])--}}
-                                                {{--</div>--}}
-                                            {{--@endif--}}
-                                        {{--@endforeach--}}
+                            <td>
+                                <!-- Title -->
+                                <a href="{{ route('shop.product.show', $cartProduct->product->slug) }}">
+                                    {{ $cartProduct->product->title }}
+                                </a>
+
+                            </td>
 
 
-                                        {{--@foreach($product->product->personalisations as $personalisation)--}}
 
-                                            {{--<div class="panel-body">--}}
-                                                {{--@include('shop::personalisations.types.' . $personalisation->type, ['personalisation' => $personalisation, 'value' => $product->cartPersonalisations->keyBy('personalisation_id')->get($personalisation->id)->value])--}}
-                                            {{--</div>--}}
-                                        {{--@endforeach--}}
+                            <td>
+                                <!-- Price -->
+                            </td>
+
+                            <td>
+                                <!-- Qty -->
+                                <span class="badge">x{{ count($cartProduct->configs) }}</span>
+                            </td>
+
+                            <td>
+                                <!-- Sub Total -->
+                            </td>
+
+                            <td>
+                                <!-- Actions -->
+                                <form action="{{ route('shop.cart.product.delete', $cartProduct->id) }}" method="POST">
+                                    {!! csrf_field() !!}
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button class="btn btn-danger btn-xs">
+                                        Remove
+                                    </button>
+                                </form>
+
+                                <a class="btn btn-primary btn-xs" role="button" data-toggle="collapse" href="#collapseExample{{ $cartProduct->id }}" aria-expanded="false" aria-controls="collapseExample{{ $cartProduct->id }}">
+                                    View chosen options
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        @if(count($cartProduct->filteredConfigs))
+
+                            <tr class="collapse" id="collapseExample{{ $cartProduct->id }}">
+                                <td colspan="6">
+
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Options</th>
+                                                <th>Modifier</th>
+                                                <th>Personalisations</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            @foreach($cartProduct->filteredConfigs as $config)
 
 
-                                        {{--<button class="btn btn-danger">--}}
-                                            {{--Update--}}
-                                        {{--</button>--}}
+                                                    <tr>
+                                                        <td>
+                                                            <ul>
+                                                                @foreach(json_decode($config->options, true) as $optionGroup)
+
+                                                                    <li><strong>{{ $optionGroup['title'] }}</strong>: {{ $optionGroup['option']['label'] }}</li>
+                                                                @endforeach
+                                                            </ul>
+                                                        </td>
+                                                        <td>
+                                                            <!-- Modifier -->
+                                                        </td>
+                                                        <td>
+                                                            <ul>
+                                                                @foreach(json_decode($config->personalisations, true) as $personalisation)
+                                                                    <li><strong>{{ $personalisation['label'] }}</strong>: {{ $personalisation['value'] }}</li>
+                                                                @endforeach
+                                                            </ul>
+                                                        </td>
+                                                    </tr>
 
 
-                                    {{--</div>--}}
-                                {{--</div>--}}
-                            {{--</form>--}}
+                                            @endforeach
 
-                            <form action="{{ route('shop.cart.product.delete', $cartProduct->id) }}" method="POST">
-                                {!! csrf_field() !!}
-                                <input type="hidden" name="_method" value="DELETE">
-                                <button class="btn btn-danger">
-                                    Remove
-                                </button>
-                            </form>
 
-                        </li>
+                                        </tbody>
+                                    </table>
+
+                                </td>
+                            </tr>
+                        @endif
 
                     @endforeach
-                </ul>
-            </div>
-            <div class="col-sm-4">
 
-                <h4>Cart Summary</h4>
-                <ul>
-                    @foreach($cart->groupedProducts as $group)
-                        <li>
-                            <span class="badge">x{{ count($group) }}</span>
-                            <a href="{{ route('shop.product.show', $group[0]->product->slug) }}">{{ $group[0]->product->title }}
-                            </a>
-                        </li>
-                    @endforeach
-                </ul>
 
+
+                    </tbody>
+                </table>
             </div>
         </div>
 

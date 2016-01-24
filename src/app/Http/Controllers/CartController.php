@@ -37,15 +37,23 @@ class CartController extends BaseController
 
 
 
+        $cart->cartProducts->each(function($cartProduct){
+
+            $cartProduct->filteredConfigs = $cartProduct->configs->filter(function($m){
+                if((isset($m->options) && count(json_decode($m->options, true))) || (isset($m->personalisations) && count(json_decode($m->personalisations, true)))) {
+                    return $m;
+                };
+            });
+        });
+
+        //dd($cart->cartProducts);
+
+
         // Group product images
         $cart->cartProducts->each(function($cartProduct){
             $this->addImageTypes($cartProduct->product);
         });
 
-        // Group products together by type
-        // Ideally, it would be great if only items with options were displayed on thier own - identical products should be displayed with quantity
-
-        $cart->groupedProducts = $cart->cartProducts->groupBy('product_id');
 
 
         return view('shop::cart.index')->with([
