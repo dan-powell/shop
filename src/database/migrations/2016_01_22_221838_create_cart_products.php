@@ -19,6 +19,8 @@ class CreateCartProducts extends Migration {
             $table->foreign('cart_id')->references('id')->on('carts')->onDelete('cascade');
             $table->integer('product_id')->unsigned();
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->text('options');
+            $table->text('personalisations');
         });
     }
 

@@ -58,7 +58,6 @@
                         </h3>
                     </div>
 
-
                     @foreach($product->optionGroups as $optionGroup)
                         @if (isset($optionGroup->options) && count($optionGroup->options))
                             <div class="panel-body">

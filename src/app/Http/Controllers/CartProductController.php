@@ -33,27 +33,68 @@ class CartProductController extends BaseController
 		$id = $request->get('product_id');
 
 		// Find the product to be added
-		$product = $this->productPublicRepository->getById($id);
+		$product = $this->productPublicRepository->getById($id, ['optionGroups.options']);
+
+		//dd($product);
+
+
+
+
+		$cart_product = new CartProduct;
+
+
+
+		$optionGroups = $product->optionGroups->filter(function($m){
+			if(isset($m->options) && count($m->options)) {
+				return $m;
+			};
+		});
+
+
+		$submittedOptionGroups = $request->get('optionGroup');
+
+		$optionGroups->each(function($m) use ($submittedOptionGroups) {
+			$m->option = $m->options->keyBy('id')->get($submittedOptionGroups[$m->id]);
+		});
+
+
+		$submittedPersonalisations = $request->get('personalisation');
+
+		//dd($submittedPersonalisations);
+
+		$product->personalisations->each(function($m) use ($submittedPersonalisations) {
+			$m->value = $submittedPersonalisations[$m->id];
+		});
+
+
+		$messages = [];
+
 
 
 		if($request->get('quantity') != null){
 			$loop = $request->get('quantity');
+
+			if($loop > 10) {
+				$messages['warning'] = 'Maximum quantity exceeded';
+				$loop = 10;
+			}
+
 		} else {
 			$loop = 1;
 		}
 
+		$arr = [];
 
 		for($i=0; $i < $loop; $i++){
-
-			// create new product
-			$cart_product = new CartProduct;
 
 
 			// validate the product against model
 
-			$cart_product->fill([
+			array_push($arr, [
 				'product_id' => $product->id,
-				'cart_id' => $cart->id
+				'cart_id' => $cart->id,
+				'options' => $optionGroups->toJson(),
+				'personalisations' => $product->personalisations->toJson()
 			]);
 
 
@@ -65,60 +106,15 @@ class CartProductController extends BaseController
 			// Validate personalisations
 			// * Same as options
 
-
-
-			// Save the cart
-			$cart_product->save();
-
-			$option_fields = $request->get('optionGroup');
-
-			if ($option_fields != null && count($option_fields)) {
-
-				foreach ($option_fields as $option) {
-
-
-					$arr = [
-						'option_id' => $option
-					];
-
-					//dd($arr);
-
-					$cartOption = new CartOption;
-
-					$cartOption->fill($arr);
-
-					$cart_product->cartOptions()->save($cartOption);
-				}
-
-			}
-
-
-			$personalisation_fields = $request->get('personalisation');
-
-			if ($personalisation_fields != null && count($personalisation_fields)) {
-
-				foreach ($personalisation_fields as $key => $personalisation_field) {
-
-
-					$arr = [
-						'personalisation_id' => $key,
-						'value' => $personalisation_field
-					];
-
-					//dd($arr);
-
-					$cartPersonalisation = new CartPersonalisation;
-
-					$cartPersonalisation->fill($arr);
-
-					$cart_product->cartOptions()->save($cartPersonalisation);
-				}
-
-			}
 		}
 
-		return redirect()->route('shop.cart.index', 301)->withInput(['success' => 'Product has been added to your cart']);
+		$cart_product->insert($arr);
 
+		$messages['success'] = 'Product has been updated';
+
+		//dd($messages);
+
+		return redirect()->route('shop.cart.index', 301)->withInput($messages);
 
 	}
 
@@ -149,9 +145,11 @@ class CartProductController extends BaseController
 
 		//$product = $product = $cart->cartProducts->get($id);
 
-		$product = $cart->cartProducts->filter(function($item) use ($id) {
-			return $item->id == $id;
-		})->first();
+		$product = $cart->cartProducts->keyBy('id')->get($id);
+
+//		$product = $cart->cartProducts->filter(function($item) use ($id) {
+//			return $item->id == $id;
+//		})->first();
 
 
 		//dd($product);

@@ -31,10 +31,7 @@ class CartController extends BaseController
         // If there is'nt a cart for this session, make one
 
         $cart = $this->repository->getCart([
-            'cartProducts.cartOptions.option.optionGroup',
             'cartProducts.product.images',
-            'cartProducts.product.optionGroups.options',
-            'cartProducts.cartPersonalisations.personalisation'
         ]);
 
 
