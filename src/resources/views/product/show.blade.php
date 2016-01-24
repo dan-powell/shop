@@ -40,7 +40,7 @@
             </ul>
 
 
-            <form action="{{ route('cart.store') }}" method="post">
+            <form action="{{ route('shop.cart.product.store') }}" method="post">
 
                 {!! csrf_field() !!}
 

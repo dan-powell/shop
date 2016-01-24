@@ -3,42 +3,80 @@
 @section('main')
     <h1>Cart</h1>
 
+    @if(old('success') && old('success') != null)
+        <div class="alert alert-success">
+            <p>{{ old('success') }}</p>
+        </div>
+    @endif
+
+    @if(old('warning') && old('warning') != null)
+        <div class="alert alert-warning">
+            <p>{{ old('warning') }}</p>
+        </div>
+    @endif
+
+
     @if(isset($cart))
 
-        <h4>All Items</h4>
-        <ul>
-            @foreach($cart->cartProducts as $product)
+        <div class="row">
+            <div class="col-sm-8">
 
-                <li>
-                    {{ $product->product->title }}
-                
-                    <ul>
-                        <li><strong>Options</strong></li>
-                        @foreach($product->cartOptions as $option)
-                            <li>{{ $option->option->optionGroup->title }}: {{ $option->option->label }}</li>
-                        @endforeach
-                    </ul>
+                <h4>All Items</h4>
+                <ul>
+                    @foreach($cart->cartProducts as $product)
 
-                    <ul>
-                        <li><strong>Personalisations</strong></li>
-                        @foreach($product->cartPersonalisations as $personalisation)
-                            <li>{{ $personalisation->personalisation->label }}: {{ $personalisation->value }}</li>
-                        @endforeach
-                    </ul>
-                </li>
+                        <li>
+                            <a href="{{ route('shop.product.show', $product->product->slug) }}">
+                                {{ $product->product->title }}
+                            </a>
 
-            @endforeach
-        </ul>
+                            @if(isset($product->product->image_types['thumb']))
+                                <img src="{{ url() }}/{{ $product->product->image_types['thumb'][0]->path }}/{{ $product->product->image_types['thumb'][0]->filename }}" class="thumbnail img-responsive" style="max-width: 120px;"/>
+                            @endif
 
 
-        <h4>Product Groups</h4>
-        <ul>
-            @foreach($cart->groupedProducts as $group)
+                            <ul>
+                                <li><strong>Options</strong></li>
+                                @foreach($product->cartOptions as $option)
+                                    <li>{{ $option->option->optionGroup->title }}: {{ $option->option->label }}</li>
+                                @endforeach
+                            </ul>
 
-                <li>{{ $group[0]->product->title }} x{{ count($group) }}</li>
+                            <ul>
+                                <li><strong>Personalisations</strong></li>
+                                @foreach($product->cartPersonalisations as $personalisation)
+                                    <li>{{ $personalisation->personalisation->label }}: {{ $personalisation->value }}</li>
+                                @endforeach
+                            </ul>
 
-            @endforeach
-        </ul>
+                            <form action="{{ route('shop.cart.product.delete', $product->id) }}" method="POST">
+                                {!! csrf_field() !!}
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button class="btn btn-danger">
+                                    Remove
+                                </button>
+                            </form>
+
+                        </li>
+
+                    @endforeach
+                </ul>
+            </div>
+            <div class="col-sm-4">
+
+                <h4>Cart Summary</h4>
+                <ul>
+                    @foreach($cart->groupedProducts as $group)
+                        <li>
+                            <span class="badge">x{{ count($group) }}</span>
+                            <a href="{{ route('shop.product.show', $group[0]->product->slug) }}">{{ $group[0]->product->title }}
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+
+            </div>
+        </div>
 
 
     @endif

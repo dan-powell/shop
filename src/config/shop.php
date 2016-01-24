@@ -16,6 +16,7 @@ return [
             ],
             'cart' => [
                 'index' => 'cart',
+                'product' => 'cart/product'
             ]
         ]
     ],

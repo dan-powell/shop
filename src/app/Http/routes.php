@@ -26,16 +26,19 @@ Route::get(config('shop.routes.public.category.index'),
 Route::get(config('shop.routes.public.category.show'),
     ['as' => 'shop.category.show', 'uses' => 'DanPowell\Shop\Http\Controllers\CategoryController@show']);
 
+Route::get(config('shop.routes.public.cart.index'),
+    ['as' => 'shop.cart.index', 'uses' => 'DanPowell\Shop\Http\Controllers\CartController@index']);
+
 Route::resource(
-    config('shop.routes.public.cart.index'),
-    'DanPowell\Shop\Http\Controllers\CartController',
+    config('shop.routes.public.cart.product'),
+    'DanPowell\Shop\Http\Controllers\CartProductController',
     [
-        'except' => ['create', 'show'],
+        'except' => ['create', 'show', 'edit', 'index'],
         'names' => [
-            'index' => 'shop.cart.index',
-            'create' => 'shop.cart.create',
-            'delete' => 'shop.cart.delete',
-            'update' => 'shop.cart.update'
+            //'index' => 'shop.cart.index',
+            'store' => 'shop.cart.product.store',
+            'destroy' => 'shop.cart.product.delete',
+            'update' => 'shop.cart.product.update'
         ],
     ]
 );
