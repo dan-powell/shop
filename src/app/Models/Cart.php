@@ -25,7 +25,7 @@ class Cart extends Model {
 
 	public function cartProducts()
 	{
-		return $this->hasMany('DanPowell\Shop\Models\CartProduct')->with(['product']);
+		return $this->hasMany('DanPowell\Shop\Models\CartProduct');
 	}
 
 

@@ -32,6 +32,7 @@ class CartController extends BaseController
 
         $cart = $this->repository->getCart([
             'cartProducts.product.images',
+            'cartProducts.configs'
         ]);
 
 

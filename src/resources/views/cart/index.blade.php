@@ -27,7 +27,7 @@
 
                         <li>
                             <a href="{{ route('shop.product.show', $cartProduct->product->slug) }}">
-                                {{ $cartProduct->product->title }}
+                                {{ $cartProduct->product->title }}<span class="badge">x{{ count($cartProduct->configs) }}</span>
                             </a>
 
                             @if(isset($cartProduct->product->image_types['thumb']))
@@ -35,20 +35,23 @@
                             @endif
 
 
+                            @foreach($cartProduct->configs as $config)
                             <ul>
                                 <li><strong>Options</strong></li>
-                                @foreach(json_decode($cartProduct->options, true) as $optionGroup)
+                                @foreach(json_decode($config->options, true) as $optionGroup)
                                     <li><strong>{{ $optionGroup['title'] }}</strong>: {{ $optionGroup['option']['label'] }}</li>
                                 @endforeach
                             </ul>
 
                             <ul>
                                 <li><strong>Personalisations</strong></li>
-                                @foreach(json_decode($cartProduct->personalisations, true) as $personalisation)
+                                @foreach(json_decode($config->personalisations, true) as $personalisation)
 
                                     <li><strong>{{ $personalisation['label'] }}</strong>: {{ $personalisation['value'] }}</li>
                                 @endforeach
                             </ul>
+
+                            @endforeach
 
                             {{--<form action="{{ route('shop.cart.product.update', $product->id) }}" method="POST">--}}
                                 {{--{!! csrf_field() !!}--}}

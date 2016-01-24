@@ -7,8 +7,6 @@ class CartProduct extends Model {
     protected $fillable = [
 		'product_id',
 		'cart_id',
-		'options',
-		'personalisations'
     ];
 
     public function rules()
@@ -27,6 +25,10 @@ class CartProduct extends Model {
 
     // Relationships
 
+	public function configs()
+	{
+		return $this->hasMany('DanPowell\Shop\Models\CartProductConfig');
+	}
 
     // Inverse Relationships
 

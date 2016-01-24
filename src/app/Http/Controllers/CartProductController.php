@@ -7,8 +7,7 @@ use DanPowell\Shop\Repositories\ProductPublicRepository;
 
 use DanPowell\Shop\Models\Cart;
 use DanPowell\Shop\Models\CartProduct;
-use DanPowell\Shop\Models\CartOption;
-use DanPowell\Shop\Models\CartPersonalisation;
+use DanPowell\Shop\Models\CartProductConfig;
 
 use Illuminate\Support\MessageBag;
 
@@ -28,20 +27,31 @@ class CartProductController extends BaseController
 	{
 
 		// Get the cart (or make one)
-		$cart = $this->cartRepository->getCart();
+		$cart = $this->cartRepository->getCart(['cartProducts']);
 
 		$id = $request->get('product_id');
 
-		// Find the product to be added
-		$product = $this->productPublicRepository->getById($id, ['optionGroups.options']);
 
-		//dd($product);
+		$product = $this->productPublicRepository->getById($id, ['optionGroups.options', 'personalisations']);
 
+		$cartProduct = $cart->cartProducts->keyBy('product_id')->get($id);
 
+		//dd($cartProduct);
 
+		if(!$cartProduct) {
 
-		$cart_product = new CartProduct;
+			// Make new
 
+			$cartProduct = new CartProduct;
+
+			$cartProduct->fill([
+				'cart_id' => $cart->id,
+				'product_id' => $product->id
+			]);
+
+			$cartProduct->save();
+
+		}
 
 
 		$optionGroups = $product->optionGroups->filter(function($m){
@@ -50,13 +60,11 @@ class CartProductController extends BaseController
 			};
 		});
 
-
 		$submittedOptionGroups = $request->get('optionGroup');
 
 		$optionGroups->each(function($m) use ($submittedOptionGroups) {
 			$m->option = $m->options->keyBy('id')->get($submittedOptionGroups[$m->id]);
 		});
-
 
 		$submittedPersonalisations = $request->get('personalisation');
 
@@ -66,8 +74,6 @@ class CartProductController extends BaseController
 			$m->value = $submittedPersonalisations[$m->id];
 		});
 
-
-		$messages = [];
 
 
 
@@ -88,11 +94,8 @@ class CartProductController extends BaseController
 		for($i=0; $i < $loop; $i++){
 
 
-			// validate the product against model
-
 			array_push($arr, [
-				'product_id' => $product->id,
-				'cart_id' => $cart->id,
+				'cart_product_id' => $cartProduct->id,
 				'options' => $optionGroups->toJson(),
 				'personalisations' => $product->personalisations->toJson()
 			]);
@@ -108,13 +111,18 @@ class CartProductController extends BaseController
 
 		}
 
-		$cart_product->insert($arr);
+		//$cart_product->insert($arr);
 
-		$messages['success'] = 'Product has been updated';
 
-		//dd($messages);
 
-		return redirect()->route('shop.cart.index', 301)->withInput($messages);
+
+
+		$cartProduct->configs()->insert($arr);
+
+
+
+
+		return redirect()->route('shop.cart.index', 301);
 
 	}
 
