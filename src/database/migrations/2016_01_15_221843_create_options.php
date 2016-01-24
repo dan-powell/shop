@@ -16,7 +16,7 @@ class CreateOptions extends Migration {
         {
             $table->increments('id');
             $table->string('label', 255);
-            $table->decimal('price_modifer')->default('0.00');
+            $table->integer('price_modifier')->default('0');
             $table->integer('option_group_id')->unsigned();
             $table->foreign('option_group_id')->references('id')->on('option_groups')->onDelete('cascade');;
         });

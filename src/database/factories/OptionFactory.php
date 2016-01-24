@@ -14,6 +14,6 @@
 $factory->define(DanPowell\Shop\Models\Option::class, function (Faker\Generator $faker) {
     return [
         'label' => $faker->word,
-        'price_modifer' => $faker->randomElement([0.00, $faker->randomFloat(2, -50, 50)]),
+        'price_modifier' => $faker->randomElement([0, $faker->numberBetween(-1000, 1000)]),
     ];
 });

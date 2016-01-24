@@ -47,12 +47,13 @@ class CartProductController extends BaseController
 			$cartProduct->fill([
 				'cart_id' => $cart->id,
 				'product_id' => $product->id,
-				//'price' => $product->price
+				'price' => $product->price,
 			]);
 
 			$cartProduct->save();
 
 		}
+
 
 
 		$optionGroups = $product->optionGroups->filter(function($m){
@@ -68,7 +69,7 @@ class CartProductController extends BaseController
 		});
 
 
-		if($request->get('personalisation') != null && count($request->get('personalisation'))) {
+		//if($request->get('personalisation') != null && count($request->get('personalisation'))) {
 
 			$submittedPersonalisations = $request->get('personalisation');
 
@@ -79,16 +80,11 @@ class CartProductController extends BaseController
 			});
 
 
-
 			$product->personalisations->each(function ($m) use ($submittedPersonalisations) {
 				$m->value = $submittedPersonalisations[$m->id];
 			});
 
-		} else {
 
-			$product->personalisations = [];
-
-		}
 
 
 
@@ -113,7 +109,8 @@ class CartProductController extends BaseController
 			array_push($arr, [
 				'cart_product_id' => $cartProduct->id,
 				'options' => $optionGroups->toJson(),
-				'personalisations' => $product->personalisations->toJson()
+				'personalisations' => $product->personalisations->toJson(),
+				'sub_total' => $this->calcSub($product, $request->get('optionGroup'), $request->get('personalisation'))
 			]);
 
 
@@ -141,6 +138,32 @@ class CartProductController extends BaseController
 		return redirect()->route('shop.cart.index', 301);
 
 	}
+
+
+
+	private function calcSub($product, $submittedOptionGroups, $personalisations)
+	{
+
+		$arr = [];
+
+		array_push($arr, $product->price);
+
+
+		$optionGroups = $product->optionGroups->filter(function($m){
+			if(isset($m->options) && count($m->options)) {
+				return $m;
+			};
+		});
+
+
+		foreach($optionGroups as $optionGroup) {
+			array_push($arr, $optionGroup->options->keyBy('id')->get($submittedOptionGroups[$optionGroup->id])->price_modifier);
+		}
+
+		return array_sum($arr);
+
+	}
+
 
 
 

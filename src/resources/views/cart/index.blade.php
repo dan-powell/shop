@@ -59,6 +59,7 @@
 
                             <td>
                                 <!-- Price -->
+                                {{ $cartProduct->price }}
                             </td>
 
                             <td>
@@ -68,6 +69,7 @@
 
                             <td>
                                 <!-- Sub Total -->
+                                {{ $cartProduct->sub }}
                             </td>
 
                             <td>
@@ -80,9 +82,11 @@
                                     </button>
                                 </form>
 
+                                @if(count($cartProduct->filteredConfigs))
                                 <a class="btn btn-primary btn-xs" role="button" data-toggle="collapse" href="#collapseExample{{ $cartProduct->id }}" aria-expanded="false" aria-controls="collapseExample{{ $cartProduct->id }}">
                                     View chosen options
                                 </a>
+                                @endif
 
                             </td>
 
@@ -97,8 +101,8 @@
                                         <thead>
                                             <tr>
                                                 <th>Options</th>
-                                                <th>Modifier</th>
                                                 <th>Personalisations</th>
+                                                <th>Options Total</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -111,12 +115,9 @@
                                                             <ul>
                                                                 @foreach(json_decode($config->options, true) as $optionGroup)
 
-                                                                    <li><strong>{{ $optionGroup['title'] }}</strong>: {{ $optionGroup['option']['label'] }}</li>
+                                                                    <li><strong>{{ $optionGroup['title'] }}</strong>: {{ $optionGroup['option']['label'] }} <span class="badge">{{ $optionGroup['option']['price_modifier'] }}</span></li>
                                                                 @endforeach
                                                             </ul>
-                                                        </td>
-                                                        <td>
-                                                            <!-- Modifier -->
                                                         </td>
                                                         <td>
                                                             <ul>
@@ -124,6 +125,9 @@
                                                                     <li><strong>{{ $personalisation['label'] }}</strong>: {{ $personalisation['value'] }}</li>
                                                                 @endforeach
                                                             </ul>
+                                                        </td>
+                                                        <td>
+                                                            {{ $config->sub_total }}
                                                         </td>
                                                     </tr>
 
@@ -140,6 +144,16 @@
 
                     @endforeach
 
+                    <tr>
+                        <td colspan="5">
+                            <p class="text-right"><strong>Total</strong></p>
+                        </td>
+
+                        <td>
+                            {{ $total }}
+                        </td>
+
+                    </tr>
 
 
                     </tbody>

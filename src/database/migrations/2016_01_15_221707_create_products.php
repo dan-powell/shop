@@ -19,8 +19,8 @@ class CreateProducts extends Migration {
             $table->string('title', 255);
             $table->text('description');
             $table->string('slug', 80);
-            $table->decimal('price', 2)->default('0.00');
-            $table->decimal('price_offer', 2)->nullable();
+            $table->integer('price');
+            $table->integer('price_offer')->nullable();
             $table->decimal('weight', 2)->nullable();
             $table->decimal('width', 2)->nullable();
             $table->decimal('height', 2)->nullable();

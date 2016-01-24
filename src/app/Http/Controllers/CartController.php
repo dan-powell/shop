@@ -51,19 +51,37 @@ class CartController extends BaseController
 
         // Group product images
         $cart->cartProducts->each(function($cartProduct){
+
+            $arr = [];
+            foreach($cartProduct->configs as $config) {
+                array_push($arr, $config->sub_total);
+            };
+
+            $cartProduct->sub = array_sum($arr);
+
             $this->addImageTypes($cartProduct->product);
         });
 
 
 
         return view('shop::cart.index')->with([
-            'cart' => $cart
+            'cart' => $cart,
+            'total' => $this->total($cart->cartProducts)
         ]);
     }
 
 
 
+    private function total($products) {
 
+        $arr = [];
+        foreach($products as $product) {
+            array_push($arr, $product->sub);
+        };
+
+        return array_sum($arr);
+
+    }
 
 
 

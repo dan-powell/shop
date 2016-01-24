@@ -7,6 +7,8 @@ class CartProduct extends Model {
     protected $fillable = [
 		'product_id',
 		'cart_id',
+		'price',
+		'sub_total'
     ];
 
     public function rules()

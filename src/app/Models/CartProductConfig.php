@@ -6,7 +6,8 @@ class CartProductConfig extends Model {
 
     protected $fillable = [
 		'options',
-		'personalisations'
+		'personalisations',
+		'sub_total'
     ];
 
     public function rules()

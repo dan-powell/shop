@@ -24,6 +24,13 @@ class Option extends Model {
 
     public $timestamps = false;
 
+	protected $appends = ['nice_price'];
+
+	public function getNicePriceAttribute()
+	{
+		return number_format($this->price_modifier / 100, 2) . ' GBP';
+	}
+
 
     // Relationships
 
