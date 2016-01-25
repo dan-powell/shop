@@ -26,6 +26,7 @@ class ShopSeeder extends Seeder
         $this->call('ProductImageSeeder');
         $this->call('ProductCategorySeeder');
         $this->call('ProductRelatedSeeder');
+        $this->call('OrderSeeder');
 
         Model::reguard();
     }
@@ -52,6 +53,7 @@ class ShopSeeder extends Seeder
         DB::table('images')->truncate();
         DB::table('images_attachments')->truncate();
         DB::table('product_related')->truncate();
+        DB::table('orders')->truncate();
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }

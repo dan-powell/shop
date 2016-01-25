@@ -22,6 +22,17 @@ return [
     ],
 
 
+    'order_status_types' => [
+        0 => [
+            'title' => 'Prospective'
+        ],
+        1 => [
+            'title' => 'Paid'
+        ],
+        2 => [
+            'title' => 'Processed'
+        ]
+    ],
 
 
 

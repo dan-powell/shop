@@ -6,7 +6,29 @@ use Illuminate\Support\Str;
 class Order extends Model {
 
     protected $fillable = [
-
+        'session_id',
+        'cart',
+        'status',
+        'total',
+        'firstName',
+        'lastName',
+        'billingAddress1',
+        'billingAddress2',
+        'billingCity',
+        'billingPostcode',
+        'billingState',
+        'billingCountry',
+        'billingPhone',
+        'shippingAddress1',
+        'shippingAddress2',
+        'shippingCity',
+        'shippingPostcode',
+        'shippingState',
+        'shippingCountry',
+        'shippingPhone',
+        'email',
+        'notes',
+        'instructions',
     ];
 
     public function rules($id = null)
