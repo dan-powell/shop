@@ -43,6 +43,13 @@ Route::resource(
     ]
 );
 
+Route::get(config('shop.routes.public.order.create'),
+    ['as' => 'shop.order.create', 'uses' => 'DanPowell\Shop\Http\Controllers\OrderController@create']);
+
+Route::post(config('shop.routes.public.order.store'),
+    ['as' => 'shop.order.store', 'uses' => 'DanPowell\Shop\Http\Controllers\OrderController@store']);
+
+
 
 /*
 

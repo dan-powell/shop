@@ -17,6 +17,10 @@ return [
             'cart' => [
                 'index' => 'cart',
                 'product' => 'cart/product'
+            ],
+            'order' => [
+                'create' => 'order/create',
+                'store' => 'order/store'
             ]
         ]
     ],
@@ -61,11 +65,19 @@ return [
         'textarea'
     ],
 
-    'shipping' => [
-        'rates' => [
-
+    'shipping_types' => [
+        'standard_uk' => [
+            'title' => 'Standard UK',
+            'min' => '0',
+            'max' => '300',
+            'price' => 500
+        ],
+        'express_uk' => [
+            'title' => 'Express UK',
+            'min' => '0',
+            'max' => '300',
+            'price' => 1000
         ]
-
     ],
 
 ];

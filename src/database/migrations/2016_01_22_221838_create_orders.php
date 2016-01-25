@@ -20,7 +20,7 @@ class CreateOrders extends Migration {
             $table->text('cart');
             $table->integer('status')->default(0);
             $table->integer('total');
-
+            $table->string('shipping_type');
             $table->string('firstName', 255);
             $table->string('lastName', 255);
             $table->string('billingAddress1', 255);
