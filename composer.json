@@ -14,7 +14,8 @@
         "laravel/framework": "5.1.*",
         "fzaninotto/faker": "~1",
         "alfredo-ramos/parsedown-extra-laravel": "~0.3",
-        "baum/baum": "~1.1"
+        "baum/baum": "~1.1",
+        "ignited/laravel-omnipay": "2.*"
     },
     "autoload": {
 		"psr-4": {

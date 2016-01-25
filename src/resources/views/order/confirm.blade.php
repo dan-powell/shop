@@ -1,1 +1,2 @@
-{{ dd($order) }}
+{{ var_dump($order) }}
+
