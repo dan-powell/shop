@@ -20,7 +20,8 @@ return [
             ],
             'order' => [
                 'create' => 'order/create',
-                'store' => 'order/store'
+                'store' => 'order/store',
+                'confirm' => 'order/confirm'
             ]
         ]
     ],

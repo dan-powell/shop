@@ -11,13 +11,16 @@ This software is pre-alpha, don't bother to use it just yet...
 
 2. config/app.php
 
-    DanPowell\Shop\ShopServiceProvider::class
-    AlfredoRamos\ParsedownExtra\ParsedownExtraServiceProvider::class
+    DanPowell\Shop\ShopServiceProvider::class,
+    AlfredoRamos\ParsedownExtra\ParsedownExtraServiceProvider::class,
+    Baum\Providers\BaumServiceProvider::class,
+    Ignited\LaravelOmnipay\LaravelOmnipayServiceProvider::class
     
 Aliases
 
     'String' => Illuminate\Support\Str::class,
-    'Markdown'  => AlfredoRamos\ParsedownExtra\Facades\ParsedownExtra::class
+    'Markdown'  => AlfredoRamos\ParsedownExtra\Facades\ParsedownExtra::class,
+    'Omnipay' => Ignited\LaravelOmnipay\Facades\OmnipayFacade::class
 
 
 3. publish assets

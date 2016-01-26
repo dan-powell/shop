@@ -77,13 +77,64 @@ class OrderController extends BaseController
     public function confirm(Request $request)
     {
 
-        // Load the cart (and relations)
-        // If there is'nt a cart for this session, make one
-
         $cart = $this->cartRepository->getCart([
-            'cartProducts.product.images',
+            'cartProducts.product',
             'cartProducts.configs'
         ]);
+
+
+        $gateway = \Omnipay::gateway('paypal');
+
+
+        $settings = $gateway->getDefaultParameters();
+
+        //dd($settings);
+
+        $desc = '';
+        foreach($cart->cartProducts as $cartProduct) {
+            $desc .= '| ' . $cartProduct->product->title;
+        }
+
+
+
+
+        $response = \Omnipay::purchase([
+            'amount'    => '100.00',
+            'returnUrl' => 'http://google.co.uk',
+            'cancelUrl' => 'http://google.co.uk',
+            'description' => $desc
+        ])->send();
+
+        //dd($response);
+
+//        $purchaseRequest = $this->omnipay->purchase($data);
+//
+//        // Grab the parameters
+//        $purchaseParameters = $purchaseRequest->getData();
+//
+//        // Add our additional parameters
+//        $purchaseParameters['MC_paymentType'] = 'payment';
+//
+//        // Send off the request
+//        $response = $purchaseRequest->sendData($purchaseParameters);
+
+        // Check we got a redirect response
+        if ($response->isRedirect()) {
+            // If so redirect the user
+            $response->redirect();
+        } else {
+            // Broken data
+            dd($response);
+            throw new Exception();
+        }
+
+
+
+
+//        $cart = $this->cartRepository->getCart([
+//            'cartProducts.product.images',
+//            'cartProducts.configs'
+//        ]);
 
 
     }
@@ -91,8 +142,10 @@ class OrderController extends BaseController
     public function cancel(Request $request)
     {
 
-        // Load the cart (and relations)
-        // If there is'nt a cart for this session, make one
+
+
+
+
 
         $cart = $this->cartRepository->getCart([
             'cartProducts.product.images',

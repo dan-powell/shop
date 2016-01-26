@@ -41,6 +41,10 @@ class CreateOrders extends Migration {
             $table->text('notes');
             $table->text('instructions');
         });
+
+        $setIncrement = "ALTER TABLE orders AUTO_INCREMENT = " . rand(1000, 5000) . ";";
+
+        DB::unprepared($setIncrement);
     }
 
     /**
