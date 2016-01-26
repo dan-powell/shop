@@ -109,6 +109,16 @@ class Product extends Model {
 		return config('shop.currency.symbol') . $this->price;
 	}
 
+	public function getPriceOfferDifferenceAttribute()
+	{
+		return $this->price - $this->price_offer;
+	}
+
+	public function getPriceOfferDifferenceStringAttribute()
+	{
+		return config('shop.currency.symbol') . ($this->price - $this->price_offer);
+	}
+
 	public function getPriceOfferStringAttribute()
 	{
 		return config('shop.currency.symbol') . $this->price_offer;

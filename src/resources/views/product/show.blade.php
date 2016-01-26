@@ -60,10 +60,11 @@
                         <div class="panel-title">
                             <strong>
                                 @if($product->onOffer)
-                                    <s>{{ $product->priceString }}</s>
-                                    <span class="label label-primary">Now {{ $product->priceOfferString }}</span>
+                                    <s>{{ $product->price_string }}</s>
+                                    <span class="label label-primary">Now {{ $product->price_offer_string }}</span>
+                                    <span class="label label-danger">Save {{ $product->price_offer_difference_string }}!</span>
                                 @else
-                                    {{ $product->priceString }}
+                                    {{ $product->price_string }}
                                 @endif
                             </strong>
 
@@ -77,29 +78,25 @@
                         </div>
                     </div>
 
-                    @if(isset($product->optionGroups) && count($product->optionGroups))
-                        <div class="panel-body">
+                    <div class="panel-body">
+                        @if(isset($product->optionGroups) && count($product->optionGroups))
                             <h4><strong>Options</strong></h4>
                             @foreach($product->optionGroups as $optionGroup)
-                                @if (isset($optionGroup->options) && count($optionGroup->options))
-                                    @include('shop::optionGroups.types.' . $optionGroup->type, ['optionGroup' => $optionGroup])
-                                @endif
+                                @include('shop::optionGroups.types.' . $optionGroup->type, ['optionGroup' => $optionGroup])
                             @endforeach
-                        </div>
-                    @endif
+                        @endif
 
-                    @if(isset($product->personalisations) && count($product->personalisations))
-                        <div class="panel-body">
+                        @if(isset($product->personalisations) && count($product->personalisations))
                             <h4><strong>Personalisations</strong></h4>
                             @foreach($product->personalisations as $personalisation)
                                 @include('shop::personalisations.types.' . $personalisation->type, ['personalisation' => $personalisation])
                             @endforeach
-                        </div>
-                    @endif
+                        @endif
+                    </div>
 
                     <div class="panel-body">
-                        <label for="">Quantity</label>
-                        <select class="form-control" name="quantity" value="1">
+                        <label for="quantity">Quantity</label>
+                        <select class="form-control" name="quantity" id="quantity">
                             @for($i=1; $i<11; $i++)
                                 <option value="{{ $i }}">{{ $i }}</option>
                             @endfor
