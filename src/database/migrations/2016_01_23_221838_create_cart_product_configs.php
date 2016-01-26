@@ -19,7 +19,7 @@ class CreateCartProductConfigs extends Migration {
             $table->foreign('cart_product_id')->references('id')->on('cart_products')->onDelete('cascade');
             $table->text('options');
             $table->text('personalisations');
-            $table->integer('sub_total');
+            $table->decimal('sub_total', 6, 2);
         });
     }
 

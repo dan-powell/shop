@@ -27,6 +27,8 @@ Aliases
 
     php artisan vendor:publish --tag='migrations'
     
+    php artisan vendor:publish --tag='config'
+    
     php artisan vendor:publish --provider='AlfredoRamos\ParsedownExtra\ParsedownExtraServiceProvider' --force
 
 4. migrations

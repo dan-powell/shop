@@ -28,7 +28,7 @@ $factory->define(DanPowell\Shop\Models\Order::class, function (Faker\Generator $
 
 		'shipping_type' => $faker->randomElement(array_keys(config('shop.order_status_types'))),
 		'status' => $faker->randomElement(array_keys(config('shop.order_status_types'))),
-		'total' => $faker->numberBetween(0, 5000),
+		'total' => $faker->randomFloat(2, 1, 3000),
 
 		'firstName' => $faker->firstName,
 		'lastName' => $faker->lastName,

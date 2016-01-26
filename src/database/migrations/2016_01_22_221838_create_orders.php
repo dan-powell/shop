@@ -19,7 +19,7 @@ class CreateOrders extends Migration {
             $table->string('session_id', 255);
             $table->text('cart');
             $table->integer('status')->default(0);
-            $table->integer('total');
+            $table->decimal('total', 6, 2);
             $table->string('shipping_type');
             $table->string('firstName', 255);
             $table->string('lastName', 255);

@@ -19,6 +19,7 @@ class CartProductConfig extends Model {
 
     protected $casts = [
         'id' => 'integer',
+        'sub_total' => 'decimal'
     ];
 
     public $timestamps = false;

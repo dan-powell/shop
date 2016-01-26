@@ -19,6 +19,7 @@ class Personalisation extends Model {
 
     protected $casts = [
         'id' => 'integer',
+        'price_modifier' => 'decimal'
     ];
 
     public $timestamps = false;

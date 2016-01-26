@@ -50,6 +50,11 @@
 
                     <div class="panel-heading">
                         <h3 class="panel-title">
+                            
+                            <strong>£ {{ $product->price }}</strong>
+                            
+                            |
+                            
                             @if(isset($product->quantity) && $product->quantity > 0)
                                 In Stock | <span class="badge">{{ $product->quantity }}</span> Available
                             @else

@@ -8,7 +8,6 @@ class CartProduct extends Model {
 		'product_id',
 		'cart_id',
 		'price',
-		'sub_total'
     ];
 
     public function rules()
@@ -20,6 +19,7 @@ class CartProduct extends Model {
 
     protected $casts = [
         'id' => 'integer',
+        'price' => 'decimal'
     ];
 
     public $timestamps = false;

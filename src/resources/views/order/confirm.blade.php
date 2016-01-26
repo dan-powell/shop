@@ -1,5 +1,14 @@
 {{ var_dump($order) }}
 
-<a href="{{ route('shop.order.confirm') }}" class="btn btn-primary">
-    Confirm
-</a>
+
+
+<form action="{{ route('shop.order.confirm') }}" method="POST">
+    
+    {!! csrf_field() !!}
+    
+    <input type="text" name="id" value="{{ $order->id }}"/>
+    
+    <button class="btn btn-primary">
+        Confirm
+    </button>
+</form>

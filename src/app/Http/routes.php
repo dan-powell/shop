@@ -49,7 +49,7 @@ Route::get(config('shop.routes.public.order.create'),
 Route::post(config('shop.routes.public.order.store'),
     ['as' => 'shop.order.store', 'uses' => 'DanPowell\Shop\Http\Controllers\OrderController@store']);
 
-Route::get(config('shop.routes.public.order.confirm'),
+Route::post(config('shop.routes.public.order.confirm'),
     ['as' => 'shop.order.confirm', 'uses' => 'DanPowell\Shop\Http\Controllers\OrderController@confirm']);
 
 

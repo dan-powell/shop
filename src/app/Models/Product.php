@@ -46,8 +46,8 @@ class Product extends Model {
 
     protected $casts = [
         'id' => 'integer',
-		'price' => 'integer',
-		'price_offer' => 'integer',
+		'price' => 'decimal',
+		'price_offer' => 'decimal',
 		'width' => 'float',
 		'height' => 'float',
 		'length' => 'float',

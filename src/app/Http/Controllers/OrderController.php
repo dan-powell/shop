@@ -39,14 +39,12 @@ class OrderController extends BaseController
             'cartProducts.configs'
         ]);
 
-
-
-
         return view('shop::order.create')->with([
             'cart' => $cart,
             'total' => $this->total($cart->cartProducts),
             'shipping_types' => config('shop.shipping_types')
         ]);
+        
     }
 
     public function store(Request $request)
@@ -71,6 +69,7 @@ class OrderController extends BaseController
         return view('shop::order.confirm')->with([
             'order' => $order,
         ]);
+        
     }
 
 
@@ -81,7 +80,9 @@ class OrderController extends BaseController
             'cartProducts.product',
             'cartProducts.configs'
         ]);
-
+        
+        $order = Order::find($request->get('id'));
+        
 
         $gateway = \Omnipay::gateway('paypal');
 
@@ -96,13 +97,17 @@ class OrderController extends BaseController
         }
 
 
-
+        $card = \Omnipay::creditCard($order->toArray());
+        
 
         $response = \Omnipay::purchase([
+            'currency' => 'GBP',
             'amount'    => '100.00',
             'returnUrl' => 'http://google.co.uk',
             'cancelUrl' => 'http://google.co.uk',
-            'description' => $desc
+            'description' => $desc,
+            'transactionId' => $cart->id,
+            'card' => $card,
         ])->send();
 
         //dd($response);
