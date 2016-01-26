@@ -1,12 +1,18 @@
 @if(isset($optionGroup))
 
-    <div class="radio">
-        @foreach($optionGroup->options as $key => $option)
+    <fieldset>
+        <p><strong>{{ $optionGroup->title }}</strong></p>
+    @foreach($optionGroup->options as $key => $option)
+        <div class="radio">
             <label>
-                <input type="radio" name="optionGroup[{{ $optionGroup->id }}]" id="optionGroup{{ $optionGroup->id }}_{{ $option->id }}" value="{{ $option->id }}" @if($key == 0)checked @endif>
-                {{ $option->label }} ({{ $option->nice_price }})
+                <input type="radio" name="optionGroup[{{ $optionGroup->id }}]" id="optionGroup{{ $optionGroup->id }}_{{ $option->id }}" value="{{ $option->id }}" @if($optionGroup->default)checked @endif>
+                {{ $option->label }}
+                @if($option->isPriceModifier)
+                    ({{ $option->price_modifier_string }})
+                @endif
             </label>
-        @endforeach
-    </div>
+        </div>
+    @endforeach
+    </fieldset>
 
 @endif

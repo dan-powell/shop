@@ -20,25 +20,33 @@
                 <hr/>
             @endif
 
+            @if($product->hasSpecifications)
+                <div class="panel panel-default">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading">Specifications</div>
+
+
+                    <!-- List group -->
+                    <ul class="list-group">
+                        @if(isset($product->weight) && $product->weight != '')
+                            <li class="list-group-item">Weight <span class="badge">{{ $product->weight_string }}</span></li>
+                        @endif
+                        @if(isset($product->width) && $product->width != '')
+                            <li class="list-group-item">Width <span class="badge">{{ $product->width_string }}</span></li>
+                        @endif
+                        @if(isset($product->height) && $product->height != '')
+                            <li class="list-group-item">Height <span class="badge">{{ $product->height_string }}</span></li>
+                        @endif
+                        @if(isset($product->length) && $product->length != '')
+                            <li class="list-group-item">Length <span class="badge">{{ $product->length_string }}</span></li>
+                        @endif
+                    </ul>
+                </div>
+            @endif
+
+
         </div>
         <div class="col-sm-6">
-
-            <h3>Specifications</h3>
-            <ul class="list-group">
-                @if(isset($product->weight) && $product->weight != '')
-                    <li class="list-group-item">Weight <span class="badge">{{ $product->weight }} kg</span></li>
-                @endif
-                @if(isset($product->width) && $product->width != '')
-                    <li class="list-group-item">Width <span class="badge">{{ $product->width }} cm</span></li>
-                @endif
-                @if(isset($product->height) && $product->height != '')
-                    <li class="list-group-item">Height <span class="badge">{{ $product->height }} cm</span></li>
-                @endif
-                @if(isset($product->length) && $product->length != '')
-                    <li class="list-group-item">Length <span class="badge">{{ $product->length }} cm</span></li>
-                @endif
-            </ul>
-
 
             <form action="{{ route('shop.cart.product.store') }}" method="post">
 
@@ -49,37 +57,53 @@
                 <div class="panel panel-default">
 
                     <div class="panel-heading">
-                        <h3 class="panel-title">
-                            
-                            <strong>£ {{ $product->price }}</strong>
-                            
-                            |
-                            
-                            @if(isset($product->quantity) && $product->quantity > 0)
-                                In Stock | <span class="badge">{{ $product->quantity }}</span> Available
-                            @else
-                                Out of Stock
-                            @endif
-                        </h3>
+                        <div class="panel-title">
+                            <strong>
+                                @if($product->onOffer)
+                                    <s>{{ $product->priceString }}</s>
+                                    <span class="label label-primary">Now {{ $product->priceOfferString }}</span>
+                                @else
+                                    {{ $product->priceString }}
+                                @endif
+                            </strong>
+
+                            <h6>
+                                @if($product->inStock)
+                                    In Stock, <span class="badge">{{ $product->stock }}</span> Available
+                                @else
+                                    Out of Stock
+                                @endif
+                            </h6>
+                        </div>
                     </div>
 
-                    @foreach($product->optionGroups as $optionGroup)
-                        @if (isset($optionGroup->options) && count($optionGroup->options))
-                            <div class="panel-body">
-                                @include('shop::optionGroups.types.' . $optionGroup->type, ['optionGroup' => $optionGroup])
-                            </div>
-                        @endif
-                    @endforeach
-
-                    @foreach($product->personalisations as $personalisation)
+                    @if(isset($product->optionGroups) && count($product->optionGroups))
                         <div class="panel-body">
-                            @include('shop::personalisations.types.' . $personalisation->type, ['personalisation' => $personalisation])
+                            <h4><strong>Options</strong></h4>
+                            @foreach($product->optionGroups as $optionGroup)
+                                @if (isset($optionGroup->options) && count($optionGroup->options))
+                                    @include('shop::optionGroups.types.' . $optionGroup->type, ['optionGroup' => $optionGroup])
+                                @endif
+                            @endforeach
                         </div>
-                    @endforeach
+                    @endif
+
+                    @if(isset($product->personalisations) && count($product->personalisations))
+                        <div class="panel-body">
+                            <h4><strong>Personalisations</strong></h4>
+                            @foreach($product->personalisations as $personalisation)
+                                @include('shop::personalisations.types.' . $personalisation->type, ['personalisation' => $personalisation])
+                            @endforeach
+                        </div>
+                    @endif
 
                     <div class="panel-body">
                         <label for="">Quantity</label>
-                        <input type="number" class="form-control" name="quantity" value="1"/>
+                        <select class="form-control" name="quantity" value="1">
+                            @for($i=1; $i<11; $i++)
+                                <option value="{{ $i }}">{{ $i }}</option>
+                            @endfor
+                        </select>
                     </div>
 
                     <div class="panel-footer clearfix">

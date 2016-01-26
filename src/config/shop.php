@@ -27,6 +27,18 @@ return [
     ],
 
 
+    'currency' => [
+        'code' => 'GBP',
+        'symbol' => '£'
+    ],
+
+    'units' => [
+        'weight' => 'kg',
+        'width' => 'cm',
+        'height' => 'cm',
+        'length' => 'cm'
+    ],
+
     'order_status_types' => [
         0 => [
             'title' => 'Prospective'
@@ -38,8 +50,6 @@ return [
             'title' => 'Processed'
         ]
     ],
-
-
 
     'image_types' => [
         'main' => [

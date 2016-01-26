@@ -19,7 +19,7 @@ class CreateCartProducts extends Migration {
             $table->foreign('cart_id')->references('id')->on('carts')->onDelete('cascade');
             $table->integer('product_id')->unsigned();
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-            $table->decimal('price', 6, 2);
+            $table->decimal('price', 8, 2);
         });
     }
 

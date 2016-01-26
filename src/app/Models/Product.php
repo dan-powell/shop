@@ -57,17 +57,84 @@ class Product extends Model {
 		'rank' => 'integer',
     ];
 
-    protected $appends = ['created_at_human', 'updated_at_human'];
+	//
 
-    public function getUpdatedAtHumanAttribute()
+    protected $appends = ['created_at_string', 'updated_at_string'];
+
+    public function getUpdatedAtStringAttribute()
     {
         return $this->updated_at->toFormattedDateString();
     }
 
-    public function getCreatedAtHumanAttribute()
+    public function getCreatedAtStringAttribute()
     {
         return $this->created_at->toFormattedDateString();
     }
+
+	public function getOnOfferAttribute()
+	{
+		if($this->price_offer > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function getInStockAttribute()
+	{
+		if($this->stock > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function getHasSpecificationsAttribute()
+	{
+		if(
+			($this->width != '' && $this->width > 0) ||
+			($this->height != '' && $this->height > 0) ||
+			($this->length != '' && $this->length > 0) ||
+			($this->weight != '' && $this->weight > 0)
+		){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+
+	public function getPriceStringAttribute()
+	{
+		return config('shop.currency.symbol') . $this->price;
+	}
+
+	public function getPriceOfferStringAttribute()
+	{
+		return config('shop.currency.symbol') . $this->price_offer;
+	}
+
+	public function getWidthStringAttribute()
+	{
+		return $this->width . config('shop.units.width');
+	}
+
+	public function getHeightStringAttribute()
+	{
+		return $this->height . config('shop.units.height');
+	}
+
+	public function getLengthStringAttribute()
+	{
+		return $this->length . config('shop.units.length');
+	}
+
+	public function getWeightStringAttribute()
+	{
+		return $this->weight . config('shop.units.weight');
+	}
+
+
 
 	// Scopes
 

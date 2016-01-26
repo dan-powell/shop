@@ -25,7 +25,7 @@ $factory->define(DanPowell\Shop\Models\Product::class, function (Faker\Generator
 	    'width' => $faker->randomFloat(2, 0, 9999),
 	    'height' => $faker->randomFloat(2, 0, 9999),
 	    'length' => $faker->randomFloat(2, 0, 9999),
-	    'quantity' => $faker->numberBetween(0, 100),
+	    'stock' => $faker->numberBetween(0, 100),
 	    'featured' => $faker->randomElement([0, 1]),
 	    'published' => $faker->randomElement([0, 1]),
 	    'meta_title' => $faker->sentence(rand(1, 4)),

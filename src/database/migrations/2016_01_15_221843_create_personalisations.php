@@ -17,7 +17,7 @@ class CreatePersonalisations extends Migration {
             $table->increments('id');
             $table->string('label', 255);
             $table->string('type', 128);
-            $table->decimal('price_modifier', 5, 2)->default('0');
+            $table->decimal('price_modifier', 8, 2)->default('0');
             $table->integer('product_id')->unsigned();
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');;
         });
