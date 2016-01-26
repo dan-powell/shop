@@ -15,13 +15,13 @@ class ProductPublicRepository extends ProductRepository
 
     public function getFeatured($limit = null)
     {
-        return $this->makeQuery(['images'], ['featured' => '1'], $limit)->get();;
+        return $this->makeQuery(['images'], [], $limit)->featured()->get();;
     }
 
 
     public function makeModel()
     {
-        return $this->model->where('published', '!=', '0');
+        return $this->model->published();
     }
 
 }

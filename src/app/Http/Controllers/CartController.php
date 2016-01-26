@@ -32,18 +32,23 @@ class CartController extends BaseController
 
         $cart = $this->repository->getCart([
             'cartProducts.product.images',
-            'cartProducts.configs'
+            'cartProducts.cartConfigs'
         ]);
+
 
 
 
         $cart->cartProducts->each(function($cartProduct){
 
             $cartProduct->filteredConfigs = $cartProduct->configs->filter(function($m){
+
                 if((isset($m->options) && count(json_decode($m->options, true))) || (isset($m->personalisations) && count(json_decode($m->personalisations, true)))) {
                     return $m;
                 };
+
             });
+
+
         });
 
         //dd($cart->cartProducts);

@@ -26,7 +26,7 @@
     <div class="form-group {{ $errors->has('billingPhone') ? 'has-error' : '' }}">
         <label for="billingPhone" class="col-sm-2 control-label">Phone</label>
         <div class="col-sm-10">
-            <input type="email" class="form-control" id="billingPhone" name="billingPhone"  placeholder="Your phone number" value="{{ old('billingPhone') }}">
+            <input type="text" class="form-control" id="billingPhone" name="billingPhone"  placeholder="Your phone number" value="{{ old('billingPhone') }}">
             {!! $errors->first('billingPhone', '<p class="text-red">:message</p>') !!}
         </div>
     </div>

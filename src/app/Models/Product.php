@@ -69,6 +69,19 @@ class Product extends Model {
         return $this->created_at->toFormattedDateString();
     }
 
+	// Scopes
+
+	public function scopePublished($query)
+	{
+		return $query->where('published', '>', 0);
+	}
+
+	public function scopeFeatured($query)
+	{
+		return $query->where('featured', '=', 1);
+	}
+
+
 	// Relationships
 
 	public function optionGroups()

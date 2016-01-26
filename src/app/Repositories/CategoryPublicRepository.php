@@ -14,7 +14,7 @@ class CategoryPublicRepository extends CategoryRepository
 
     public function makeModel()
     {
-        return $this->model->where('published', '!=', '0');
+        return $this->model->published();
     }
 
 }

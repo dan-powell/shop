@@ -17,8 +17,10 @@ class CartRepository extends AbstractRepository
     public function getCart($with = [])
     {
 
+        // Get the session ID
         $session_id = \Session::getId();
 
+        // Find the user's cart
         $cart = $this->model->where('session_id', '=', $session_id)->with($with)->first();
 
         // if no cart has been found, then create one
@@ -30,10 +32,9 @@ class CartRepository extends AbstractRepository
     }
 
 
-    public function createCart()
+    private function createCart()
     {
 
-        // Update the item with request data
         $cart = $this->model;
 
         $cart->fill([

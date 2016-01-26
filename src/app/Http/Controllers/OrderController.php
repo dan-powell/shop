@@ -93,7 +93,7 @@ class OrderController extends BaseController
 
         $desc = '';
         foreach($cart->cartProducts as $cartProduct) {
-            $desc .= '| ' . $cartProduct->product->title;
+            $desc .= "> " . $cartProduct->product->title . "\r\n";
         }
 
 

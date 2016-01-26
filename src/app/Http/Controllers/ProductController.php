@@ -1,6 +1,7 @@
 <?php namespace DanPowell\Shop\Http\Controllers;
 
 use DanPowell\Shop\Repositories\ProductPublicRepository;
+use DanPowell\Shop\Repositories\ProductRepository;
 
 use DanPowell\Shop\Traits\ImageTrait;
 
