@@ -25,7 +25,7 @@
 
     <td>
         <!-- Qty -->
-        <span class="badge">x{{ count($cartProduct->configs) }}</span>
+        <span class="badge">x{{ count($cartProduct->cartProductConfigs) }}</span>
     </td>
 
     <td>
@@ -44,7 +44,7 @@
                 </button>
             </form>
 
-            @if(count($cartProduct->filteredConfigs))
+            @if(count($cartProduct->cartProductConfigs))
                 <a class="btn btn-primary btn-xs" role="button" data-toggle="collapse" href="#collapseExample{{ $cartProduct->id }}" aria-expanded="false" aria-controls="collapseExample{{ $cartProduct->id }}">
                     View chosen options
                 </a>

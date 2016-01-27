@@ -39,7 +39,7 @@
 
                         @include('shop::cart.partials.cartRow', ['cartProduct' => $cartProduct, 'editable' => true, 'images' => true])
 
-                        @if(count($cartProduct->filteredConfigs))
+                        @if(count($cartProduct->cartProductConfigs))
 
                             <tr class="collapse" id="collapseExample{{ $cartProduct->id }}">
                                 <td colspan="6">
@@ -54,7 +54,7 @@
                                         </thead>
                                         <tbody>
 
-                                            @foreach($cartProduct->filteredConfigs as $config)
+                                            @foreach($cartProduct->cartProductConfigs as $config)
 
 
                                                 <tr>

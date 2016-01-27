@@ -32,7 +32,7 @@ class CartController extends BaseController
 
         $cart = $this->repository->getCart([
             'cartProducts.product.images',
-            'cartProducts.cartConfigs'
+            'cartProducts.cartProductConfigs'
         ]);
 
 
@@ -40,7 +40,7 @@ class CartController extends BaseController
 
         $cart->cartProducts->each(function($cartProduct){
 
-            $cartProduct->filteredConfigs = $cartProduct->configs->filter(function($m){
+            $cartProduct->cartProductConfigs = $cartProduct->cartProductConfigs->filter(function($m){
 
                 if((isset($m->options) && count(json_decode($m->options, true))) || (isset($m->personalisations) && count(json_decode($m->personalisations, true)))) {
                     return $m;
@@ -58,7 +58,7 @@ class CartController extends BaseController
         $cart->cartProducts->each(function($cartProduct){
 
             $arr = [];
-            foreach($cartProduct->configs as $config) {
+            foreach($cartProduct->cartProductConfigs as $config) {
                 array_push($arr, $config->sub_total);
             };
 

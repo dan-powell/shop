@@ -27,7 +27,7 @@ class CartProduct extends Model {
 
     // Relationships
 
-	public function configs()
+	public function cartProductConfigs()
 	{
 		return $this->hasMany('DanPowell\Shop\Models\CartProductConfig');
 	}

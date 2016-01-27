@@ -5,9 +5,9 @@ use Illuminate\Http\Request;
 use DanPowell\Shop\Repositories\CartRepository;
 use DanPowell\Shop\Repositories\ProductPublicRepository;
 
-use DanPowell\Shop\Models\Cart;
+
 use DanPowell\Shop\Models\CartProduct;
-use DanPowell\Shop\Models\CartProductConfig;
+
 
 use Illuminate\Support\MessageBag;
 
@@ -130,7 +130,7 @@ class CartProductController extends BaseController
 
 
 
-		$cartProduct->configs()->insert($arr);
+		$cartProduct->cartProductConfigs()->insert($arr);
 
 
 
