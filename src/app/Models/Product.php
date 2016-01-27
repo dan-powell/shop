@@ -181,6 +181,11 @@ class Product extends Model {
 		return $this->hasMany('DanPowell\Shop\Models\cartProduct', 'product_id');
 	}
 
+	public function cartItems()
+	{
+		return $this->hasMany('DanPowell\Shop\Models\cartItem', 'product_id');
+	}
+
 	// Inverse Relationships
 
 	public function categories()
