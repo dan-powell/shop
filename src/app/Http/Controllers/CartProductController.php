@@ -1,12 +1,13 @@
 <?php namespace DanPowell\Shop\Http\Controllers;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 use DanPowell\Shop\Repositories\CartRepository;
 use DanPowell\Shop\Repositories\ProductPublicRepository;
 
 
-use DanPowell\Shop\Models\CartProduct;
+
 use DanPowell\Shop\Models\CartItem;
 
 
@@ -28,54 +29,51 @@ class CartProductController extends BaseController
 	{
 
 		// Get the cart (or make one)
-		$cart = $this->cartRepository->getCart(['cartProducts']);
+		$cart = $this->cartRepository->getCart();
 
-		$id = $request->get('product_id');
-
-
-		$product = $this->productPublicRepository->getById($id, ['optionGroups.options', 'personalisations']);
+		// Find product to be added
+		$product = $this->productPublicRepository->getById($request->get('product_id'), ['optionGroups.options', 'personalisations']);
 
 
+		$item = new Collection;
 
-        
-		
-
-
-		$optionGroups = $product->optionGroups->filter(function($m){
-			if(isset($m->options) && count($m->options)) {
+		// Filter out optionGroups that don't have options
+		$item->optionGroups = $product->optionGroups->filter(function ($m) {
+			if (isset($m->options) && count($m->options)) {
 				return $m;
 			};
 		});
 
+
+		// Get the chosen options and their values
 		$submittedOptionGroups = $request->get('optionGroup');
-
-		$optionGroups->each(function($m) use ($submittedOptionGroups) {
-			$m->option = $m->options->keyBy('id')->get($submittedOptionGroups[$m->id]);
-		});
-
-
-		//if($request->get('personalisation') != null && count($request->get('personalisation'))) {
-
-		$submittedPersonalisations = $request->get('personalisation');
-
-		$product->personalisations = $product->personalisations->filter(function ($m) use ($submittedPersonalisations) {
-			if($submittedPersonalisations[$m->id] != '') {
-				return $m;
+		$item->optionGroups->each(function ($m) use ($submittedOptionGroups) {
+			if (isset($submittedOptionGroups[$m->id]) && $submittedOptionGroups[$m->id] != '') {
+				$m->option = $m->options->keyBy('id')->get($submittedOptionGroups[$m->id]);
 			}
 		});
 
+		// Get the personalisation values submitted & pair with DB data
+		$submittedPersonalisations = $request->get('personalisation');
+		if (isset($submittedPersonalisations) && count($submittedPersonalisations)) {
+			$item->personalisations = $product->personalisations->filter(function ($m) use ($submittedPersonalisations) {
+				if (isset($submittedPersonalisations[$m->id]) && $submittedPersonalisations[$m->id] != '') {
+					return $m;
+				}
+			});
+		};
 
-		$product->personalisations->each(function ($m) use ($submittedPersonalisations) {
+		// Add personalisation values to product
+		$item->personalisations->each(function ($m) use ($submittedPersonalisations) {
 			$m->value = $submittedPersonalisations[$m->id];
 		});
 
 
-
-
-
+		// Get the quantity ordered
         if($request->get('quantity') != null){
 			$loop = $request->get('quantity');
 
+			// Limit to 10
 			if($loop > 10) {
 				$messages['warning'] = 'Maximum quantity exceeded';
 				$loop = 10;
@@ -85,19 +83,17 @@ class CartProductController extends BaseController
 			$loop = 1;
 		}
 
-		$arr = [];
-
+		// Create a multidimensional array of products
+		$cartItems = [];
 		for($i=0; $i < $loop; $i++){
 
             // Make new
-			array_push($arr, [
+			array_push($cartItems, [
     			'cart_id' => $cart->id,
 				'product_id' => $product->id,
-				//'sub_total' => $product->price,
-				//'cart_product_id' => $cartProduct->id,
-				'options' => $optionGroups->toJson(),
-				'personalisations' => $product->personalisations->toJson(),
-				'sub_total' => $this->calcSub($product, $request->get('optionGroup'), $request->get('personalisation'))
+				'options' => $item->optionGroups->toJson(),
+				'personalisations' => $item->personalisations->toJson(),
+				'sub_total' => $this->calcSub($product, $item)
 			]);
 
 
@@ -110,38 +106,29 @@ class CartProductController extends BaseController
 			// * Same as options
 
 		}
-		
-		$cartProduct = new CartItem;
-		$cartProduct->insert($arr);
 
+		// Save all cart items in one go.
+		$cartItem = new CartItem;
+		$cartItem->insert($cartItems);
 
-		return redirect()->route('shop.cart.index', 301);
-
+		return redirect()->route('shop.cart.index');
 	}
 
 
 
-	private function calcSub($product, $submittedOptionGroups, $personalisations)
+	private function calcSub($product, $item)
 	{
 
-		$arr = [];
+		$addMeUp = [];
 
-		array_push($arr, $product->price);
+		// Add the base item price
+		array_push($addMeUp, $product->price);
 
-
-		$optionGroups = $product->optionGroups->filter(function($m){
-			if(isset($m->options) && count($m->options)) {
-				return $m;
-			};
-		});
-
-
-		foreach($optionGroups as $optionGroup) {
-			array_push($arr, $optionGroup->options->keyBy('id')->get($submittedOptionGroups[$optionGroup->id])->price_modifier);
+		foreach($item->optionGroups as $optionGroup) {
+			array_push($addMeUp, $optionGroup->option->price_modifier);
 		}
 
-		return array_sum($arr);
-
+		return array_sum($addMeUp);
 	}
 
 
@@ -154,7 +141,7 @@ class CartProductController extends BaseController
 
 		$this->store($request);
 
-		return redirect()->route('shop.cart.index', 301)->withInput(['success' => 'Product has been updated']);
+		return redirect()->route('shop.cart.index')->withInput(['success' => 'Product has been updated']);
 
 	}
 
@@ -163,31 +150,10 @@ class CartProductController extends BaseController
 
 	public function destroy($id, Request $request)
 	{
+		$cart = $this->cartRepository->getCart(['cartItems.product']);
 
-		//dd($id);
-
-		$cart = $this->cartRepository->getCart(['cartProducts']);
-
-		//dd($cart);
-
-		//$product = $product = $cart->cartProducts->get($id);
-
-		$product = $cart->cartProducts->keyBy('id')->get($id);
-
-//		$product = $cart->cartProducts->filter(function($item) use ($id) {
-//			return $item->id == $id;
-//		})->first();
-
-
-		//dd($product);
-
-		$product->delete();
-
-		//dd($product = $cart->cartProducts->get($id));
-
-		//->delete()
+		CartItem::where('cart_id', '=', $cart->id)->where('product_id', '=', $id)->delete();
 
 		return redirect()->route('shop.cart.index', 301)->withInput(['warning' => 'Product has been removed from your cart']);
-
 	}
 }

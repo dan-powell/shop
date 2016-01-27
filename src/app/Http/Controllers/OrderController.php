@@ -12,11 +12,13 @@ use DanPowell\Shop\Models\CartPersonalisation;
 use DanPowell\Shop\Models\Order;
 
 use DanPowell\Shop\Traits\ImageTrait;
+use DanPowell\Shop\Traits\CartTrait;
 
 class OrderController extends BaseController
 {
 
     use ImageTrait;
+    use CartTrait;
 
     protected $repository;
     protected $cartRepository;
@@ -30,18 +32,13 @@ class OrderController extends BaseController
 
     public function create(Request $request)
     {
+        $cart = $this->cartRepository->getCart(['cartItems.product']);
 
-        // Load the cart (and relations)
-        // If there is'nt a cart for this session, make one
-
-        $cart = $this->cartRepository->getCart([
-            'cartProducts.product',
-            'cartProducts.configs'
-        ]);
+        $itemsGrouped = $this->groupCartItemsByProduct($cart->cartItems);
 
         return view('shop::order.create')->with([
-            'cart' => $cart,
-            'total' => $this->total($cart->cartProducts),
+            'itemsGrouped' => $itemsGrouped,
+            'total' => $this->getCartItemTotal($cart->cartItems),
             'shipping_types' => config('shop.shipping_types')
         ]);
         
@@ -49,20 +46,16 @@ class OrderController extends BaseController
 
     public function store(Request $request)
     {
-
-        // Load the cart (and relations)
-        // If there is'nt a cart for this session, make one
-
-        $cart = $this->cartRepository->getCart([
-            'cartProducts.product.images',
-            'cartProducts.configs'
-        ]);
+        $cart = $this->cartRepository->getCart(['cartItems.product']);
 
         $order = new Order;
 
         $order->fill($request->all());
 
-        $order->fill(['cart' => $cart->toJson()]);
+        $order->fill([
+            'cart' => $cart->toJson(),
+            'total' => $this->getCartItemTotal($cart->cartItems)
+        ]);
 
         $order->save();
 
@@ -76,10 +69,7 @@ class OrderController extends BaseController
     public function confirm(Request $request)
     {
 
-        $cart = $this->cartRepository->getCart([
-            'cartProducts.product',
-            'cartProducts.configs'
-        ]);
+        $cart = $this->cartRepository->getCart(['cartItems.product']);
         
         $order = Order::find($request->get('id'));
         
@@ -92,8 +82,8 @@ class OrderController extends BaseController
         //dd($settings);
 
         $desc = '';
-        foreach($cart->cartProducts as $cartProduct) {
-            $desc .= "> " . $cartProduct->product->title . "\r\n";
+        foreach($cart->cartItems as $item) {
+            $desc .= "> " . $item->product->title . "\r\n";
         }
 
 
@@ -135,43 +125,16 @@ class OrderController extends BaseController
 
 
 
-
-//        $cart = $this->cartRepository->getCart([
-//            'cartProducts.product.images',
-//            'cartProducts.configs'
-//        ]);
-
-
     }
 
     public function cancel(Request $request)
     {
-
-
-
-
-
 
         $cart = $this->cartRepository->getCart([
             'cartProducts.product.images',
             'cartProducts.configs'
         ]);
 
-
     }
-
-
-    private function total($products) {
-
-        $arr = [];
-        foreach($products as $product) {
-            array_push($arr, $product->sub);
-        };
-
-        return array_sum($arr);
-
-    }
-
-
 
 }

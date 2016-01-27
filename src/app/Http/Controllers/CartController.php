@@ -10,11 +10,13 @@ use DanPowell\Shop\Models\CartOption;
 use DanPowell\Shop\Models\CartPersonalisation;
 
 use DanPowell\Shop\Traits\ImageTrait;
+use DanPowell\Shop\Traits\CartTrait;
 
 class CartController extends BaseController
 {
 
     use ImageTrait;
+    use CartTrait;
 
     protected $repository;
 
@@ -27,96 +29,17 @@ class CartController extends BaseController
     public function index(Request $request)
     {
 
-        // Load the cart (and relations)
-        // If there is'nt a cart for this session, make one
-
+        // Get the cart & items
         $cart = $this->repository->getCart([
-            //'cartProducts.product.images',
-            //'cartProducts.cartProductConfigs',
             'cartItems.product.images'
         ]);
 
-
-
-
-
-        $cartProducts = $cart->cartItems->groupBy('product.id');
-
-
-
-
-
-        $cartProducts->each(function($m){
-
-            $m->product = $m->first()->product;
-
-
-        });
-
-
-
-        //dd($cartProducts);
-
-
-
-
-
-
-
-
-
-//        $cart->cartProducts->each(function($cartProduct){
-//
-//            $cartProduct->cartProductConfigs = $cartProduct->cartProductConfigs->filter(function($m){
-//
-//                if((isset($m->options) && count(json_decode($m->options, true))) || (isset($m->personalisations) && count(json_decode($m->personalisations, true)))) {
-//                    return $m;
-//                };
-//
-//            });
-//
-//
-//        });
-//
-//        //dd($cart->cartProducts);
-//
-//
-        // Group product images
-        $cartProducts->each(function($cartProduct){
-
-/*
-            $arr = [];
-            foreach($cartProduct->cartProductConfigs as $config) {
-                array_push($arr, $config->sub_total);
-            };
-*/
-
-            //$cartProduct->sub = array_sum($arr);
-
-            $this->addImageTypes($cartProduct->product);
-        });
-
-
-
+        // Group the items by product
         return view('shop::cart.index')->with([
-            'items' => $cartProducts,
-            'total' => $this->total($cart->cartProducts),
+            'items' => $cart->cartItems,
+            'total' => $this->getCartItemTotal($cart->cartItems),
+            'itemsGrouped' => $this->groupCartItemsByProduct($cart->cartItems)
         ]);
     }
-
-
-
-    private function total($products) {
-
-        $arr = [];
-        foreach($products as $product) {
-            array_push($arr, $product->sub);
-        };
-
-        return array_sum($arr);
-
-    }
-
-
 
 }

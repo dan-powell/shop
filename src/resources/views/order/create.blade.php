@@ -3,7 +3,7 @@
 @section('main')
     <h1>Checkout</h1>
 
-    @if(isset($cart))
+    @if(isset($itemsGrouped))
 
         <div class="row">
             <div class="col-sm-12">
@@ -13,16 +13,28 @@
                     <thead>
                     <tr>
                         <th>Product</th>
-                        <th>Price</th>
+                        <th>Base Price</th>
                         <th>Quantity</th>
                         <th>Sub Total</th>
                     </tr>
                     </thead>
                     <tbody>
 
-                        @foreach($cart->cartProducts as $cartProduct)
-                            @include('shop::cart.partials.cartRow', ['cartProduct' => $cartProduct, 'editable' => false, 'images' => false])
+                        @foreach($itemsGrouped as $item)
+                            @include('shop::cart.partials.cartRow', ['itemGroup' => $item, 'editable' => false, 'images' => false])
                         @endforeach
+
+                        <tr>
+                            <td colspan="3">
+                                <p class="text-right"><strong>Total</strong></p>
+                            </td>
+
+                            <td>
+                                {{ $total }}
+                            </td>
+
+                        </tr>
+
                     </tbody>
                 </table>
 

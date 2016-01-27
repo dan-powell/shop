@@ -23,11 +23,6 @@ class Cart extends Model {
 
     // Relationships
 
-	public function cartProducts()
-	{
-		return $this->hasMany('DanPowell\Shop\Models\CartProduct');
-	}
-
 	public function cartItems()
 	{
 		return $this->hasMany('DanPowell\Shop\Models\CartItem');
