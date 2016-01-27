@@ -16,153 +16,100 @@
     @endif
 
 
-    @if(isset($cart))
+    @if(isset($items))
 
         <div class="row">
             <div class="col-sm-12">
 
-                {{--<h4>All Items</h4>--}}
-                {{--<table class="table">--}}
-                    {{--<thead>--}}
-                        {{--<tr>--}}
-                            {{--<th>Image</th>--}}
-                            {{--<th>Product</th>--}}
-                            {{--<th>Price</th>--}}
-                            {{--<th>Quantity</th>--}}
-                            {{--<th>Sub Total</th>--}}
-                            {{--<th>Actions</th>--}}
-                        {{--</tr>--}}
-                    {{--</thead>--}}
-                    {{--<tbody>--}}
+                <h4>All Items</h4>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Sub Total</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
 
-                    {{--@foreach($cart->cartProducts as $cartProduct)--}}
+                    @foreach($items as $itemGroup)
 
-                        {{--@include('shop::cart.partials.cartRow', ['cartProduct' => $cartProduct, 'editable' => true, 'images' => true])--}}
+                        @include('shop::cart.partials.cartRow', ['product' => $itemGroup->product, 'editable' => true, 'images' => true])
 
-                        {{--@if(count($cartProduct->cartProductConfigs))--}}
+                        @if(count($itemGroup))
 
-                            {{--<tr class="collapse" id="collapseExample{{ $cartProduct->id }}">--}}
-                                {{--<td colspan="6">--}}
+                            <tr class="collapse" id="collapseExample{{ $itemGroup->product->id }}">
+                                <td colspan="6">
 
-                                    {{--<table class="table table-striped">--}}
-                                        {{--<thead>--}}
-                                            {{--<tr>--}}
-                                                {{--<th>Options</th>--}}
-                                                {{--<th>Personalisations</th>--}}
-                                                {{--<th>Options Total</th>--}}
-                                            {{--</tr>--}}
-                                        {{--</thead>--}}
-                                        {{--<tbody>--}}
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Options</th>
+                                                <th>Personalisations</th>
+                                                <th>Options Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
 
-                                            {{--@foreach($cartProduct->cartProductConfigs as $config)--}}
+                                            @foreach($itemGroup as $item)
 
+                                                <tr>
+                                                    <td>
+                                                        @if(isset($item->options) && $item->options != '')
+                                                        <ul>
+                                                            @foreach(json_decode($item->options, true) as $optionGroup)
 
-                                                {{--<tr>--}}
-                                                    {{--<td>--}}
-                                                        {{--<ul>--}}
-                                                            {{--@foreach(json_decode($config->options, true) as $optionGroup)--}}
-
-                                                                {{--<li><strong>{{ $optionGroup['title'] }}</strong>: {{ $optionGroup['option']['label'] }} <span class="badge">{{ $optionGroup['option']['price_modifier'] }}</span></li>--}}
-                                                            {{--@endforeach--}}
-                                                        {{--</ul>--}}
-                                                    {{--</td>--}}
-                                                    {{--<td>--}}
-                                                        {{--<ul>--}}
-                                                            {{--@foreach(json_decode($config->personalisations, true) as $personalisation)--}}
-                                                                {{--<li><strong>{{ $personalisation['label'] }}</strong>: {{ $personalisation['value'] }}</li>--}}
-                                                            {{--@endforeach--}}
-                                                        {{--</ul>--}}
-                                                    {{--</td>--}}
-                                                    {{--<td>--}}
-                                                        {{--{{ $config->sub_total }}--}}
-                                                    {{--</td>--}}
-                                                {{--</tr>--}}
-
-
-                                            {{--@endforeach--}}
-
-
-                                        {{--</tbody>--}}
-                                    {{--</table>--}}
-
-                                {{--</td>--}}
-                            {{--</tr>--}}
-                        {{--@endif--}}
-
-                    {{--@endforeach--}}
-
-                    {{--<tr>--}}
-                        {{--<td colspan="5">--}}
-                            {{--<p class="text-right"><strong>Total</strong></p>--}}
-                        {{--</td>--}}
-
-                        {{--<td>--}}
-                            {{--{{ $total }}--}}
-                        {{--</td>--}}
-
-                    {{--</tr>--}}
+                                                                <li><strong>{{ $optionGroup['title'] }}</strong>: {{ $optionGroup['option']['label'] }} <span class="badge">{{ $optionGroup['option']['price_modifier'] }}</span></li>
+                                                            @endforeach
+                                                        </ul>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if(isset($item->personalisations) && $item->personalisations != '')
+                                                        <ul>
+                                                            @foreach(json_decode($item->personalisations, true) as $personalisation)
+                                                                <li><strong>{{ $personalisation['label'] }}</strong>: {{ $personalisation['value'] }}</li>
+                                                            @endforeach
+                                                        </ul>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        {{ $item->sub_total }}
+                                                    </td>
+                                                </tr>
 
 
-                    {{--</tbody>--}}
-                {{--</table>--}}
-            {{--</div>--}}
-        {{--</div>--}}
+                                            @endforeach
 
 
+                                        </tbody>
+                                    </table>
+
+                                </td>
+                            </tr>
+                        @endif
+
+                    @endforeach
+
+                    <tr>
+                        <td colspan="5">
+                            <p class="text-right"><strong>Total</strong></p>
+                        </td>
+
+                        <td>
+                            {{ $total }}
+                        </td>
+
+                    </tr>
 
 
-        <h4>TEST</h4>
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Image</th>
-                <th>Product</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Sub Total</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-
-            @foreach($test as $product)
-
-
-                <h3>{{$product->product->title}}</h3>
-
-                <h4>x{{ count($product) }}</h4>
-
-
-                @foreach($product as $item)
-
-
-                    {{ $item->id }}
-
-                @endforeach
-
-
-            @endforeach
-
-            <tr>
-                <td colspan="5">
-                    <p class="text-right"><strong>Total</strong></p>
-                </td>
-
-                <td>
-                    {{ $total }}
-                </td>
-
-            </tr>
-
-
-            </tbody>
-        </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
-        </div>
-
-        <a href="{{ route('shop.order.create') }}" class="btn btn-primary">
-            Checkout
-        </a>
 
 
     @endif

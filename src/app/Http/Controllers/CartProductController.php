@@ -7,6 +7,7 @@ use DanPowell\Shop\Repositories\ProductPublicRepository;
 
 
 use DanPowell\Shop\Models\CartProduct;
+use DanPowell\Shop\Models\CartItem;
 
 
 use Illuminate\Support\MessageBag;
@@ -34,26 +35,10 @@ class CartProductController extends BaseController
 
 		$product = $this->productPublicRepository->getById($id, ['optionGroups.options', 'personalisations']);
 
-		$cartProduct = $cart->cartProducts->keyBy('product_id')->get($id);
 
-		//dd($cartProduct);
 
-		if(!$cartProduct) {
-
-			// Make new
-
-			$cartProduct = new CartProduct;
-
-			$cartProduct->fill([
-				'cart_id' => $cart->id,
-				'product_id' => $product->id,
-				'price' => $product->price,
-			]);
-
-			$cartProduct->save();
-
-		}
-
+        
+		
 
 
 		$optionGroups = $product->optionGroups->filter(function($m){
@@ -71,25 +56,24 @@ class CartProductController extends BaseController
 
 		//if($request->get('personalisation') != null && count($request->get('personalisation'))) {
 
-			$submittedPersonalisations = $request->get('personalisation');
+		$submittedPersonalisations = $request->get('personalisation');
 
-			$product->personalisations = $product->personalisations->filter(function ($m) use ($submittedPersonalisations) {
-				if($submittedPersonalisations[$m->id] != '') {
-					return $m;
-				}
-			});
-
-
-			$product->personalisations->each(function ($m) use ($submittedPersonalisations) {
-				$m->value = $submittedPersonalisations[$m->id];
-			});
+		$product->personalisations = $product->personalisations->filter(function ($m) use ($submittedPersonalisations) {
+			if($submittedPersonalisations[$m->id] != '') {
+				return $m;
+			}
+		});
 
 
+		$product->personalisations->each(function ($m) use ($submittedPersonalisations) {
+			$m->value = $submittedPersonalisations[$m->id];
+		});
 
 
 
 
-		if($request->get('quantity') != null){
+
+        if($request->get('quantity') != null){
 			$loop = $request->get('quantity');
 
 			if($loop > 10) {
@@ -105,9 +89,12 @@ class CartProductController extends BaseController
 
 		for($i=0; $i < $loop; $i++){
 
-
+            // Make new
 			array_push($arr, [
-				'cart_product_id' => $cartProduct->id,
+    			'cart_id' => $cart->id,
+				'product_id' => $product->id,
+				//'sub_total' => $product->price,
+				//'cart_product_id' => $cartProduct->id,
 				'options' => $optionGroups->toJson(),
 				'personalisations' => $product->personalisations->toJson(),
 				'sub_total' => $this->calcSub($product, $request->get('optionGroup'), $request->get('personalisation'))
@@ -123,16 +110,9 @@ class CartProductController extends BaseController
 			// * Same as options
 
 		}
-
-		//$cart_product->insert($arr);
-
-
-
-
-
-		$cartProduct->cartProductConfigs()->insert($arr);
-
-
+		
+		$cartProduct = new CartItem;
+		$cartProduct->insert($arr);
 
 
 		return redirect()->route('shop.cart.index', 301);

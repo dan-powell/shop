@@ -40,13 +40,13 @@ class CartController extends BaseController
 
 
 
-        $test = $cart->cartItems->groupBy('product.id');
+        $cartProducts = $cart->cartItems->groupBy('product.id');
 
 
 
 
 
-        $test->each(function($m){
+        $cartProducts->each(function($m){
 
             $m->product = $m->first()->product;
 
@@ -54,6 +54,8 @@ class CartController extends BaseController
         });
 
 
+
+        //dd($cartProducts);
 
 
 
@@ -79,27 +81,26 @@ class CartController extends BaseController
 //        //dd($cart->cartProducts);
 //
 //
-//        // Group product images
-//        $cart->cartProducts->each(function($cartProduct){
-//
-//            $arr = [];
-//            foreach($cartProduct->cartProductConfigs as $config) {
-//                array_push($arr, $config->sub_total);
-//            };
-//
-//            $cartProduct->sub = array_sum($arr);
-//
-//            $this->addImageTypes($cartProduct->product);
-//        });
-//
+        // Group product images
+        $cartProducts->each(function($cartProduct){
+
+/*
+            $arr = [];
+            foreach($cartProduct->cartProductConfigs as $config) {
+                array_push($arr, $config->sub_total);
+            };
+*/
+
+            //$cartProduct->sub = array_sum($arr);
+
+            $this->addImageTypes($cartProduct->product);
+        });
+
 
 
         return view('shop::cart.index')->with([
-            'cart' => $cart,
+            'items' => $cartProducts,
             'total' => $this->total($cart->cartProducts),
-
-            'test' => $test
-
         ]);
     }
 
