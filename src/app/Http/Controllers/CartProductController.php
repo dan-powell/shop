@@ -37,37 +37,13 @@ class CartProductController extends BaseController
 
 		$item = new Collection;
 
-		// Filter out optionGroups that don't have options
-		$item->optionGroups = $product->optionGroups->filter(function ($m) {
-			if (isset($m->options) && count($m->options)) {
-				return $m;
-			};
-		});
+        
 
-
-		// Get the chosen options and their values
-		$submittedOptionGroups = $request->get('optionGroup');
-		$item->optionGroups->each(function ($m) use ($submittedOptionGroups) {
-			if (isset($submittedOptionGroups[$m->id]) && $submittedOptionGroups[$m->id] != '') {
-				$m->option = $m->options->keyBy('id')->get($submittedOptionGroups[$m->id]);
-			}
-		});
-
-		// Get the personalisation values submitted & pair with DB data
-		$submittedPersonalisations = $request->get('personalisation');
-		if (isset($submittedPersonalisations) && count($submittedPersonalisations)) {
-			$item->personalisations = $product->personalisations->filter(function ($m) use ($submittedPersonalisations) {
-				if (isset($submittedPersonalisations[$m->id]) && $submittedPersonalisations[$m->id] != '') {
-					return $m;
-				}
-			});
-		};
-
-		// Add personalisation values to product
-		$item->personalisations->each(function ($m) use ($submittedPersonalisations) {
-			$m->value = $submittedPersonalisations[$m->id];
-		});
-
+		$options = $this->getOptions($product, $request->get('optionGroup'));
+		
+        $personalisations = $this->getPersonalisations($product, $request->get('personalisation'));
+		
+        $sub = $this->calcSub($product, $options);
 
 		// Get the quantity ordered
         if($request->get('quantity') != null){
@@ -91,9 +67,9 @@ class CartProductController extends BaseController
 			array_push($cartItems, [
     			'cart_id' => $cart->id,
 				'product_id' => $product->id,
-				'options' => $item->optionGroups->toJson(),
-				'personalisations' => $item->personalisations->toJson(),
-				'sub_total' => $this->calcSub($product, $item)
+				'options' => $options->toJson(),
+				'personalisations' => $personalisations->toJson(),
+				'sub_total' => $sub
 			]);
 
 
@@ -116,15 +92,70 @@ class CartProductController extends BaseController
 
 
 
-	private function calcSub($product, $item)
+
+    private function getOptions($product, $submittedOptionGroups) {
+        
+        //if(isset($product->optionGroups) && count($product->optionGroups)) {
+
+    		// Filter out optionGroups that don't have options
+    		$optionGroups = $product->optionGroups->filter(function ($m) {
+    			if (isset($m->options) && count($m->options)) {
+    				return $m;
+    			};
+    		});
+
+    		// Get the chosen options and their values
+    		$optionGroups->each(function ($m) use ($submittedOptionGroups) {
+    			if (isset($submittedOptionGroups[$m->id]) && $submittedOptionGroups[$m->id] != '') {
+    				$m->option = $m->options->keyBy('id')->get($submittedOptionGroups[$m->id]);
+    			}
+    		});
+    		
+    		return $optionGroups;
+            
+        //} else {
+        //    return null;
+        //}
+        
+        
+    }
+
+
+    private function getPersonalisations($product, $submittedPersonalisations) {
+		//if(isset($product->personalisations) && count($product->personalisations)) {
+
+    		// Get the personalisation values submitted & pair with DB data
+    		//if (isset($submittedPersonalisations) && count($submittedPersonalisations)) {
+    			$personalisations = $product->personalisations->filter(function ($m) use ($submittedPersonalisations) {
+    				if (isset($submittedPersonalisations[$m->id]) && $submittedPersonalisations[$m->id] != '') {
+    					return $m;
+    				}
+    			});
+    		//};
+    
+    		// Add personalisation values to product
+    		$personalisations->each(function ($m) use ($submittedPersonalisations) {
+    			$m->value = $submittedPersonalisations[$m->id];
+    		});
+    		
+    		return $personalisations;
+		
+		//} else {
+            //return null;
+        //}
+    }
+
+
+
+	private function calcSub($product, $options)
 	{
 
 		$addMeUp = [];
 
 		// Add the base item price
 		array_push($addMeUp, $product->price);
-
-		foreach($item->optionGroups as $optionGroup) {
+				
+		foreach($options as $optionGroup) {
 			array_push($addMeUp, $optionGroup->option->price_modifier);
 		}
 
