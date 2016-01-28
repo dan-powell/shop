@@ -5,9 +5,7 @@ use Illuminate\Http\Request;
 use DanPowell\Shop\Repositories\CartRepository;
 
 use DanPowell\Shop\Models\Cart;
-use DanPowell\Shop\Models\CartProduct;
-use DanPowell\Shop\Models\CartOption;
-use DanPowell\Shop\Models\CartPersonalisation;
+
 
 use DanPowell\Shop\Traits\ImageTrait;
 use DanPowell\Shop\Traits\CartTrait;

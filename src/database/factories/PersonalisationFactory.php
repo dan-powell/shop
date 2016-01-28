@@ -15,6 +15,6 @@ $factory->define(DanPowell\Shop\Models\Personalisation::class, function (Faker\G
     return [
         'label' => $faker->word,
         'type' => $faker->randomElement(config('shop.personalisation_types')),
-        'price_modifier' => $faker->randomElement([0, $faker->numberBetween(-1000, 1000)]),
+        'price_modifier' => $faker->randomElement([0, $faker->randomFloat(2, -1500, 1500)]),
     ];
 });

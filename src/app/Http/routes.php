@@ -30,15 +30,15 @@ Route::get(config('shop.routes.public.cart.index'),
     ['as' => 'shop.cart.index', 'uses' => 'DanPowell\Shop\Http\Controllers\CartController@index']);
 
 Route::resource(
-    config('shop.routes.public.cart.product'),
-    'DanPowell\Shop\Http\Controllers\CartProductController',
+    config('shop.routes.public.cart.item'),
+    'DanPowell\Shop\Http\Controllers\CartItemController',
     [
         'except' => ['create', 'show', 'edit', 'index'],
         'names' => [
             //'index' => 'shop.cart.index',
-            'store' => 'shop.cart.product.store',
-            'destroy' => 'shop.cart.product.delete',
-            'update' => 'shop.cart.product.update'
+            'store' => 'shop.cart.item.store',
+            'destroy' => 'shop.cart.item.delete',
+            'update' => 'shop.cart.item.update'
         ],
     ]
 );

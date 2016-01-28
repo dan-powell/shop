@@ -144,6 +144,20 @@ class Product extends Model {
 		return $this->weight . config('shop.units.weight');
 	}
 
+	public function getHasOptionStockAttribute()
+	{
+		$bool = false;
+		foreach($this->optionGroups as $optionGroup) {
+			if($optionGroup->getHasStockAttribute()){
+				$bool = true;
+			}
+		}
+
+		return $bool;
+	}
+
+
+
 
 
 	// Scopes

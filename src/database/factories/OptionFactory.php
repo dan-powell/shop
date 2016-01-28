@@ -14,6 +14,12 @@
 $factory->define(DanPowell\Shop\Models\Option::class, function (Faker\Generator $faker) {
     return [
         'label' => $faker->word,
-        'price_modifier' => $faker->randomElement([0, $faker->numberBetween(-1000, 1000)]),
+        'price_modifier' => $faker->randomElement([0, $faker->randomFloat(2, -1500, 1500)]),
     ];
+});
+
+$factory->defineAs(DanPowell\Shop\Models\Option::class, 'stocked', function ($faker) use ($factory) {
+    $model = $factory->raw(DanPowell\Shop\Models\Option::class);
+
+    return array_merge($model, ['stock' => $faker->numberBetween(0, 50)]);
 });

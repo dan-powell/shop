@@ -21,15 +21,19 @@ class ProductSeeder extends Seeder
             $rand = rand(0, 4);
             for ($i = 0; $i < $rand; $i++) {
                 $product->optionGroups()->save(factory(DanPowell\Shop\Models\OptionGroup::class)->make());
-
             }
 
             // For every option group, create the Options
             foreach ($product->optionGroups as $optionGroup) {
 
                 $rand = rand(0, 4);
+                $rand2 = rand(0, 6);
                 for ($i = 0; $i < $rand; $i++) {
-                    $optionGroup->options()->save(factory(DanPowell\Shop\Models\Option::class)->make());
+                    if($rand2 < 1) {
+                        $optionGroup->options()->save(factory(DanPowell\Shop\Models\Option::class, 'stocked')->make());
+                    } else {
+                        $optionGroup->options()->save(factory(DanPowell\Shop\Models\Option::class)->make());
+                    }
                 }
             };
 

@@ -13,7 +13,7 @@
 
 $factory->define(DanPowell\Shop\Models\Image::class, function (Faker\Generator $faker) {
 
-	$image = $faker->image('public/images', 1280, 800, 'cats', false);
+	$image = $faker->image('public/images', 800, 600, 'cats', false);
 	//rename($image, 'public/images/' . $newfile);
 
     return [

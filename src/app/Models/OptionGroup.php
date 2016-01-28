@@ -25,6 +25,19 @@ class OptionGroup extends Model {
 	public $timestamps = false;
 
 
+	public function getHasStockAttribute()
+	{
+		$bool = false;
+		foreach($this->options as $option) {
+			if($option->stock){
+				$bool = true;
+			}
+		}
+
+		return $bool;
+	}
+
+
     // Relationships
 
     public function options()

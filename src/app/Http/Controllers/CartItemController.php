@@ -6,15 +6,17 @@ use Illuminate\Http\Request;
 use DanPowell\Shop\Repositories\CartRepository;
 use DanPowell\Shop\Repositories\ProductPublicRepository;
 
-
+use Illuminate\Foundation\Validation\ValidatesRequests;
 
 use DanPowell\Shop\Models\CartItem;
 
 
 use Illuminate\Support\MessageBag;
 
-class CartProductController extends BaseController
+class CartItemController extends BaseController
 {
+
+	use ValidatesRequests;
 
 	protected $cartRepository;
 	protected $productPublicRepository;
@@ -35,33 +37,58 @@ class CartProductController extends BaseController
 		$product = $this->productPublicRepository->getById($request->get('product_id'), ['optionGroups.options', 'personalisations']);
 
 
+
+		// Validate options
+		// Check that the option exists AND is related to the product we want to save
+		// Loop of the Product optionGroups and find one with same key as in post data option
+		// Loop of the optionGroup options and find one with same key as in post data option
+
+		// Validate personalisations
+		// * Same as options
+		$this->validate($request, CartItem::rules($product));
+
+
+
+
+
+
+
 		$item = new Collection;
 
-        
-
 		$options = $this->getOptions($product, $request->get('optionGroup'));
-		
+
         $personalisations = $this->getPersonalisations($product, $request->get('personalisation'));
-		
+
         $sub = $this->calcSub($product, $options);
 
-		// Get the quantity ordered
-        if($request->get('quantity') != null){
-			$loop = $request->get('quantity');
 
-			// Limit to 10
-			if($loop > 10) {
-				$messages['warning'] = 'Maximum quantity exceeded';
-				$loop = 10;
+
+
+		// Check stock
+		if(!$product->allow_negative_stock) {
+			if($request->get('quantity') > $product->stock) {
+				dd('too many!');
+				return redirect()->route('shop.product.show', $product->slug);
+			} else if ($product->hasOptionStock) {
+				foreach ($options as $option) {
+					if (isset($option->option->stock) && $request->get('quantity') > $option->option->stock) {
+						dd('too many options!');
+						return redirect()->route('shop.product.show', $product->slug);
+					}
+				}
 			}
-
-		} else {
-			$loop = 1;
 		}
+
+
+
+
+
+
+
 
 		// Create a multidimensional array of products
 		$cartItems = [];
-		for($i=0; $i < $loop; $i++){
+		for($i=0; $i < $request->get('quantity'); $i++){
 
             // Make new
 			array_push($cartItems, [
@@ -72,18 +99,10 @@ class CartProductController extends BaseController
 				'sub_total' => $sub
 			]);
 
-
-			// Validate options
-			// Check that the option exists AND is related to the product we want to save
-			// Loop of the Product optionGroups and find one with same key as in post data option
-			// Loop of the optionGroup options and find one with same key as in post data option
-
-			// Validate personalisations
-			// * Same as options
-
 		}
 
 		// Save all cart items in one go.
+
 		$cartItem = new CartItem;
 		$cartItem->insert($cartItems);
 
@@ -122,28 +141,20 @@ class CartProductController extends BaseController
 
 
     private function getPersonalisations($product, $submittedPersonalisations) {
-		//if(isset($product->personalisations) && count($product->personalisations)) {
 
-    		// Get the personalisation values submitted & pair with DB data
-    		//if (isset($submittedPersonalisations) && count($submittedPersonalisations)) {
-    			$personalisations = $product->personalisations->filter(function ($m) use ($submittedPersonalisations) {
-    				if (isset($submittedPersonalisations[$m->id]) && $submittedPersonalisations[$m->id] != '') {
-    					return $m;
-    				}
-    			});
-    		//};
-    
-    		// Add personalisation values to product
-    		$personalisations->each(function ($m) use ($submittedPersonalisations) {
-    			$m->value = $submittedPersonalisations[$m->id];
-    		});
-    		
-    		return $personalisations;
-		
-		//} else {
-            //return null;
-        //}
-    }
+		$personalisations = $product->personalisations->filter(function ($m) use ($submittedPersonalisations) {
+			if (isset($submittedPersonalisations[$m->id]) && $submittedPersonalisations[$m->id] != '') {
+				return $m;
+			}
+		});
+
+		// Add personalisation values to product
+		$personalisations->each(function ($m) use ($submittedPersonalisations) {
+			$m->value = $submittedPersonalisations[$m->id];
+		});
+
+		return $personalisations;
+	}
 
 
 
@@ -163,8 +174,6 @@ class CartProductController extends BaseController
 	}
 
 
-
-
 	public function update($id, Request $request)
 	{
 
@@ -175,7 +184,6 @@ class CartProductController extends BaseController
 		return redirect()->route('shop.cart.index')->withInput(['success' => 'Product has been updated']);
 
 	}
-
 
 
 

@@ -26,6 +26,8 @@ class CreateProducts extends Migration {
             $table->decimal('height', 6, 2)->nullable();
             $table->decimal('length', 6, 2)->nullable();
             $table->integer('stock')->default(0);
+            $table->tinyInteger('allow_negative_stock')->default(0);
+            $table->tinyInteger('charge_shipping')->default(1);
             $table->tinyInteger('featured')->default(0);
             $table->tinyInteger('published')->default(1);
             $table->string('meta_title', 255);

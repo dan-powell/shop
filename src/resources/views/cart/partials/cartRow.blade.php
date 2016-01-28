@@ -36,7 +36,7 @@
     @if(isset($editable) && $editable)
         <td>
             <!-- Actions -->
-            <form action="{{ route('shop.cart.product.delete', $itemGroup->product->id) }}" method="POST">
+            <form action="{{ route('shop.cart.item.delete', $itemGroup->product->id) }}" method="POST">
                 {!! csrf_field() !!}
                 <input type="hidden" name="_method" value="DELETE">
                 <button class="btn btn-danger btn-xs">

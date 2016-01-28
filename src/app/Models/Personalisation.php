@@ -25,6 +25,26 @@ class Personalisation extends Model {
     public $timestamps = false;
 
 
+	public function getPriceModifierStringAttribute()
+	{
+		if ($this->price_modifier == 0 || $this->price_modifier == '') {
+			return 'free';
+		} elseif($this->price_modifier < 0) {
+			return '-' . config('shop.currency.symbol') . str_replace('-', '', $this->price_modifier);
+		} else {
+			return '+' . config('shop.currency.symbol') . $this->price_modifier;
+		}
+	}
+
+	public function getIsPriceModifierAttribute()
+	{
+		if ($this->price_modifier == 0 || $this->price_modifier == ''){
+			return false;
+		} else {
+			return true;
+		}
+	}
+
     // Relationships
 
 

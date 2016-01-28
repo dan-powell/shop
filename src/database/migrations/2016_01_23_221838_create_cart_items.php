@@ -15,6 +15,7 @@ class CreateCartItems extends Migration {
         Schema::create('cart_items', function($table)
         {
             $table->increments('id');
+            $table->timestamps();
             $table->integer('cart_id')->unsigned();
             $table->foreign('cart_id')->references('id')->on('carts')->onDelete('cascade');
             $table->integer('product_id')->unsigned();

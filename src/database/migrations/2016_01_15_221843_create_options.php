@@ -17,7 +17,8 @@ class CreateOptions extends Migration {
             $table->increments('id');
             $table->string('label', 255);
             $table->decimal('price_modifier', 8, 2)->default('0');
-            $table->tinyInteger('default');
+            $table->integer('rank')->default(0);
+            $table->integer('stock')->nullable();
             $table->integer('option_group_id')->unsigned();
             $table->foreign('option_group_id')->references('id')->on('option_groups')->onDelete('cascade');
         });
