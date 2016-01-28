@@ -45,8 +45,8 @@ trait CartTrait
 
                 // Only return items with options OR personalisations
                 if (
-                    (isset($item->options) && count(json_decode($item->options, true))) ||
-                    (isset($item->personalisations) && count(json_decode($item->personalisations, true)))
+                    (isset($item->options) && count($item->options)) ||
+                    (isset($item->personalisations) && count($item->personalisations))
                 ) {
                     return $item;
                 };

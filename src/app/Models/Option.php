@@ -24,7 +24,7 @@ class Option extends Model {
 
     public $timestamps = false;
 
-	protected $appends = [];
+	protected $appends = ['price_modifier_string'];
 
 	public function getPriceModifierStringAttribute()
 	{

@@ -34,6 +34,12 @@ class CartController extends BaseController
             'cartItems.product.images'
         ]);
 
+        // Decode serialised data
+        $cart->cartItems->each(function($cartItem) {
+            $cartItem->options = json_decode($cartItem->options, true);
+            $cartItem->personalisations = json_decode($cartItem->personalisations, true);
+        });
+
         // Group the items by product
         return view('shop::cart.index')->with([
             'items' => $cart->cartItems,

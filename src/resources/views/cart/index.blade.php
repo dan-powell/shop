@@ -60,9 +60,9 @@
                                                         <td>
                                                             @if(isset($item->options) && $item->options != '')
                                                             <ul>
-                                                                @foreach(json_decode($item->options, true) as $optionGroup)
+                                                                @foreach($item->options as $optionGroup)
 
-                                                                    <li><strong>{{ $optionGroup['title'] }}</strong>: {{ $optionGroup['option']['label'] }} <span class="badge">{{ $optionGroup['option']['price_modifier'] }}</span></li>
+                                                                    <li><strong>{{ $optionGroup['title'] }}</strong>: {{ $optionGroup['option']['label'] }} <span class="badge">{{ $optionGroup['option']['price_modifier_string'] }}</span></li>
                                                                 @endforeach
                                                             </ul>
                                                             @endif
@@ -70,7 +70,7 @@
                                                         <td>
                                                             @if(isset($item->personalisations) && $item->personalisations != '')
                                                             <ul>
-                                                                @foreach(json_decode($item->personalisations, true) as $personalisation)
+                                                                @foreach($item->personalisations as $personalisation)
                                                                     <li><strong>{{ $personalisation['label'] }}</strong>: {{ $personalisation['value'] }}</li>
                                                                 @endforeach
                                                             </ul>

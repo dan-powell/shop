@@ -34,10 +34,14 @@ class OrderController extends BaseController
     {
         $cart = $this->cartRepository->getCart(['cartItems.product']);
 
-        $itemsGrouped = $this->groupCartItemsByProduct($cart->cartItems);
+        // Decode serialised data
+        $cart->cartItems->each(function($cartItem) {
+            $cartItem->options = json_decode($cartItem->options, true);
+            $cartItem->personalisations = json_decode($cartItem->personalisations, true);
+        });
 
         return view('shop::order.create')->with([
-            'itemsGrouped' => $itemsGrouped,
+            'itemsGrouped' => $this->groupCartItemsByProduct($cart->cartItems),
             'total' => $this->getCartItemTotal($cart->cartItems),
             'shipping_types' => config('shop.shipping_types')
         ]);
@@ -60,7 +64,7 @@ class OrderController extends BaseController
         $order->save();
 
         return view('shop::order.confirm')->with([
-            'order' => $order,
+            'order' => $order
         ]);
         
     }
