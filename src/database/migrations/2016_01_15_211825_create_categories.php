@@ -15,7 +15,6 @@ class CreateCategories extends Migration {
         Schema::create('categories', function($table)
         {
             $table->increments('id');
-            $table->timestamps();
             $table->string('title', 255);
             $table->text('description');
             $table->string('slug', 80);
@@ -29,6 +28,8 @@ class CreateCategories extends Migration {
             $table->integer('lft')->nullable()->index();
             $table->integer('rgt')->nullable()->index();
             $table->integer('depth')->nullable();
+
+            $table->timestamps();
         });
 
 

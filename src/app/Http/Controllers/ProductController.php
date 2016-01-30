@@ -49,7 +49,7 @@ class ProductController extends BaseController
 
 		} else {
 
-			$product = $this->findItemOrFail($slug, ['images', 'related.images', 'optionGroups', 'personalisations']);
+			$product = $this->findItemOrFail($slug, ['images', 'related.images', 'options', 'extras.options']);
 
 			// Group images on product
 			$this->addImageTypes($product);

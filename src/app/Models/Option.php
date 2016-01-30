@@ -5,46 +5,38 @@ use Illuminate\Database\Eloquent\Model;
 class Option extends Model {
 
     protected $fillable = [
-        'label',
-        'price_modifier',
+		'title',
+		'type',
+		'config'
     ];
 
     public function rules()
 	{
 	    return [
-    	    'label' => 'required',
-			'price_modifier' => 'integer',
+    	    'title' => 'required',
+			'type' => 'required',
 	    ];
 	}
 
     protected $casts = [
         'id' => 'integer',
-		'price_modifier' => 'decimal',
+		'config' => 'array'
     ];
 
     public $timestamps = false;
 
-	protected $appends = ['price_modifier_string'];
 
-	public function getPriceModifierStringAttribute()
+	public function getConfigAttribute($value)
 	{
-		if ($this->price_modifier == 0 || $this->price_modifier == '') {
-			return 'free';
-		} elseif($this->price_modifier < 0) {
-			return '-' . config('shop.currency.symbol') . str_replace('-', '', $this->price_modifier);
-		} else {
-			return '+' . config('shop.currency.symbol') . $this->price_modifier;
-		}
+		return json_decode($value, true);
 	}
 
-	public function getIsPriceModifierAttribute()
+	public function setConfigAttribute($value)
 	{
-		if ($this->price_modifier == 0 || $this->price_modifier == ''){
-			return false;
-		} else {
-			return true;
-		}
+		return json_encode($value);
 	}
+
+
 
 
     // Relationships
@@ -53,9 +45,14 @@ class Option extends Model {
 
     // Inverse Relationships
 
-	public function optionGroup()
+	public function extra()
 	{
-		return $this->belongsTo('DanPowell\Shop\Models\optionGroup');
+		return $this->morphTo('DanPowell\Shop\Models\Extra', 'attachment_id', 'attachment_type');
+	}
+
+	public function product()
+	{
+		return $this->morphTo('DanPowell\Shop\Models\Product', 'attachment_id', 'attachment_type');
 	}
 
 }

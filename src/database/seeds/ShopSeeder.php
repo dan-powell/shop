@@ -48,8 +48,7 @@ class ShopSeeder extends Seeder
         DB::table('categories')->truncate();
         DB::table('product_categories')->truncate();
         DB::table('options')->truncate();
-        DB::table('option_groups')->truncate();
-        DB::table('personalisations')->truncate();
+        DB::table('extras')->truncate();
         DB::table('images')->truncate();
         DB::table('images_attachments')->truncate();
         DB::table('product_related')->truncate();

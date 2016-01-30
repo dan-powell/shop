@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class OptionGroup extends Model {
+class Extra extends Model {
 
     protected $fillable = [
         'title',
@@ -24,26 +24,23 @@ class OptionGroup extends Model {
 
 	public $timestamps = false;
 
-
 	public function getHasStockAttribute()
 	{
 		$bool = false;
 		foreach($this->options as $option) {
-			if($option->stock){
+			if($option->stock) {
 				$bool = true;
 			}
 		}
-
 		return $bool;
 	}
 
-
     // Relationships
 
-    public function options()
-    {
-        return $this->hasMany('DanPowell\Shop\Models\Option');
-    }
+	public function options()
+	{
+		return $this->morphMany('DanPowell\Shop\Models\Option', 'option', 'attachment_type', 'attachment_id');
+	}
 
     // Inverse Relationships
 

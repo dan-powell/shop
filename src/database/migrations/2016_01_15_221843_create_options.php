@@ -15,12 +15,12 @@ class CreateOptions extends Migration {
         Schema::create('options', function($table)
         {
             $table->increments('id');
-            $table->string('label', 255);
-            $table->decimal('price_modifier', 8, 2)->default('0');
-            $table->integer('rank')->default(0);
-            $table->integer('stock')->nullable();
-            $table->integer('option_group_id')->unsigned();
-            $table->foreign('option_group_id')->references('id')->on('option_groups')->onDelete('cascade');
+            $table->string('title', 255);
+            $table->text('type', 128);
+            $table->text('config');
+
+            $table->integer('attachment_id');
+            $table->string('attachment_type', 255);
         });
 
     }

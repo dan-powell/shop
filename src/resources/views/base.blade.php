@@ -106,5 +106,22 @@
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.1/holder.js"></script>
+
+<script>
+    // Control toggling of product extras
+    $(document).ready(function() {
+        $('.js-extra-toggle').on('change', function (e, data) {
+            var target = $(this).data("toggle-target");
+
+            if($(this).prop('checked')){//this is true if the switch is on
+                $(target).show();
+            }else{
+                $(target).hide();
+            }
+        });
+    });
+</script>
+
+
 </body>
 </html>

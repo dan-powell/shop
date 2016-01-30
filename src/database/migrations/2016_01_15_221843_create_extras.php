@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateOptionGroups extends Migration {
+class CreateExtras extends Migration {
 
     /**
      * Run the migrations.
@@ -12,15 +12,16 @@ class CreateOptionGroups extends Migration {
      */
     public function up()
     {
-        Schema::create('option_groups', function($table)
+        Schema::create('extras', function($table)
         {
             $table->increments('id');
-            $table->string('title', 255);
-            $table->text('type', 128);
-            $table->text('description');
-            $table->tinyInteger('allow_negative_stock')->default(0);
             $table->integer('product_id')->unsigned();
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->string('title', 255);
+            $table->decimal('price', 8, 2)->nullable();
+            $table->integer('stock')->nullable();
+            $table->tinyInteger('allow_negative_stock')->default(0);
+            $table->text('description');
         });
 
     }
@@ -32,7 +33,11 @@ class CreateOptionGroups extends Migration {
      */
     public function down()
     {
-        Schema::drop('option_groups');
+        Schema::table('extras', function($table) {
+            $table->dropForeign('extras_product_id_foreign');
+        });
+
+        Schema::drop('extras');
     }
 
 }

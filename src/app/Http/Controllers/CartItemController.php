@@ -34,7 +34,7 @@ class CartItemController extends BaseController
 		$cart = $this->cartRepository->getCart(['cartItems']);
 
 		// Find product to be added
-		$product = $this->productPublicRepository->getById($request->get('product_id'), ['optionGroups.options', 'personalisations']);
+		$product = $this->productPublicRepository->getById($request->get('product_id'), ['extras.options', 'options']);
 
 
 
@@ -44,14 +44,27 @@ class CartItemController extends BaseController
 
 
 
+		//$options = $this->getOptions($product, $request->get('option'));
 
-		$item = new Collection;
+		$submittedOptions = $request->get('option');
+		$product->options->each(function ($option) use ($submittedOptions) {
+			if (isset($submittedOptions[$option->id]) && $submittedOptions[$option->id] != '') {
+				$option->value = $submittedOptions[$option->id];
+			}
+		});
 
-		$options = $this->getOptions($product, $request->get('optionGroup'));
+		$submittedExtras = $request->get('extra');
+		$product->extras = $product->extras->filter(function ($extra) use ($submittedExtras) {
+			if (isset($submittedExtras[$extra->id]) && $submittedExtras[$extra->id] != '') {
+				return $extra;
+			}
+		});
 
-        $personalisations = $this->getPersonalisations($product, $request->get('personalisation'));
-
-        //$sub = $this->calcSub($product, $options);
+		$product->extras->each(function ($extra) use ($submittedOptions) {
+			$extra->options->each(function ($option) use ($submittedOptions) {
+				$option->value = $submittedOptions[$option->id];
+			});
+		});
 
 
 		// Find all items of the same product
@@ -79,12 +92,12 @@ class CartItemController extends BaseController
 			}
 		}
 
-		foreach ($options as $option) {
-			if (!$option->allow_negative_stock && isset($option->option->stock) && $totalquantity > $option->option->stock) {
-				dd('too many options!');
-				return redirect()->route('shop.product.show', $product->slug);
-			}
-		}
+//		foreach ($options as $option) {
+//			if (!$option->allow_negative_stock && isset($option->option->stock) && $totalquantity > $option->option->stock) {
+//				dd('too many options!');
+//				return redirect()->route('shop.product.show', $product->slug);
+//			}
+//		}
 
 
 
@@ -93,8 +106,8 @@ class CartItemController extends BaseController
 		$findItem = CartItem::where([
 			'cart_id' => $cart->id,
 			'product_id' => $product->id,
-			'options' => $options->toJson(),
-			'personalisations' => $personalisations->toJson()
+			'options' => $product->options,
+			'extras' => $product->extras
 		])->increment('quantity', $request->get('quantity'));
 
 		// If we did'nt found the same item...
@@ -105,9 +118,8 @@ class CartItemController extends BaseController
 			$cartItem->fill([
 				'cart_id' => $cart->id,
 				'product_id' => $product->id,
-				'options' => $options->toJson(),
-				'personalisations' => $personalisations->toJson(),
-				'sub_total' => 0,
+				'options' => $product->options,
+				'extras' => $product->extras,
 				'quantity' => $request->get('quantity')
 			]);
 
@@ -123,48 +135,21 @@ class CartItemController extends BaseController
 
 
 
-    private function getOptions($product, $submittedOptionGroups) {
-        
-        //if(isset($product->optionGroups) && count($product->optionGroups)) {
 
-    		// Filter out optionGroups that don't have options
-    		$optionGroups = $product->optionGroups->filter(function ($m) {
-    			if (isset($m->options) && count($m->options)) {
-    				return $m;
-    			};
-    		});
+    private function getExtras($product, $submittedExtras) {
 
-    		// Get the chosen options and their values
-    		$optionGroups->each(function ($m) use ($submittedOptionGroups) {
-    			if (isset($submittedOptionGroups[$m->id]) && $submittedOptionGroups[$m->id] != '') {
-    				$m->option = $m->options->keyBy('id')->get($submittedOptionGroups[$m->id]);
-    			}
-    		});
-    		
-    		return $optionGroups;
-            
-        //} else {
-        //    return null;
-        //}
-        
-        
-    }
-
-
-    private function getPersonalisations($product, $submittedPersonalisations) {
-
-		$personalisations = $product->personalisations->filter(function ($m) use ($submittedPersonalisations) {
-			if (isset($submittedPersonalisations[$m->id]) && $submittedPersonalisations[$m->id] != '') {
+		$extras = $product->extras->filter(function ($m) use ($submittedExtras) {
+			if (isset($submittedExtras[$m->id]) && $submittedExtras[$m->id] != '') {
 				return $m;
 			}
 		});
 
 		// Add personalisation values to product
-		$personalisations->each(function ($m) use ($submittedPersonalisations) {
-			$m->value = $submittedPersonalisations[$m->id];
+		$extras->each(function ($m) use ($submittedExtras) {
+			$m->value = $submittedExtras[$m->id];
 		});
 
-		return $personalisations;
+		return $extras;
 	}
 
 

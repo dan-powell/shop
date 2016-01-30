@@ -48,7 +48,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>Options</th>
-                                                    <th>Personalisations</th>
+                                                    <th>Extras</th>
                                                     <th>Quantity</th>
                                                     <th>Options Total</th>
                                                     <th>Actions</th>
@@ -62,18 +62,37 @@
                                                         <td>
                                                             @if(isset($item->options) && $item->options != '')
                                                             <ul>
-                                                                @foreach($item->options as $optionGroup)
+                                                                @foreach($item->options as $option)
 
-                                                                    <li><strong>{{ $optionGroup['title'] }}</strong>: {{ $optionGroup['option']['label'] }} <span class="badge">{{ $optionGroup['option']['price_modifier_string'] }}</span></li>
+                                                                    <li>
+                                                                        <strong>{{ $option['title'] }}: </strong>
+                                                                        {{ $option['value'] }}
+                                                                    </li>
                                                                 @endforeach
                                                             </ul>
                                                             @endif
                                                         </td>
                                                         <td>
-                                                            @if(isset($item->personalisations) && $item->personalisations != '')
+                                                            @if(isset($item->extras) && $item->extras != '')
                                                             <ul>
-                                                                @foreach($item->personalisations as $personalisation)
-                                                                    <li><strong>{{ $personalisation['label'] }}</strong>: {{ $personalisation['value'] }}</li>
+                                                                @foreach($item->extras as $extra)
+                                                                    <li><strong>{{ $extra['title'] }}</strong> <span class="badge">{{ $extra['price'] }}</span>
+
+
+                                                                        @if(isset($extra['options']) && count($extra['options']))
+                                                                            <ul>
+                                                                                @foreach($extra['options'] as $option)
+                                                                                    <li>
+                                                                                        <strong>{{ $option['title'] }}: </strong>
+                                                                                        {{ $option['value'] }}
+                                                                                    </li>
+                                                                                @endforeach
+                                                                            </ul>
+                                                                        @endif
+
+
+
+                                                                    </li>
                                                                 @endforeach
                                                             </ul>
                                                             @endif

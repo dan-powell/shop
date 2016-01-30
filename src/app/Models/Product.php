@@ -160,6 +160,8 @@ class Product extends Model {
 
 
 
+
+
 	// Scopes
 
 	public function scopePublished($query)
@@ -175,24 +177,19 @@ class Product extends Model {
 
 	// Relationships
 
-	public function optionGroups()
+	public function extras()
 	{
-		return $this->hasMany('DanPowell\Shop\Models\OptionGroup', 'product_id')->with(['options']);
+		return $this->hasMany('DanPowell\Shop\Models\Extra', 'product_id')->with(['options']);
 	}
 
-	public function personalisations()
+	public function options()
 	{
-		return $this->hasMany('DanPowell\Shop\Models\Personalisation', 'product_id');
+		return $this->morphMany('DanPowell\Shop\Models\Option', 'option', 'attachment_type', 'attachment_id');
 	}
 
 	public function images()
 	{
 		return $this->morphToMany('DanPowell\Shop\Models\Image', 'images_attachments')->withPivot('image_type');
-	}
-
-	public function cartProducts()
-	{
-		return $this->hasMany('DanPowell\Shop\Models\cartProduct', 'product_id');
 	}
 
 	public function cartItems()

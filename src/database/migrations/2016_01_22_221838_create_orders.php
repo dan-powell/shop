@@ -15,7 +15,6 @@ class CreateOrders extends Migration {
         Schema::create('orders', function($table)
         {
             $table->increments('id');
-            $table->timestamps();
             $table->string('session_id', 255);
             $table->text('cart');
             $table->integer('status')->default(0);
@@ -40,6 +39,7 @@ class CreateOrders extends Migration {
             $table->string('email', 255);
             $table->text('notes');
             $table->text('instructions');
+            $table->timestamps();
         });
 
         $setIncrement = "ALTER TABLE orders AUTO_INCREMENT = " . rand(1000, 5000) . ";";

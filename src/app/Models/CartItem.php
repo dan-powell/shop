@@ -8,8 +8,7 @@ class CartItem extends Model {
 		'product_id',
 		'cart_id',
 		'options',
-		'personalisations',
-		'sub_total',
+		'extras',
 		'quantity'
     ];
 
@@ -17,21 +16,32 @@ class CartItem extends Model {
 	{
 
 		$arr = [];
-		foreach($product->optionGroups as $optionGroup) {
-			if(isset($optionGroup->options) && count($optionGroup->options)) {
-				$txt = '';
-				foreach($optionGroup->options as $option) {
-					$txt .= $option->id . ',';
-				};
-				$arr['optionGroup.' . $optionGroup->id] = 'integer|required|in:' . $txt;
-			}
-		}
 
-		if(isset($product->personalisations) && count($product->personalisations)) {
-			foreach($product->personalisations as $personalisation) {
-				$arr['personalisation.' . $personalisation->id] = 'string';
+		// Validate the product options (Make sure they're legit values)
+		foreach($product->options as $option) {
+			// This should only apply to radios and selects where values are pre-defined
+			if($option->type == 'radio' || $option->type == 'select') {
+				$txt = '';
+				foreach ($option->config as $value) {
+					$txt .= $value . ',';
+				}
+				$arr['option.' . $option->id] = 'string|required|in:' . $txt;
 			}
-		}
+		};
+
+		// Validate the Extra options (Make sure they're legit values)
+		foreach($product->extras as $extra) {
+			foreach($extra->options as $option) {
+				// This should only apply to radios and selects where values are pre-defined
+				if ($option->type == 'radio' || $option->type == 'select') {
+					$txt = '';
+					foreach ($option->config as $value) {
+						$txt .= $value . ',';
+					}
+					$arr['option.' . $option->id] = 'string|in:' . $txt;
+				}
+			}
+		};
 
 		$arr['quantity'] = 'required|integer|max:800';
 
@@ -46,15 +56,20 @@ class CartItem extends Model {
 
 	protected $appends = ['sub_total_string'];
 
+
+
 	public function getSubTotalAttribute()
 	{
 
-		$arr = [$this->product->price];
-		foreach($this->options as $option) {
-			array_push($arr, $option['option']['price_modifier']);
-		}
+//		$arr = [$this->product->price];
+//		foreach($this->options as $option) {
+//			array_push($arr, $option['option']['price_modifier']);
+//		}
+
+		return '';
 
 		return array_sum($arr) * $this->quantity;
+
 
 	}
 
@@ -63,7 +78,25 @@ class CartItem extends Model {
 		return config('shop.currency.symbol') . $this->sub_total;
 	}
 
+	public function getOptionsAttribute($value)
+	{
+		return json_decode($value, true);
+	}
 
+	public function setOptionsAttribute($value)
+	{
+		$this->attributes['options'] = json_encode($value);
+	}
+
+	public function getExtrasAttribute($value)
+	{
+		return json_decode($value, true);
+	}
+
+	public function setExtrasAttribute($value)
+	{
+		$this->attributes['extras'] = json_encode($value);
+	}
 
 	// Relationships
 

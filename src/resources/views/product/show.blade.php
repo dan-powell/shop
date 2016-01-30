@@ -85,17 +85,30 @@
                     </div>
 
                     <div class="panel-body">
-                        @if(isset($product->optionGroups) && count($product->optionGroups))
+                        @if(isset($product->options) && count($product->options))
                             <h4><strong>Options</strong></h4>
-                            @foreach($product->optionGroups as $optionGroup)
-                                @include('shop::optionGroups.types.' . $optionGroup->type, ['optionGroup' => $optionGroup])
+                            @foreach($product->options as $option)
+                                @include('shop::options.types.' . $option->type, ['option' => $option])
                             @endforeach
                         @endif
 
-                        @if(isset($product->personalisations) && count($product->personalisations))
-                            <h4><strong>Personalisations</strong></h4>
-                            @foreach($product->personalisations as $personalisation)
-                                @include('shop::personalisations.types.' . $personalisation->type, ['personalisation' => $personalisation])
+                        @if(isset($product->extras) && count($product->extras))
+                            <h4><strong>Extras</strong></h4>
+                            @foreach($product->extras as $extra)
+
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="extra[{{ $extra->id }}]" id="extra{{ $extra->id }}" class="js-extra-toggle" data-toggle-target=".js-extra-{{$extra->id}}"/>
+                                        {{ $extra->title}}
+                                    </label>
+                                </div>
+
+                                <div class="extras js-extra-{{$extra->id}}" style="display: none;">
+                                    @foreach($extra->options as $option)
+                                        @include('shop::options.types.' . $option->type, ['option' => $option])
+                                    @endforeach
+                                </div>
+
                             @endforeach
                         @endif
                     </div>

@@ -15,11 +15,11 @@ class CreateImages extends Migration {
         Schema::create('images', function($table)
         {
             $table->increments('id');
-            $table->timestamps();
             $table->string('title', 255);
             $table->string('path', 255);
             $table->string('filename', 255);
             $table->string('alt', 255);
+            $table->timestamps();
         });
 
         Schema::create('images_attachments', function($table)

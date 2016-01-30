@@ -15,7 +15,6 @@ class CreateProducts extends Migration {
         Schema::create('products', function($table)
         {
             $table->increments('id');
-            $table->timestamps();
             $table->string('title', 255);
             $table->text('description');
             $table->string('slug', 80);
@@ -33,6 +32,7 @@ class CreateProducts extends Migration {
             $table->string('meta_title', 255);
             $table->string('meta_description', 255);
             $table->integer('rank')->default(0);
+            $table->timestamps();
         });
 
 
