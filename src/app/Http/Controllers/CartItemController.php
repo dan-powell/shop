@@ -1,32 +1,38 @@
 <?php namespace DanPowell\Shop\Http\Controllers;
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
+use DanPowell\Shop\Repositories\CartItemRepository;
 use DanPowell\Shop\Repositories\CartRepository;
 use DanPowell\Shop\Repositories\ProductPublicRepository;
 
 use Illuminate\Foundation\Validation\ValidatesRequests;
-
-use DanPowell\Shop\Models\CartItem;
-
-
-use Illuminate\Support\MessageBag;
 
 class CartItemController extends BaseController
 {
 
 	use ValidatesRequests;
 
+	protected $repository;
 	protected $cartRepository;
 	protected $productPublicRepository;
 
-	public function __construct(CartRepository $CartRepository, ProductPublicRepository $ProductPublicRepository)
+	/**
+	 * CartItemController constructor.
+	 * @param CartRepository $CartRepository
+	 * @param ProductPublicRepository $ProductPublicRepository
+	 */
+	public function __construct(CartItemRepository $CartItemRepository, CartRepository $CartRepository, ProductPublicRepository $ProductPublicRepository)
 	{
+		$this->repository = $CartItemRepository;
 		$this->cartRepository = $CartRepository;
 		$this->productPublicRepository = $ProductPublicRepository;
 	}
 
+	/**
+	 * @param Request $request
+	 * @return \Illuminate\Http\RedirectResponse
+	 */
 	public function store(Request $request)
 	{
 
@@ -37,29 +43,28 @@ class CartItemController extends BaseController
 		$product = $this->productPublicRepository->getById($request->get('product_id'), ['extras.options', 'options']);
 
 
-
 		// Validate input
-		$this->validate($request, CartItem::rules($product));
+		$modelValidation = $this->repository->getRules($product);
+		$this->validate($request, $modelValidation['rules'], $modelValidation['messages']);
 
 
-
-
-		//$options = $this->getOptions($product, $request->get('option'));
-
+		// Set the Product option values
 		$submittedOptions = $request->get('option');
 		$product->options->each(function ($option) use ($submittedOptions) {
-			if (isset($submittedOptions[$option->id]) && $submittedOptions[$option->id] != '') {
+			if (isset($submittedOptions[$option->id])) {
 				$option->value = $submittedOptions[$option->id];
 			}
 		});
 
+		// Set the Extras (filter out extras user has not selected)
 		$submittedExtras = $request->get('extra');
 		$product->extras = $product->extras->filter(function ($extra) use ($submittedExtras) {
-			if (isset($submittedExtras[$extra->id]) && $submittedExtras[$extra->id] != '') {
+			if (isset($submittedExtras[$extra->id])) {
 				return $extra;
 			}
 		});
 
+		// Set the chosen Extras values
 		$product->extras->each(function ($extra) use ($submittedOptions) {
 			$extra->options->each(function ($option) use ($submittedOptions) {
 				$option->value = $submittedOptions[$option->id];
@@ -67,110 +72,146 @@ class CartItemController extends BaseController
 		});
 
 
-		// Find all items of the same product
-		$findItem = $cart->cartItems->where(
-			'product_id', '=', $product->id
-		)->all();
+		// Find all items of the same product, so we can calculate the total quantity in the cart
+		$totalquantity = $this->getProductQuantityInCart($product->id) + $request->get('quantity');
 
-		// Get the total quantity of product in the cart
-		if($findItem) {
-			$totalquantity = $request->get('quantity');
-			// Sum all cart items linked to product
-			foreach($findItem as $item) {
-				$totalquantity += $item->quantity;
-			}
-		} else {
-			$totalquantity = $request->get('quantity');
+
+		// Check product stock
+		if(!$this->checkProductStock($product, $totalquantity)) {
+			dd('too many!');
+			return redirect()->route('shop.product.show', $product->slug);
+		}
+
+		// Check product extras stock
+		if(!$this->checkProductExtrasStock($product, $totalquantity)) {
+			dd('too many extras!');
+			return redirect()->route('shop.product.show', $product->slug);
 		}
 
 
-		// Check stock
-		if(!$product->allow_negative_stock) {
-			if($totalquantity > $product->stock) {
-				dd('too many!');
-				return redirect()->route('shop.product.show', $product->slug);
-			}
-		}
-
-
-		// Check extras stock
-		foreach ($product->extras as $extra) {
-			if (!$extra->allow_negative_stock && isset($extra->stock) && $totalquantity > $extra->stock) {
-				dd('too many options!');
-				return redirect()->route('shop.product.show', $product->slug);
-			}
-		}
-
-
-
-		// Check if this item config is already saved & update quantity...
-		$findItem = CartItem::where([
+		$fill = [
 			'cart_id' => $cart->id,
 			'product_id' => $product->id,
 			'options' => $product->options,
 			'extras' => $product->extras
-		])->increment('quantity', $request->get('quantity'));
+		];
 
-		// If we did'nt found the same item...
+		// Check if this item config is already saved & update quantity...
+		$findItem = $this->repository->incrementQuantity($fill, $request->get('quantity'));
+
+		// ...otherwise, if no matching items were found...
 		if(!$findItem) {
-
-			// .. Save a new item
-			$cartItem = new CartItem;
-			$cartItem->fill([
-				'cart_id' => $cart->id,
-				'product_id' => $product->id,
-				'options' => $product->options,
-				'extras' => $product->extras,
-				'quantity' => $request->get('quantity')
-			]);
-
-			$cartItem->save();
-
+			$fill['quantity'] = $request->get('quantity');
+			$this->repository->create($fill);
 		}
 
-
-
+		// Take user to cart
 		return redirect()->route('shop.cart.index');
 	}
 
 
-	private function calcSub($product, $options)
-	{
-
-		$addMeUp = [];
-
-		// Add the base item price
-		array_push($addMeUp, $product->price);
-				
-		foreach($options as $optionGroup) {
-			array_push($addMeUp, $optionGroup->option->price_modifier);
-		}
-
-		return array_sum($addMeUp);
-	}
-
-
+	/**
+	 * @param $id
+	 * @param Request $request
+	 * @return $this
+	 */
 	public function update($id, Request $request)
 	{
 
-		$this->destroy($id, $request);
+		$this->validate($request, ['quantity' => 'required|integer|min:1|max:99']);
 
-		$this->store($request);
+
+		$item =  $this->repository->getById($id, ['product.extras']);
+
+		// Set the Extras (filter out extras user has not selected)
+		$item->product->extras = $item->product->extras->filter(function ($extra) use ($item) {
+			foreach($item->extras as $itemExtra) {
+				if ($itemExtra['id'] == $extra->id) {
+					return $extra;
+				}
+			}
+		});
+
+		$totalquantity = ($this->getProductQuantityInCart($item->product->id) + $request->get('quantity')) - $item->quantity;
+
+		// Check product stock
+		if(!$this->checkProductStock($item->product, $totalquantity)) {
+			dd('too many!');
+			return redirect()->route('shop.cart.index');
+		}
+
+		// Check product extras stock
+		if(!$this->checkProductExtrasStock($item->product, $totalquantity)) {
+			dd('too many extras!');
+			return redirect()->route('shop.cart.index');
+		}
+
+		// Find & update the item
+		$this->repository->update($id, $request->get('quantity'));
 
 		return redirect()->route('shop.cart.index')->withInput(['success' => 'Product has been updated']);
 
 	}
 
-
-	public function destroy($id, Request $request)
+	/**
+	 * @param $id
+	 * @param Request $request
+	 * @return $this
+	 */
+	public function destroy($id)
 	{
-		$cart = $this->cartRepository->getCart(['cartItems.product']);
 
-		CartItem::where('cart_id', '=', $cart->id)->where('id', '=', $id)->delete();
+		$this->repository->delete($id);
 
 		return redirect()->route('shop.cart.index', 301)->withInput(['warning' => 'Item has been removed from your cart']);
 	}
 
+
+	private function getProductQuantityInCart($product_id) {
+
+
+		// Find all items of the same product, so we can calculate the total quantity in the cart
+		$items = $this->repository->cart->cartItems->where(
+			'product_id', $product_id
+		)->all();
+
+		// Get the total quantity of product in the cart
+		if($items) {
+			$quantity = 0;
+			// Sum all cart items linked to product
+			foreach($items as $item) {
+				$quantity += $item->quantity;
+			}
+
+			return $quantity;
+
+		} else {
+			return 0;
+		}
+
+	}
+
+
+	private function checkProductStock($product, $quantity) {
+		$bool = true;
+		if(!$product->allow_negative_stock) {
+			if($quantity > $product->stock) {
+				$bool = false;
+			}
+		}
+		return $bool;
+	}
+
+	private function checkProductExtrasStock($product, $quantity)
+	{
+		$bool = true;
+		foreach ($product->extras as $extra) {
+			if (!$extra->allow_negative_stock && isset($extra->stock) && $quantity > $extra->stock) {
+				$bool = false;
+			}
+		}
+		return $bool;
+	}
 
 
 }

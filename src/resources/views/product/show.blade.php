@@ -48,10 +48,6 @@
         </div>
         <div class="col-sm-6">
 
-            @if(count($errors))
-            {{ print_r($errors) }}
-            @endif
-
             <form action="{{ route('shop.cart.item.store') }}" method="post">
 
                 {!! csrf_field() !!}
@@ -98,12 +94,12 @@
 
                                 <div class="checkbox">
                                     <label>
-                                        <input type="checkbox" name="extra[{{ $extra->id }}]" id="extra{{ $extra->id }}" class="js-extra-toggle" data-toggle-target=".js-extra-{{$extra->id}}"/>
+                                        <input type="checkbox" name="extra[{{ $extra->id }}]" id="extra{{ $extra->id }}" class="js-extra-toggle" data-toggle-target=".js-extra-{{$extra->id}}" @if(old('extra.' . $extra->id))checked @endif"/>
                                         {{ $extra->title}}
                                     </label>
                                 </div>
 
-                                <div class="extras js-extra-{{$extra->id}}" style="display: none;">
+                                <div class="extras js-extra-{{$extra->id}}">
                                     @foreach($extra->options as $option)
                                         @include('shop::options.types.' . $option->type, ['option' => $option])
                                     @endforeach
@@ -114,12 +110,17 @@
                     </div>
 
                     <div class="panel-body">
-                        <label for="quantity">Quantity</label>
-                        <select class="form-control" name="quantity" id="quantity">
-                            @for($i=1; $i<11; $i++)
-                                <option value="{{ $i }}">{{ $i }}</option>
-                            @endfor
-                        </select>
+                        <div class="form-group {{ $errors->has('quantity') ? 'has-error' : '' }}">
+                            <label for="quantity" class="control-label">Quantity</label>
+                            <input type="number" class="form-control" name="quantity" id="quantity"
+                                @if(old('quantity'))
+                                    value="{{ old('quantity') }}"
+                                @else
+                                   value="1"
+                                @endif
+                            />
+                            {!! $errors->first('quantity', '<p class="help-block">:message</p>') !!}
+                        </div>
                     </div>
 
                     <div class="panel-footer clearfix">

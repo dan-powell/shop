@@ -179,7 +179,7 @@ class Product extends Model {
 
 	public function extras()
 	{
-		return $this->hasMany('DanPowell\Shop\Models\Extra', 'product_id')->with(['options']);
+		return $this->hasMany('DanPowell\Shop\Models\Extra', 'product_id');
 	}
 
 	public function options()

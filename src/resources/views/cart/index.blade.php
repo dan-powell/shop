@@ -21,6 +21,16 @@
         <div class="row">
             <div class="col-sm-12">
 
+                @if(isset($errors) && count($errors->all()))
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                 <h4>All Items</h4>
                 <table class="table table-bordered table-striped">
                     <thead>
@@ -50,7 +60,7 @@
                                                     <th>Options</th>
                                                     <th>Extras</th>
                                                     <th>Quantity</th>
-                                                    <th>Options Total</th>
+                                                    <th>Line Total</th>
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
@@ -63,7 +73,6 @@
                                                             @if(isset($item->options) && $item->options != '')
                                                             <ul>
                                                                 @foreach($item->options as $option)
-
                                                                     <li>
                                                                         <strong>{{ $option['title'] }}: </strong>
                                                                         {{ $option['value'] }}
@@ -99,9 +108,17 @@
                                                         </td>
 
                                                         <td>
-                                                            {{ $item->quantity }}
+                                                            <form class="" action="{{ route('shop.cart.item.update', $item->id) }}" method="POST">
+                                                                {!! csrf_field() !!}
+                                                                <input type="hidden" name="_method" value="PUT">
+                                                                <div class="form-group form-group-sm">
+                                                                    <div class="col-xs-6">
+                                                                        <input type="number" name="quantity" id="quantity" value="{{ $item->quantity }}" class="form-control"/>
+                                                                    </div>
+                                                                </div>
+                                                                <button type="submit" class="btn btn-default btn-xs">Update</button>
+                                                            </form>
                                                         </td>
-
 
                                                         <td>
                                                             {{ $item->sub_total_string }}
@@ -142,7 +159,6 @@
 
                         </tr>
 
-
                     </tbody>
                 </table>
             </div>
@@ -153,35 +169,4 @@
         </a>
 
     @endif
-
-
-
-
-    @if(isset($cart))
-        <hr/>
-
-        <a class="btn btn-primary" role="button" data-toggle="collapse" href="#modelArray" aria-expanded="false" aria-controls="modelArray">
-            Display Model Array
-        </a>
-        <div class="collapse" id="modelArray">
-            <pre class="">
-                {{ var_dump($cart->toArray()) }}
-            </pre>
-        </div>
-    @endif
-
-
-    @if(isset($data))
-        <hr/>
-
-        <a class="btn btn-danger" role="button" data-toggle="collapse" href="#modelArray" aria-expanded="false" aria-controls="modelArray">
-            Display Data Dump
-        </a>
-        <div class="collapse" id="modelArray">
-            <pre class="">
-                {{ var_dump($data) }}
-            </pre>
-        </div>
-    @endif
-
 @stop

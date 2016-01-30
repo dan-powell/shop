@@ -110,7 +110,20 @@
 <script>
     // Control toggling of product extras
     $(document).ready(function() {
-        $('.js-extra-toggle').on('change', function (e, data) {
+
+        var el = document.querySelectorAll('.js-extra-toggle');
+
+        for(var i=0; i < el.length; i++) {
+            if($(el[i]).prop('checked')){//this is true if the switch is on
+                var target = $(el[i]).data("toggle-target");
+                $(target).show();
+            }else{
+                var target = $(el[i]).data("toggle-target");
+                $(target).hide();
+            }
+        }
+
+        $('.js-extra-toggle').on('change', function () {
             var target = $(this).data("toggle-target");
 
             if($(this).prop('checked')){//this is true if the switch is on
