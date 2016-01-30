@@ -46,13 +46,26 @@ class CartItem extends Model {
 
 	protected $appends = ['sub_total_string'];
 
+	public function getSubTotalAttribute()
+	{
+
+		$arr = [$this->product->price];
+		foreach($this->options as $option) {
+			array_push($arr, $option['option']['price_modifier']);
+		}
+
+		return array_sum($arr) * $this->quantity;
+
+	}
+
 	public function getSubTotalStringAttribute()
 	{
 		return config('shop.currency.symbol') . $this->sub_total;
 	}
 
 
-    // Relationships
+
+	// Relationships
 
 
     // Inverse Relationships

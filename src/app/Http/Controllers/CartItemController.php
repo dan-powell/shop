@@ -51,7 +51,7 @@ class CartItemController extends BaseController
 
         $personalisations = $this->getPersonalisations($product, $request->get('personalisation'));
 
-        $sub = $this->calcSub($product, $options);
+        //$sub = $this->calcSub($product, $options);
 
 
 		// Find all items of the same product
@@ -94,8 +94,7 @@ class CartItemController extends BaseController
 			'cart_id' => $cart->id,
 			'product_id' => $product->id,
 			'options' => $options->toJson(),
-			'personalisations' => $personalisations->toJson(),
-			'sub_total' => $sub,
+			'personalisations' => $personalisations->toJson()
 		])->increment('quantity', $request->get('quantity'));
 
 		// If we did'nt found the same item...
@@ -108,7 +107,7 @@ class CartItemController extends BaseController
 				'product_id' => $product->id,
 				'options' => $options->toJson(),
 				'personalisations' => $personalisations->toJson(),
-				'sub_total' => $sub,
+				'sub_total' => 0,
 				'quantity' => $request->get('quantity')
 			]);
 
