@@ -34,15 +34,9 @@ class OrderController extends BaseController
     {
         $cart = $this->cartRepository->getCart(['cartItems.product']);
 
-        // Decode serialised data
-        $cart->cartItems->each(function($cartItem) {
-            $cartItem->options = json_decode($cartItem->options, true);
-            $cartItem->personalisations = json_decode($cartItem->personalisations, true);
-        });
-
         return view('shop::order.create')->with([
             'itemsGrouped' => $this->groupCartItemsByProduct($cart->cartItems),
-            'total' => $this->getCartItemTotal($cart->cartItems),
+            'total' => $this->getCartTotal($cart->cartItems),
             'shipping_types' => config('shop.shipping_types')
         ]);
         
@@ -58,7 +52,7 @@ class OrderController extends BaseController
 
         $order->fill([
             'cart' => $cart->toJson(),
-            'total' => $this->getCartItemTotal($cart->cartItems)
+            'total' => $this->getCartTotal($cart->cartItems)
         ]);
 
         $order->save();
@@ -96,7 +90,7 @@ class OrderController extends BaseController
 
         $response = \Omnipay::purchase([
             'currency' => 'GBP',
-            'amount'    => '100.00',
+            'amount'    => $this->getCartTotal($cart->cartItems),
             'returnUrl' => 'http://google.co.uk',
             'cancelUrl' => 'http://google.co.uk',
             'description' => $desc,

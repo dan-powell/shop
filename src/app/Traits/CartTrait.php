@@ -44,7 +44,7 @@ trait CartTrait
             };
             $itemGroup->sub_total = array_sum($sub_total);
 
-            $itemGroup->sub_total_string = config('shop.currency.symbol') . $itemGroup->sub_total;
+            $itemGroup->sub_total_string = config('shop.currency.symbol') . number_format($itemGroup->sub_total, 2);
 
             // Filter the items so only those with option/products are displayed
 //            $itemGroup->cartItems = $itemGroup->filter(function ($item) {

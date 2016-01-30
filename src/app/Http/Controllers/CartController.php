@@ -35,7 +35,7 @@ class CartController extends BaseController
         // Group the items by product
         return view('shop::cart.index')->with([
             'items' => $cart->cartItems,
-            'total' => config('shop.currency.symbol') . $this->getCartTotal($cart->cartItems),
+            'total' => config('shop.currency.symbol') . number_format($this->getCartTotal($cart->cartItems), 2),
             'itemsGrouped' => $this->groupCartItemsByProduct($cart->cartItems)
         ]);
     }

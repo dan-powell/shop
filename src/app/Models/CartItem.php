@@ -61,12 +61,10 @@ class CartItem extends Model {
 	public function getSubTotalAttribute()
 	{
 
-//		$arr = [$this->product->price];
-//		foreach($this->options as $option) {
-//			array_push($arr, $option['option']['price_modifier']);
-//		}
-
-		return '';
+		$arr = [$this->product->price];
+		foreach($this->extras as $extra) {
+			array_push($arr, $extra['price']);
+		}
 
 		return array_sum($arr) * $this->quantity;
 
@@ -75,7 +73,7 @@ class CartItem extends Model {
 
 	public function getSubTotalStringAttribute()
 	{
-		return config('shop.currency.symbol') . $this->sub_total;
+		return config('shop.currency.symbol') . number_format($this->sub_total, 2);
 	}
 
 	public function getOptionsAttribute($value)

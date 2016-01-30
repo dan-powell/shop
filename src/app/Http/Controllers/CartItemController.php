@@ -92,13 +92,14 @@ class CartItemController extends BaseController
 			}
 		}
 
-//		foreach ($options as $option) {
-//			if (!$option->allow_negative_stock && isset($option->option->stock) && $totalquantity > $option->option->stock) {
-//				dd('too many options!');
-//				return redirect()->route('shop.product.show', $product->slug);
-//			}
-//		}
 
+		// Check extras stock
+		foreach ($product->extras as $extra) {
+			if (!$extra->allow_negative_stock && isset($extra->stock) && $totalquantity > $extra->stock) {
+				dd('too many options!');
+				return redirect()->route('shop.product.show', $product->slug);
+			}
+		}
 
 
 
@@ -131,27 +132,6 @@ class CartItemController extends BaseController
 
 		return redirect()->route('shop.cart.index');
 	}
-
-
-
-
-
-    private function getExtras($product, $submittedExtras) {
-
-		$extras = $product->extras->filter(function ($m) use ($submittedExtras) {
-			if (isset($submittedExtras[$m->id]) && $submittedExtras[$m->id] != '') {
-				return $m;
-			}
-		});
-
-		// Add personalisation values to product
-		$extras->each(function ($m) use ($submittedExtras) {
-			$m->value = $submittedExtras[$m->id];
-		});
-
-		return $extras;
-	}
-
 
 
 	private function calcSub($product, $options)
