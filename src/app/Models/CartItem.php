@@ -5,9 +5,12 @@ use Illuminate\Database\Eloquent\Model;
 class CartItem extends Model {
 
     protected $fillable = [
+		'product_id',
+		'cart_id',
 		'options',
 		'personalisations',
-		'sub_total'
+		'sub_total',
+		'quantity'
     ];
 
     public static function rules($product)
@@ -30,15 +33,23 @@ class CartItem extends Model {
 			}
 		}
 
-		$arr['quantity'] = 'required|integer|max:10';
+		$arr['quantity'] = 'required|integer|max:800';
 
 	    return $arr;
 	}
 
     protected $casts = [
         'id' => 'integer',
-        'sub_total' => 'decimal'
+        'sub_total' => 'decimal',
+		'quantity' => 'integer'
     ];
+
+	protected $appends = ['sub_total_string'];
+
+	public function getSubTotalStringAttribute()
+	{
+		return config('shop.currency.symbol') . $this->sub_total;
+	}
 
 
     // Relationships

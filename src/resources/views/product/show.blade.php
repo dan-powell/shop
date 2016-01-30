@@ -75,6 +75,8 @@
                             <h6>
                                 @if($product->inStock)
                                     In Stock, <span class="badge">{{ $product->stock }}</span> Available
+                                @elseif($product->allow_negative_stock)
+                                    Available
                                 @else
                                     Out of Stock
                                 @endif
@@ -108,7 +110,11 @@
                     </div>
 
                     <div class="panel-footer clearfix">
-                        <button class="btn btn-primary pull-right">Add to Cart</button>
+                        @if($product->inStock || $product->allow_negative_stock)
+                            <button class="btn btn-primary pull-right">Add to Cart</button>
+                        @else
+                            <button class="btn btn-disabled pull-right" disabled>Sorry, Out of Stock</button>
+                        @endif
                     </div>
                 </div>
             </form>

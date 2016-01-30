@@ -4,7 +4,7 @@
 trait CartTrait
 {
 
-    private function getCartItemTotal($cartItems) {
+    private function getCartTotal($cartItems) {
 
         $arr = [];
         foreach($cartItems as $item) {
@@ -31,7 +31,11 @@ trait CartTrait
             $this->addImageTypes($itemGroup->product);
 
             // Calc quantity based on number of items
-            $itemGroup->quantity = count($itemGroup);
+            $itemGroup->quantity = 0;
+            foreach($itemGroup as $item) {
+                $itemGroup->quantity += $item->quantity;
+            }
+
 
             // Get the product line total base on items
             $sub_total = [];
@@ -40,18 +44,22 @@ trait CartTrait
             };
             $itemGroup->sub_total = array_sum($sub_total);
 
+            $itemGroup->sub_total_string = config('shop.currency.symbol') . $itemGroup->sub_total;
+
             // Filter the items so only those with option/products are displayed
-            $itemGroup->cartItems = $itemGroup->filter(function ($item) {
+//            $itemGroup->cartItems = $itemGroup->filter(function ($item) {
+//
+//                // Only return items with options OR personalisations
+//                if (
+//                    (isset($item->options) && count($item->options)) ||
+//                    (isset($item->personalisations) && count($item->personalisations))
+//                ) {
+//                    return $item;
+//                };
+//
+//            });
 
-                // Only return items with options OR personalisations
-                if (
-                    (isset($item->options) && count($item->options)) ||
-                    (isset($item->personalisations) && count($item->personalisations))
-                ) {
-                    return $item;
-                };
-
-            });
+            $itemGroup->cartItems = $itemGroup;
 
         });
 

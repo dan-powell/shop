@@ -16,7 +16,9 @@ return [
             ],
             'cart' => [
                 'index' => 'cart',
-                'item' => 'cart/item'
+                'item' => 'cart/item',
+                'deleteproduct' => 'cart/deleteproduct/{id}',
+                'delete' => 'cart/delete'
             ],
             'order' => [
                 'create' => 'order/create',

@@ -22,6 +22,7 @@ class CreateCartItems extends Migration {
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->text('options');
             $table->text('personalisations');
+            $table->integer('quantity')->default(1);
             $table->decimal('sub_total', 6, 2);
         });
     }

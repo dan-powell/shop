@@ -49,7 +49,9 @@
                                                 <tr>
                                                     <th>Options</th>
                                                     <th>Personalisations</th>
+                                                    <th>Quantity</th>
                                                     <th>Options Total</th>
+                                                    <th>Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -76,8 +78,24 @@
                                                             </ul>
                                                             @endif
                                                         </td>
+
                                                         <td>
-                                                            {{ $item->sub_total }}
+                                                            {{ $item->quantity }}
+                                                        </td>
+
+
+                                                        <td>
+                                                            {{ $item->sub_total_string }}
+                                                        </td>
+                                                        <td>
+                                                            <!-- Actions -->
+                                                            <form action="{{ route('shop.cart.item.delete', $item->id) }}" method="POST">
+                                                                {!! csrf_field() !!}
+                                                                <input type="hidden" name="_method" value="DELETE">
+                                                                <button class="btn btn-danger btn-xs">
+                                                                    Remove
+                                                                </button>
+                                                            </form>
                                                         </td>
                                                     </tr>
 

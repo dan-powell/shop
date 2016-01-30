@@ -31,23 +31,15 @@ class CartItemController extends BaseController
 	{
 
 		// Get the cart (or make one)
-		$cart = $this->cartRepository->getCart();
+		$cart = $this->cartRepository->getCart(['cartItems']);
 
 		// Find product to be added
 		$product = $this->productPublicRepository->getById($request->get('product_id'), ['optionGroups.options', 'personalisations']);
 
 
 
-		// Validate options
-		// Check that the option exists AND is related to the product we want to save
-		// Loop of the Product optionGroups and find one with same key as in post data option
-		// Loop of the optionGroup options and find one with same key as in post data option
-
-		// Validate personalisations
-		// * Same as options
+		// Validate input
 		$this->validate($request, CartItem::rules($product));
-
-
 
 
 
@@ -62,49 +54,69 @@ class CartItemController extends BaseController
         $sub = $this->calcSub($product, $options);
 
 
+		// Find all items of the same product
+		$findItem = $cart->cartItems->where(
+			'product_id', '=', $product->id
+		)->all();
+
+		// Get the total quantity of product in the cart
+		if($findItem) {
+			$totalquantity = $request->get('quantity');
+			// Sum all cart items linked to product
+			foreach($findItem as $item) {
+				$totalquantity += $item->quantity;
+			}
+		} else {
+			$totalquantity = $request->get('quantity');
+		}
 
 
 		// Check stock
 		if(!$product->allow_negative_stock) {
-			if($request->get('quantity') > $product->stock) {
+			if($totalquantity > $product->stock) {
 				dd('too many!');
 				return redirect()->route('shop.product.show', $product->slug);
-			} else if ($product->hasOptionStock) {
-				foreach ($options as $option) {
-					if (isset($option->option->stock) && $request->get('quantity') > $option->option->stock) {
-						dd('too many options!');
-						return redirect()->route('shop.product.show', $product->slug);
-					}
-				}
+			}
+		}
+
+		foreach ($options as $option) {
+			if (!$option->allow_negative_stock && isset($option->option->stock) && $totalquantity > $option->option->stock) {
+				dd('too many options!');
+				return redirect()->route('shop.product.show', $product->slug);
 			}
 		}
 
 
 
 
+		// Check if this item config is already saved & update quantity...
+		$findItem = CartItem::where([
+			'cart_id' => $cart->id,
+			'product_id' => $product->id,
+			'options' => $options->toJson(),
+			'personalisations' => $personalisations->toJson(),
+			'sub_total' => $sub,
+		])->increment('quantity', $request->get('quantity'));
 
+		// If we did'nt found the same item...
+		if(!$findItem) {
 
-
-
-		// Create a multidimensional array of products
-		$cartItems = [];
-		for($i=0; $i < $request->get('quantity'); $i++){
-
-            // Make new
-			array_push($cartItems, [
-    			'cart_id' => $cart->id,
+			// .. Save a new item
+			$cartItem = new CartItem;
+			$cartItem->fill([
+				'cart_id' => $cart->id,
 				'product_id' => $product->id,
 				'options' => $options->toJson(),
 				'personalisations' => $personalisations->toJson(),
-				'sub_total' => $sub
+				'sub_total' => $sub,
+				'quantity' => $request->get('quantity')
 			]);
+
+			$cartItem->save();
 
 		}
 
-		// Save all cart items in one go.
 
-		$cartItem = new CartItem;
-		$cartItem->insert($cartItems);
 
 		return redirect()->route('shop.cart.index');
 	}
@@ -186,13 +198,15 @@ class CartItemController extends BaseController
 	}
 
 
-
 	public function destroy($id, Request $request)
 	{
 		$cart = $this->cartRepository->getCart(['cartItems.product']);
 
-		CartItem::where('cart_id', '=', $cart->id)->where('product_id', '=', $id)->delete();
+		CartItem::where('cart_id', '=', $cart->id)->where('id', '=', $id)->delete();
 
-		return redirect()->route('shop.cart.index', 301)->withInput(['warning' => 'Product has been removed from your cart']);
+		return redirect()->route('shop.cart.index', 301)->withInput(['warning' => 'Item has been removed from your cart']);
 	}
+
+
+
 }
