@@ -104,7 +104,7 @@ class CartItem extends Model {
 	 */
 	public function getOptionsAttribute($value)
 	{
-		return json_decode($value, true);
+		return json_decode($this->attributes['options'], true);
 	}
 
 	/**
@@ -121,7 +121,7 @@ class CartItem extends Model {
 	 */
 	public function getExtrasAttribute($value)
 	{
-		return json_decode($value, true);
+		return json_decode($this->attributes['extras'], true);
 	}
 
 	/**
@@ -132,16 +132,22 @@ class CartItem extends Model {
 		$this->attributes['extras'] = json_encode($value);
 	}
 
+
 	// Relationships
 
 
     // Inverse Relationships
-
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
 	public function product()
 	{
 		return $this->belongsTo('DanPowell\Shop\Models\Product');
 	}
 
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
 	public function cart()
 	{
 		return $this->belongsTo('DanPowell\Shop\Models\Cart');

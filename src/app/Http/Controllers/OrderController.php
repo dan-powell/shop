@@ -12,6 +12,7 @@ use DanPowell\Shop\Models\CartOption;
 use DanPowell\Shop\Models\CartPersonalisation;
 use DanPowell\Shop\Models\Order;
 
+use Illuminate\Foundation\Validation\ValidatesRequests;
 use DanPowell\Shop\Traits\ImageTrait;
 use DanPowell\Shop\Traits\CartTrait;
 
@@ -20,15 +21,14 @@ class OrderController extends BaseController
 
     use ImageTrait;
     use CartTrait;
+    use ValidatesRequests;
 
     protected $repository;
-    protected $cartRepository;
     protected $cartItemRepository;
 
-    public function __construct(OrderRepository $OrderRepository, CartRepository $CartRepository, CartItemRepository $CartItemRepository)
+    public function __construct(OrderRepository $OrderRepository, CartItemRepository $CartItemRepository)
     {
         $this->repository = $OrderRepository;
-        $this->cartRepository = $CartRepository;
         $this->cartItemRepository = $CartItemRepository;
     }
 
@@ -37,7 +37,7 @@ class OrderController extends BaseController
     {
 
 
-        $cart = $this->cartRepository->getCart(['cartItems.product']);
+        $cart = $this->cartItemRepository->getCart(['cartItems.product']);
 
 
         if (count($cart) <= 0) {
@@ -45,7 +45,6 @@ class OrderController extends BaseController
 
 
         }
-
 
         return view('shop::order.create')->with([
             'itemsGrouped' => $this->groupCartItemsByProduct($cart->cartItems),
@@ -57,7 +56,11 @@ class OrderController extends BaseController
 
     public function store(Request $request)
     {
-        $cart = $this->cartRepository->getCart(['cartItems.product']);
+
+
+        $cart = $this->cartItemRepository->getCart(['cartItems.product']);
+
+        $this->validate($request, $this->repository->getRules($this->getFilteredShippingOptions($cart->cartItems)), $this->repository->getMessages());
 
         $order = new Order;
 
@@ -80,7 +83,7 @@ class OrderController extends BaseController
     public function confirm(Request $request)
     {
 
-        $cart = $this->cartRepository->getCart(['cartItems.product']);
+        $cart = $this->cartItemRepository->getCart(['cartItems.product']);
         
         $order = Order::find($request->get('id'));
         

@@ -52,8 +52,8 @@
             <h2>Delivery</h2>
             @if(isset($shipping_options) && count($shipping_options))
                 <select name="shipping_option" id="shipping_option" class="form-control">
-                    @foreach($shipping_options as $key => $option)
-                        <option value="{{ $key }}">{{ $option['title'] }} ({{ $option['price_string'] }})</option>
+                    @foreach($shipping_options as $option)
+                        <option value="{{ $option['id'] }}">{{ $option['title'] }} ({{ $option['price_string'] }})</option>
                     @endforeach
                 </select>
             @else
@@ -63,9 +63,15 @@
 
         @include('shop::order.forms.personal')
 
-        @include('shop::order.forms.shipping')
+        <hr/>
 
         @include('shop::order.forms.billing')
+
+        <hr/>
+
+        @include('shop::order.forms.shipping')
+
+        <hr/>
 
         <div class="form-horizontal">
             <div class="form-group">

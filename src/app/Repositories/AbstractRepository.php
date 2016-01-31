@@ -24,6 +24,17 @@ abstract class AbstractRepository
     }
 
 
+    /**
+     * @param $product
+     * @return array
+     */
+    public function getRules($passthru = null)
+    {
+        return $this->model->rules($passthru);
+    }
+
+
+
     public function create(array $fill) {
 
         // ...create and save a new item

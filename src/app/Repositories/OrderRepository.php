@@ -13,6 +13,14 @@ class OrderRepository extends AbstractRepository
     }
 
 
+    /**
+     * @param $product
+     * @return array
+     */
+    public function getMessages($passthru = null)
+    {
+        return $this->model->messages($passthru);
+    }
 
 
 

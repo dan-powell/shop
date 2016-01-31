@@ -92,15 +92,6 @@ class CartItemRepository extends AbstractRepository
 
     // Custom methods
 
-    /**
-     * @param $product
-     * @return array
-     */
-    public function getRules($product)
-    {
-        return $this->model->rules($product);
-    }
-
 
     /**
      * @param array $fill
@@ -130,13 +121,13 @@ class CartItemRepository extends AbstractRepository
 
             // if no cart has been found, then create one
             if(!$this->cart) {
-                $cart = new Cart();
+                $this->cart = new Cart();
 
-                $cart->fill([
+                $this->cart->fill([
                     'session_id' => \Session::getId()
                 ]);
 
-                $cart->save();
+                $this->cart->save();
             }
 
         }
