@@ -24,6 +24,29 @@ abstract class AbstractRepository
     }
 
 
+    public function create(array $fill) {
+
+        // ...create and save a new item
+        $this->model->fill($fill);
+        return $this->model->save();
+
+    }
+
+    public function update($id, $fill) {
+
+        // ...create and save a new item
+        return $this->makeQuery([], ['id' => $id])->update($fill);
+
+    }
+
+    public function delete($id) {
+
+        // ...create and save a new item
+        return $this->makeQuery([], ['id' => $id])->delete();
+
+    }
+
+
     public function makeQuery(array $with = [], array $where = [], $limit = null)
     {
 
@@ -37,5 +60,6 @@ abstract class AbstractRepository
     {
         return $this->model;
     }
+
 
 }

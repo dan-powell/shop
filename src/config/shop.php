@@ -17,8 +17,8 @@ return [
             'cart' => [
                 'index' => 'cart',
                 'item' => 'cart/item',
-                'deleteproduct' => 'cart/deleteproduct/{id}',
-                'delete' => 'cart/delete'
+                'clearproduct' => 'cart/clearproduct/{id}',
+                'clear' => 'cart/clear'
             ],
             'order' => [
                 'create' => 'order/create',
@@ -70,13 +70,13 @@ return [
 
     'option_types' => [
         'radio',
-        'select'
-    ],
-
-    'personalisation_types' => [
+        'select',
         'text',
         'textarea'
     ],
+
+
+    'shipping_tier_property' => 'price',
 
     'shipping_types' => [
         'standard_uk' => [
@@ -90,6 +90,18 @@ return [
             'min' => '0',
             'max' => '300',
             'price' => 1000
+        ],
+        'standard_uk_heavy' => [
+            'title' => 'Standard UK Large',
+            'min' => '300.00001',
+            'max' => '9000000000',
+            'price' => 2000
+        ],
+        'express_uk_heavy' => [
+            'title' => 'Express UK Large',
+            'min' => '300.00001',
+            'max' => '9000000000',
+            'price' => 5000
         ]
     ],
 

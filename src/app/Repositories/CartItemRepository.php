@@ -1,59 +1,148 @@
 <?php namespace DanPowell\Shop\Repositories;
 
+use DanPowell\Shop\Models\Cart;
 use DanPowell\Shop\Models\CartItem;
-//use DanPowell\Shop\Repositories\CartRepository;
 
 class CartItemRepository extends AbstractRepository
 {
 
-    public $cart;
     protected $model;
-    protected $cartRepository;
+    protected $cart;
 
-    public function __construct(CartRepository $CartRepository)
+    public function __construct()
     {
         $this->model = new CartItem();
-        $this->cartRepository = $CartRepository;
-        $this->cart = $this->cartRepository->getCart();
     }
 
+
+    // Some methods to manage the cart instance
+
+    /**
+     * @return mixed
+     */
+    public function getCartId()
+    {
+        return $this->makeCart()->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCartItems()
+    {
+        return $this->makeCart(['cartItems'])->cartItems;
+    }
+
+    /**
+     * @return Cart
+     */
+    public function getCart($with = [])
+    {
+        return $this->makeCart($with);
+    }
+
+
+    /**
+     * @return Cart
+     */
+    public function clearCart()
+    {
+        return $this->makeQuery()->where('cart_id', '=', $this->getCartId())->delete();
+    }
+
+    /**
+     * @return Cart
+     */
+    public function clearCartProduct($id)
+    {
+        return $this->makeQuery()->where('cart_id', '=', $this->getCartId())->where('product_id', '=', $id)->delete();
+    }
+
+
+
+    // Abstract class overrides
+
+    /**
+     * @param $id
+     * @param array $with
+     * @return mixed
+     */
+    public function getById($id, array $with = [])
+    {
+        return $this->makeQuery($with, ['id' => $id])->where('cart_id', '=', $this->getCartId())->first();
+    }
+
+    /**
+     * @param $id
+     * @param $quantity
+     * @return mixed
+     */
+    public function update($id, $quantity) {
+        return $this->makeQuery([], ['id' => $id])->where('cart_id', '=', $this->getCartId())->update(['quantity' => $quantity]);
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function delete($id) {
+        return $this->makeQuery([], ['id' => $id])->where('cart_id', '=', $this->getCartId())->delete();
+    }
+
+
+    // Custom methods
+
+    /**
+     * @param $product
+     * @return array
+     */
     public function getRules($product)
     {
-        return CartItem::rules($product);
+        return $this->model->rules($product);
     }
 
+
+    /**
+     * @param array $fill
+     * @param $quantity
+     * @return mixed
+     */
     public function incrementQuantity(array $fill, $quantity) {
         return $this->model->where($fill)->increment('quantity', $quantity);
     }
 
-    public function create(array $fill) {
 
-        // ...create and save a new item
-        $this->model->fill($fill);
-        return $this->model->save();
+    // Private methods
 
-    }
-
-    public function getById($id, array $with = [])
+    /**
+     * @return Cart
+     */
+    private function makeCart($with = [])
     {
-        return $this->makeQuery($with, ['id' => $id])->where('cart_id', '=', $this->cart->id)->first();
+
+        if($this->cart == null) {
+
+            // Get the session ID
+            $session_id = \Session::getId();
+
+            // Find the user's cart
+            $this->cart = Cart::where('session_id', '=', $session_id)->with($with)->first();
+
+            // if no cart has been found, then create one
+            if(!$this->cart) {
+                $cart = new Cart();
+
+                $cart->fill([
+                    'session_id' => \Session::getId()
+                ]);
+
+                $cart->save();
+            }
+
+        }
+
+        return $this->cart;
+
     }
-
-
-    public function update($id, $quantity) {
-
-        // ...create and save a new item
-        return $this->makeQuery([], ['id' => $id])->where('cart_id', '=', $this->cart->id)->update(['quantity' => $quantity]);
-
-    }
-
-
-    public function delete($id) {
-
-        // ...create and save a new item
-        return $this->makeQuery([], ['id' => $id])->where('cart_id', '=', $this->cart->id)->delete();
-
-    }
-
 
 }

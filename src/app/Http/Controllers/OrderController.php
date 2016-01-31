@@ -2,8 +2,9 @@
 
 use Illuminate\Http\Request;
 
-use DanPowell\Shop\Repositories\CartRepository;
 use DanPowell\Shop\Repositories\OrderRepository;
+use DanPowell\Shop\Repositories\CartRepository;
+use DanPowell\Shop\Repositories\CartItemRepository;
 
 use DanPowell\Shop\Models\Cart;
 use DanPowell\Shop\Models\CartProduct;
@@ -22,22 +23,34 @@ class OrderController extends BaseController
 
     protected $repository;
     protected $cartRepository;
+    protected $cartItemRepository;
 
-    public function __construct(OrderRepository $OrderRepository, CartRepository $CartRepository)
+    public function __construct(OrderRepository $OrderRepository, CartRepository $CartRepository, CartItemRepository $CartItemRepository)
     {
         $this->repository = $OrderRepository;
         $this->cartRepository = $CartRepository;
+        $this->cartItemRepository = $CartItemRepository;
     }
 
 
     public function create(Request $request)
     {
+
+
         $cart = $this->cartRepository->getCart(['cartItems.product']);
+
+
+        if (count($cart) <= 0) {
+
+
+
+        }
+
 
         return view('shop::order.create')->with([
             'itemsGrouped' => $this->groupCartItemsByProduct($cart->cartItems),
             'total' => $this->getCartTotal($cart->cartItems),
-            'shipping_types' => config('shop.shipping_types')
+            'shipping_options' => $this->getFilteredShippingOptions($cart->cartItems)
         ]);
         
     }
@@ -134,5 +147,59 @@ class OrderController extends BaseController
         ]);
 
     }
+
+
+    private function getFilteredShippingOptions($cartItems)
+    {
+
+        $value = $this->getCartProductAttributeTotal($cartItems, config('shop.shipping_tier_property'));
+
+        $options = config('shop.shipping_types');
+
+        $arr = [];
+
+        foreach($options as $option) {
+            $option['price_string'] = config('shop.currency.symbol') . number_format($option['price'], 2);
+            if($option['min'] <= $value && $option['max'] >= $value) {
+                array_push($arr, $option);
+            }
+        }
+
+        return $arr;
+
+    }
+
+    private function getAllShippingOptions()
+    {
+
+        $options = config('shop.shipping_types');
+
+        foreach($options as $option) {
+            $option['price_string'] = config('shop.currency.symbol') . number_format($option['price'], 2);
+        }
+
+        return $options;
+
+    }
+
+//    private function getShippingOption($value)
+//    {
+//
+//        $test = $this->getCartProductAttributeTotal($cartItems, config('shop.shipping_tier_property'));
+//
+//        $options = config('shop.shipping_tier_propertyshipping_types');
+//
+//        $coll = collect($options);
+//
+//        foreach($options as $option) {
+//            if
+//        }
+//
+//
+//
+//
+//    }
+//
+
 
 }

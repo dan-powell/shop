@@ -4,6 +4,19 @@
 trait CartTrait
 {
 
+
+    private function getCartProductAttributeTotal($cartItems, $attribute) {
+
+        $arr = [];
+        foreach($cartItems as $item) {
+            array_push($arr, $item->product->$attribute * $item->quantity);
+        };
+
+        return array_sum($arr);
+
+    }
+
+
     private function getCartTotal($cartItems) {
 
         $arr = [];

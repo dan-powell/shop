@@ -3,7 +3,6 @@
 use Illuminate\Http\Request;
 
 use DanPowell\Shop\Repositories\CartItemRepository;
-use DanPowell\Shop\Repositories\CartRepository;
 use DanPowell\Shop\Repositories\ProductPublicRepository;
 
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -13,8 +12,8 @@ class CartItemController extends BaseController
 
 	use ValidatesRequests;
 
+	//protected $repository;
 	protected $repository;
-	protected $cartRepository;
 	protected $productPublicRepository;
 
 	/**
@@ -22,10 +21,9 @@ class CartItemController extends BaseController
 	 * @param CartRepository $CartRepository
 	 * @param ProductPublicRepository $ProductPublicRepository
 	 */
-	public function __construct(CartItemRepository $CartItemRepository, CartRepository $CartRepository, ProductPublicRepository $ProductPublicRepository)
+	public function __construct(CartItemRepository $CartItemRepository, ProductPublicRepository $ProductPublicRepository)
 	{
 		$this->repository = $CartItemRepository;
-		$this->cartRepository = $CartRepository;
 		$this->productPublicRepository = $ProductPublicRepository;
 	}
 
@@ -36,12 +34,12 @@ class CartItemController extends BaseController
 	public function store(Request $request)
 	{
 
-		// Get the cart (or make one)
-		$cart = $this->cartRepository->getCart(['cartItems']);
-
 		// Find product to be added
 		$product = $this->productPublicRepository->getById($request->get('product_id'), ['extras.options', 'options']);
 
+		if(!$product) {
+			return redirect()->route('shop.product.show', $product->slug);
+		}
 
 		// Validate input
 		$modelValidation = $this->repository->getRules($product);
@@ -73,24 +71,24 @@ class CartItemController extends BaseController
 
 
 		// Find all items of the same product, so we can calculate the total quantity in the cart
-		$totalquantity = $this->getProductQuantityInCart($product->id) + $request->get('quantity');
+		$quantityToCheck = $this->getProductQuantityInCart($product->id) + $request->get('quantity');
 
 
 		// Check product stock
-		if(!$this->checkProductStock($product, $totalquantity)) {
+		if(!$this->checkProductStock($product, $quantityToCheck)) {
 			dd('too many!');
 			return redirect()->route('shop.product.show', $product->slug);
 		}
 
 		// Check product extras stock
-		if(!$this->checkProductExtrasStock($product, $totalquantity)) {
+		if(!$this->checkProductExtrasStock($product, $quantityToCheck)) {
 			dd('too many extras!');
 			return redirect()->route('shop.product.show', $product->slug);
 		}
 
 
 		$fill = [
-			'cart_id' => $cart->id,
+			'cart_id' => $this->repository->getCartId(),
 			'product_id' => $product->id,
 			'options' => $product->options,
 			'extras' => $product->extras
@@ -118,38 +116,51 @@ class CartItemController extends BaseController
 	public function update($id, Request $request)
 	{
 
+		// Validate the request
 		$this->validate($request, ['quantity' => 'required|integer|min:1|max:99']);
 
-
+		// Find the item to update
 		$item =  $this->repository->getById($id, ['product.extras']);
 
-		// Set the Extras (filter out extras user has not selected)
-		$item->product->extras = $item->product->extras->filter(function ($extra) use ($item) {
-			foreach($item->extras as $itemExtra) {
-				if ($itemExtra['id'] == $extra->id) {
-					return $extra;
+		// redirect if no product found
+		if($item) {
+
+			// Get the Extras (filter out extras user has not selected)
+			$item->product->extras = $item->product->extras->filter(function ($extra) use ($item) {
+				foreach($item->extras as $itemExtra) {
+					if ($itemExtra['id'] == $extra->id) {
+						return $extra;
+					}
 				}
+			});
+
+			// Calc the total quantity to check
+			$quantityToCheck = ($this->getProductQuantityInCart($item->product->id) + $request->get('quantity')) - $item->quantity;
+
+			// Check product stock
+			if(!$this->checkProductStock($item->product, $quantityToCheck)) {
+				dd('too many!');
+				return redirect()->route('shop.cart.index');
 			}
-		});
 
-		$totalquantity = ($this->getProductQuantityInCart($item->product->id) + $request->get('quantity')) - $item->quantity;
+			// Check product extras stock
+			if(!$this->checkProductExtrasStock($item->product, $quantityToCheck)) {
+				dd('too many extras!');
+				return redirect()->route('shop.cart.index');
+			}
 
-		// Check product stock
-		if(!$this->checkProductStock($item->product, $totalquantity)) {
-			dd('too many!');
-			return redirect()->route('shop.cart.index');
+			// Find & update the item
+			if($this->repository->update($id, $request->get('quantity'))){
+				$message = ['success' => 'Product quantity has been updated'];
+			} else {
+				$message = ['warning' => 'Product quantity has not been updated'];
+			}
+
+		} else {
+			$message = ['warning' => 'Product not found'];
 		}
 
-		// Check product extras stock
-		if(!$this->checkProductExtrasStock($item->product, $totalquantity)) {
-			dd('too many extras!');
-			return redirect()->route('shop.cart.index');
-		}
-
-		// Find & update the item
-		$this->repository->update($id, $request->get('quantity'));
-
-		return redirect()->route('shop.cart.index')->withInput(['success' => 'Product has been updated']);
+		return redirect()->route('shop.cart.index')->withInput($message);
 
 	}
 
@@ -160,18 +171,15 @@ class CartItemController extends BaseController
 	 */
 	public function destroy($id)
 	{
-
 		$this->repository->delete($id);
-
 		return redirect()->route('shop.cart.index', 301)->withInput(['warning' => 'Item has been removed from your cart']);
 	}
 
 
 	private function getProductQuantityInCart($product_id) {
 
-
 		// Find all items of the same product, so we can calculate the total quantity in the cart
-		$items = $this->repository->cart->cartItems->where(
+		$items = $this->repository->getCartItems()->where(
 			'product_id', $product_id
 		)->all();
 

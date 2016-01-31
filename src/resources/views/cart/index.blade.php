@@ -164,6 +164,14 @@
             </div>
         </div>
 
+        <form action="{{ route('shop.cart.clear') }}" method="POST">
+            {!! csrf_field() !!}
+            <input type="hidden" name="_method" value="DELETE">
+            <button class="btn btn-default pull-right">
+                Clear
+            </button>
+        </form>
+
         <a href="{{ route('shop.order.create') }}" class="btn btn-primary pull-right">
             Checkout
         </a>

@@ -26,16 +26,15 @@ class Option extends Model {
     public $timestamps = false;
 
 
-	public function getConfigAttribute($value)
+	public function getConfigAttribute()
 	{
-		return json_decode($value, true);
+		return json_decode($this->attributes['config'], true);
 	}
 
 	public function setConfigAttribute($value)
 	{
-		return json_encode($value);
+		$this->attributes['config'] = json_encode($value);
 	}
-
 
 
 

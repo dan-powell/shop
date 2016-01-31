@@ -15,6 +15,6 @@ $factory->define(DanPowell\Shop\Models\Option::class, function (Faker\Generator 
     return [
         'title' => $faker->word,
         'type' => $faker->randomElement(config('shop.option_types')),
-        'config' => json_encode(['Option1', 'Option 2']),
+        'config' => ['Option1', 'Option 2'],
     ];
 });

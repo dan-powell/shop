@@ -29,11 +29,12 @@ Route::get(config('shop.routes.public.category.show'),
 Route::get(config('shop.routes.public.cart.index'),
     ['as' => 'shop.cart.index', 'uses' => 'DanPowell\Shop\Http\Controllers\CartController@index']);
 
-Route::delete(config('shop.routes.public.cart.deleteproduct'),
-    ['as' => 'shop.cart.deleteproduct', 'uses' => 'DanPowell\Shop\Http\Controllers\CartController@destroyProduct']);
 
-Route::delete(config('shop.routes.public.cart.delete'),
-    ['as' => 'shop.cart.delete', 'uses' => 'DanPowell\Shop\Http\Controllers\CartController@destroy']);
+Route::delete(config('shop.routes.public.cart.clearproduct'),
+    ['as' => 'shop.cart.clearproduct', 'uses' => 'DanPowell\Shop\Http\Controllers\CartController@clearProduct']);
+
+Route::delete(config('shop.routes.public.cart.clear'),
+    ['as' => 'shop.cart.clear', 'uses' => 'DanPowell\Shop\Http\Controllers\CartController@clear']);
 
 Route::resource(
     config('shop.routes.public.cart.item'),

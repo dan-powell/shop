@@ -16,7 +16,7 @@ class CartItem extends Model {
 	 * @param $product Eloquent Collection (\Models\Product)
 	 * @return array
 	 */
-    public static function rules($product)
+    public function rules($product)
 	{
 		$rules = [];
 		$messages = [];

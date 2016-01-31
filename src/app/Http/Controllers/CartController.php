@@ -2,10 +2,7 @@
 
 use Illuminate\Http\Request;
 
-use DanPowell\Shop\Repositories\CartRepository;
-
-use DanPowell\Shop\Models\CartItem;
-
+use DanPowell\Shop\Repositories\CartItemRepository;
 
 use DanPowell\Shop\Traits\ImageTrait;
 use DanPowell\Shop\Traits\CartTrait;
@@ -18,9 +15,9 @@ class CartController extends BaseController
 
     protected $repository;
 
-    public function __construct(CartRepository $CartRepository)
+    public function __construct(CartItemRepository $CartItemRepository)
     {
-        $this->repository = $CartRepository;
+        $this->repository = $CartItemRepository;
     }
 
 
@@ -41,20 +38,18 @@ class CartController extends BaseController
     }
 
 
-    public function destroy($id, Request $request)
+    public function clear()
     {
-        $cart = $this->repository->getCart(['cartItems.product']);
 
-        CartItem::where('cart_id', '=', $cart->id)->delete();
+        $this->repository->clearCart();
 
         return redirect()->route('shop.cart.index', 301)->withInput(['warning' => 'Cart Cleared']);
     }
 
-    public function destroyProduct($id, Request $request)
-    {
-        $cart = $this->repository->getCart(['cartItems.product']);
 
-        CartItem::where('cart_id', '=', $cart->id)->where('product_id', '=', $id)->delete();
+    public function clearProduct($id)
+    {
+        $this->repository->clearCartProduct($id);
 
         return redirect()->route('shop.cart.index', 301)->withInput(['warning' => 'Product has been removed from your cart']);
     }

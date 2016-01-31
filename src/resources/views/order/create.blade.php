@@ -50,14 +50,14 @@
 
         <div class="well">
             <h2>Delivery</h2>
-            @if(isset($shipping_types) && count($shipping_types))
-                <select name="shipping_type">
-                    @foreach($shipping_types as $key => $shipping_type)
-                        <option value="{{ $key }}">{{ $shipping_type['title'] }} ({{ $shipping_type['price'] }})</option>
+            @if(isset($shipping_options) && count($shipping_options))
+                <select name="shipping_option" id="shipping_option" class="form-control">
+                    @foreach($shipping_options as $key => $option)
+                        <option value="{{ $key }}">{{ $option['title'] }} ({{ $option['price_string'] }})</option>
                     @endforeach
                 </select>
             @else
-                <p>No delivery options available</p>
+                <p>No delivery options available, please contact us for assistance with your order.</p>
             @endif
         </div>
 
