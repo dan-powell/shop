@@ -76,7 +76,7 @@ return [
     ],
 
 
-    'shipping_tier_property' => 'price',
+    'shipping_tier_property' => 'weight',
 
     'shipping_types' => [
         [

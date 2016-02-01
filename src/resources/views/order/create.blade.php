@@ -77,13 +77,12 @@
             <div class="form-group">
                 <label for="instructions" class="col-sm-2 control-label">Extra Instructions</label>
                 <div class="col-sm-10">
-                    <textarea class="form-control" id="instructions" rows="5" placeholder="Add any special instructions for us here.">
-                    </textarea>
+                    <textarea class="form-control" id="instructions" name="instructions" rows="5" placeholder="Add any special instructions for us here.">{{ $order['instructions'] or old('instructions') }}</textarea>
                 </div>
             </div>
         </div>
 
-        <button class="btn btn-primary">
+        <button class="btn btn-primary pull-right">
             Continue to confirmation
         </button>
 

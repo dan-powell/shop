@@ -3,6 +3,8 @@
 use DanPowell\Shop\Models\Cart;
 use DanPowell\Shop\Models\CartItem;
 
+use Illuminate\Session;
+
 class CartItemRepository extends AbstractRepository
 {
 
@@ -114,7 +116,7 @@ class CartItemRepository extends AbstractRepository
         if($this->cart == null) {
 
             // Get the session ID
-            $session_id = \Session::getId();
+            $session_id = session()->getId();
 
             // Find the user's cart
             $this->cart = Cart::where('session_id', '=', $session_id)->with($with)->first();
@@ -124,7 +126,7 @@ class CartItemRepository extends AbstractRepository
                 $this->cart = new Cart();
 
                 $this->cart->fill([
-                    'session_id' => \Session::getId()
+                    'session_id' => session()->getId()
                 ]);
 
                 $this->cart->save();

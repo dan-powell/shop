@@ -42,7 +42,7 @@ class CartItemController extends BaseController
 		}
 
 		// Validate input
-		$modelValidation = $this->repository->getRules();
+		$modelValidation = $this->repository->getRules($product);
 		$this->validate($request, $modelValidation['rules'], $modelValidation['messages']);
 
 

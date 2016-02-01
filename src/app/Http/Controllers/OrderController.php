@@ -40,16 +40,15 @@ class OrderController extends BaseController
         $cart = $this->cartItemRepository->getCart(['cartItems.product']);
 
 
-        if (count($cart) <= 0) {
-
-
-
+        if (count($cart->cartItems) <= 0) {
+            return redirect()->back()->withInput(['warning' => 'Please add some items to your cart']);
         }
 
         return view('shop::order.create')->with([
             'itemsGrouped' => $this->groupCartItemsByProduct($cart->cartItems),
             'total' => $this->getCartTotal($cart->cartItems),
-            'shipping_options' => $this->getFilteredShippingOptions($cart->cartItems)
+            'shipping_options' => $this->getFilteredShippingOptions($cart->cartItems),
+            'order' => $value = session()->get('order', [])
         ]);
         
     }
@@ -57,10 +56,16 @@ class OrderController extends BaseController
     public function store(Request $request)
     {
 
+        session()->put('order', $request->all());
 
         $cart = $this->cartItemRepository->getCart(['cartItems.product']);
 
         $this->validate($request, $this->repository->getRules($this->getFilteredShippingOptions($cart->cartItems)), $this->repository->getMessages());
+
+
+
+
+
 
         $order = new Order;
 
@@ -157,14 +162,10 @@ class OrderController extends BaseController
 
         $value = $this->getCartProductAttributeTotal($cartItems, config('shop.shipping_tier_property'));
 
-        $options = config('shop.shipping_types');
-
-        $arr = [];
-
-        foreach($options as $option) {
+        foreach(config('shop.shipping_types') as $option) {
             $option['price_string'] = config('shop.currency.symbol') . number_format($option['price'], 2);
             if($option['min'] <= $value && $option['max'] >= $value) {
-                array_push($arr, $option);
+                $arr[] = $option;
             }
         }
 

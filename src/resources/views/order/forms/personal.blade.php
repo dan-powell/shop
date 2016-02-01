@@ -5,28 +5,28 @@
     <div class="form-group {{ $errors->has('firstName') ? 'has-error' : '' }}">
         <label for="firstName" class="col-sm-2 control-label">First Name</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Your forename" value="{{ old('firstName') }}">
+            <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Your forename" value="{{ $order['firstName'] or old('firstName')}}">
             {!! $errors->first('firstName', '<p class="help-block">:message</p>') !!}
         </div>
     </div>
     <div class="form-group {{ $errors->has('lastName') ? 'has-error' : '' }}">
         <label for="lastName" class="col-sm-2 control-label">Last Name</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" id="lastName" name="lastName"  placeholder="Your surname" value="{{ old('lastName') }}">
+            <input type="text" class="form-control" id="lastName" name="lastName"  placeholder="Your surname" value="{{ $order['lastName'] or old('lastName') }}">
             {!! $errors->first('lastName', '<p class="help-block">:message</p>') !!}
         </div>
     </div>
     <div class="form-group {{ $errors->has('email') ? 'has-error' : '' }}">
         <label for="email" class="col-sm-2 control-label">Email</label>
         <div class="col-sm-10">
-            <input type="email" class="form-control" id="email" name="email"  placeholder="Your email address" value="{{ old('email') }}">
+            <input type="email" class="form-control" id="email" name="email"  placeholder="Your email address" value="{{ $order['email'] or old('email') }}">
             {!! $errors->first('email', '<p class="help-block">:message</p>') !!}
         </div>
     </div>
     <div class="form-group {{ $errors->has('billingPhone') ? 'has-error' : '' }}">
         <label for="billingPhone" class="col-sm-2 control-label">Phone</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" id="billingPhone" name="billingPhone"  placeholder="Your phone number" value="{{ old('billingPhone') }}">
+            <input type="text" class="form-control" id="billingPhone" name="billingPhone"  placeholder="Your phone number" value="{{ $order['billingPhone'] or old('billingPhone') }}">
             {!! $errors->first('billingPhone', '<p class="help-block">:message</p>') !!}
         </div>
     </div>
