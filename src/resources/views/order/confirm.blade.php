@@ -1,66 +1,39 @@
-<div class="row">
-    <div class="col-sm-12">
+@extends('shop::base')
 
-            {{ var_dump($order) }}
+@section('main')
+    <h1>Confirm your order</h1>
 
+    <div class="row">
+        <div class="col-sm-12">
 
-                <table class="table table-striped table-condensed">
-                    <thead>
-                    <tr>
-                        <th>Options</th>
-                        <th>Personalisations</th>
-                        <th>Options Total</th>
-                    </tr>
-                    </thead>
-                    <tbody>
+            <table class="table table-striped table-condensed">
+                <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Options</th>
+                    <th>Extras</th>
+                    <th>Quantity</th>
+                    <th>Sub Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                    @foreach($cart->cartItems as $item)
+                        @include('shop::cart.partials.itemRow', ['item' => $item, 'display_product' => true])
+                    @endforeach
+                </tbody>
+            </table>
 
-                    {{--{{ dd($cart['cart_items']) }}--}}
-
-                    {{--@foreach($cart->cart_items as $item)--}}
-
-                        {{--<tr>--}}
-                            {{--<td>--}}
-                                {{--@if(isset($item->options) && $item->options != '')--}}
-                                    {{--<ul>--}}
-                                        {{--@foreach($item->options as $optionGroup)--}}
-
-                                            {{--<li><strong>{{ $optionGroup['title'] }}</strong>: {{ $optionGroup['option']['label'] }} <span class="badge">{{ $optionGroup['option']['price_modifier_string'] }}</span></li>--}}
-                                        {{--@endforeach--}}
-                                    {{--</ul>--}}
-                                {{--@endif--}}
-                            {{--</td>--}}
-                            {{--<td>--}}
-                                {{--@if(isset($item->personalisations) && $item->personalisations != '')--}}
-                                    {{--<ul>--}}
-                                        {{--@foreach($item->personalisations as $personalisation)--}}
-                                            {{--<li><strong>{{ $personalisation['label'] }}</strong>: {{ $personalisation['value'] }}</li>--}}
-                                        {{--@endforeach--}}
-                                    {{--</ul>--}}
-                                {{--@endif--}}
-                            {{--</td>--}}
-                            {{--<td>--}}
-                                {{--{{ $item->sub_total }}--}}
-                            {{--</td>--}}
-                        {{--</tr>--}}
-
-
-                    {{--@endforeach--}}
-
-
-                    </tbody>
-                </table>
-
- </div>
+        </div>
     </div>
 
+    <form action="{{ route('shop.order.confirm') }}" method="POST">
 
-<form action="{{ route('shop.order.confirm') }}" method="POST">
-    
-    {!! csrf_field() !!}
-    
-    <input type="text" name="id" value="{{ $order->id }}"/>
-    
-    <button class="btn btn-primary">
-        Confirm
-    </button>
-</form>
+        {!! csrf_field() !!}
+
+        <input type="text" name="id" value="{{ $order->id }}"/>
+
+        <button class="btn btn-primary">
+            Confirm
+        </button>
+    </form>
+@stop

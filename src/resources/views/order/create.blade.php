@@ -21,7 +21,7 @@
                     <tbody>
 
                         @foreach($itemsGrouped as $item)
-                            @include('shop::cart.partials.cartRow', ['itemGroup' => $item, 'editable' => false, 'images' => false])
+                            @include('shop::cart.partials.itemGroup', ['itemGroup' => $item, 'editable' => false, 'images' => false])
                         @endforeach
 
                         <tr>

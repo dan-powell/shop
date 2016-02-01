@@ -33,53 +33,61 @@ class OrderController extends BaseController
     }
 
 
-    public function create(Request $request)
+    public function create()
     {
-
-
+        // Get the cart
         $cart = $this->cartItemRepository->getCart(['cartItems.product']);
 
-
+        // Check that we have items
         if (count($cart->cartItems) <= 0) {
             return redirect()->back()->withInput(['warning' => 'Please add some items to your cart']);
         }
 
+        // Return the view
         return view('shop::order.create')->with([
             'itemsGrouped' => $this->groupCartItemsByProduct($cart->cartItems),
             'total' => $this->getCartTotal($cart->cartItems),
             'shipping_options' => $this->getFilteredShippingOptions($cart->cartItems),
-            'order' => $value = session()->get('order', [])
+            'order' => session()->get('order', [])
         ]);
         
     }
 
     public function store(Request $request)
     {
-
+        // Save order values to session
         session()->put('order', $request->all());
 
+        // Get the cart
         $cart = $this->cartItemRepository->getCart(['cartItems.product']);
 
+        // Validate the order
         $this->validate($request, $this->repository->getRules($this->getFilteredShippingOptions($cart->cartItems)), $this->repository->getMessages());
 
 
 
 
+        // Check the cart items
 
 
+
+
+
+        //
         $order = new Order;
 
         $order->fill($request->all());
 
         $order->fill([
-            'cart' => $cart->toJson(),
+            'cart' => $cart,
             'total' => $this->getCartTotal($cart->cartItems)
         ]);
 
         $order->save();
 
         return view('shop::order.confirm')->with([
-            'order' => $order
+            'order' => $order,
+            'cart' => $cart
         ]);
         
     }
@@ -173,7 +181,7 @@ class OrderController extends BaseController
 
     }
 
-    private function getAllShippingOptions()
+    private function getShippingOptions()
     {
 
         $options = config('shop.shipping_types');
@@ -185,25 +193,6 @@ class OrderController extends BaseController
         return $options;
 
     }
-
-//    private function getShippingOption($value)
-//    {
-//
-//        $test = $this->getCartProductAttributeTotal($cartItems, config('shop.shipping_tier_property'));
-//
-//        $options = config('shop.shipping_tier_propertyshipping_types');
-//
-//        $coll = collect($options);
-//
-//        foreach($options as $option) {
-//            if
-//        }
-//
-//
-//
-//
-//    }
-//
 
 
 }
