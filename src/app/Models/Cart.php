@@ -5,14 +5,12 @@ use Illuminate\Database\Eloquent\Model;
 class Cart extends Model {
 
     protected $fillable = [
-        'session_id',
         'status',
     ];
 
     public function rules()
 	{
 	    return [
-    	    'session_id' => 'required',
 			'status' => 'required',
 	    ];
 	}

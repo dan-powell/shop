@@ -112,14 +112,15 @@ class CartItemRepository extends AbstractRepository
      */
     private function makeCart($with = [])
     {
+        
 
         if($this->cart == null) {
 
             // Get the session ID
-            $session_id = session()->getId();
-
+            $cart_id = request()->cookie('cart_id');
+            
             // Find the user's cart
-            $this->cart = Cart::where('session_id', '=', $session_id)->with($with)->first();
+            $this->cart = Cart::where('id', '=', $cart_id)->with($with)->first();
 
             // if no cart has been found, then create one
             if(!$this->cart) {
@@ -130,6 +131,12 @@ class CartItemRepository extends AbstractRepository
                 ]);
 
                 $this->cart->save();
+                
+                
+                cookie()->queue('cart_id', $this->cart->id, 10080);
+
+                //return $response;
+                
             }
 
         }
