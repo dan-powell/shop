@@ -103,3 +103,15 @@ run
     phpunit
     
     phpunit --testsuite ShopIntegration
+
+# Roadmap
+
+TODO: Replace hard-coded strings with language file (including validation messages)
+
+TODO: Move cart validation & checks to models
+
+
+
+
+
+

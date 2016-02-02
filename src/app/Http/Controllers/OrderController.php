@@ -50,7 +50,7 @@ class OrderController extends BaseController
             'shipping_options' => $this->getFilteredShippingOptions($cart->cartItems),
             'order' => session()->get('order', [])
         ]);
-        
+
     }
 
     public function store(Request $request)
@@ -69,7 +69,7 @@ class OrderController extends BaseController
 
         // Check the cart items
 
-
+        $this->verifyCart($cart);
 
 
 
@@ -89,7 +89,7 @@ class OrderController extends BaseController
             'order' => $order,
             'cart' => $cart
         ]);
-        
+
     }
 
 
@@ -97,9 +97,9 @@ class OrderController extends BaseController
     {
 
         $cart = $this->cartItemRepository->getCart(['cartItems.product']);
-        
+
         $order = Order::find($request->get('id'));
-        
+
 
         $gateway = \Omnipay::gateway('paypal');
 
@@ -115,7 +115,7 @@ class OrderController extends BaseController
 
 
         $card = \Omnipay::creditCard($order->toArray());
-        
+
 
         $response = \Omnipay::purchase([
             'currency' => 'GBP',
@@ -191,6 +191,42 @@ class OrderController extends BaseController
         }
 
         return $options;
+
+    }
+
+
+    private function verifyCart($cart)
+    {
+
+
+
+
+
+
+
+        $cart->cartItems->each(function($item){
+
+            $item->verify();
+
+
+
+        });
+
+
+        // Check that item products exist
+
+        // Check that item options exist
+
+        // Check that item extras exist
+
+
+        // Check that item product has stock
+
+
+        // Check that item extras have stock
+
+
+
 
     }
 

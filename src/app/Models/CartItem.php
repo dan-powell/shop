@@ -9,7 +9,8 @@ class CartItem extends Model {
 		'cart_id',
 		'options',
 		'extras',
-		'quantity'
+		'quantity',
+		'status'
     ];
 
 	/**
@@ -102,7 +103,7 @@ class CartItem extends Model {
 	 * @param $value
 	 * @return mixed
 	 */
-	public function getOptionsAttribute($value)
+	public function getOptionsAttribute()
 	{
 		return json_decode($this->attributes['options'], true);
 	}
@@ -119,7 +120,7 @@ class CartItem extends Model {
 	 * @param $value
 	 * @return mixed
 	 */
-	public function getExtrasAttribute($value)
+	public function getExtrasAttribute()
 	{
 		return json_decode($this->attributes['extras'], true);
 	}
@@ -131,6 +132,69 @@ class CartItem extends Model {
 	{
 		$this->attributes['extras'] = json_encode($value);
 	}
+
+
+	// Custom Methods
+
+
+	public function verify()
+	{
+
+
+
+
+	}
+
+
+
+	public function invalidate()
+	{
+		$this->status = 0;
+		$this->save();
+	}
+
+
+
+	public function verifyOptions()
+	{
+		$bool = false;
+		$this->product->options->each(function($option) use ($bool) {
+			foreach($this->option as $cartOption) {
+				if($cartOption['id'] == $option->id) {
+
+					if ($option->type == 'radio' || $option->type == 'select') {
+
+						foreach($option->type as $type) {
+							//$cartOption['value'];
+						}
+
+					} else {
+						$bool = true;
+					}
+
+				}
+			}
+		});
+
+		//dd($bool);
+	}
+
+
+
+		// Check that item products exist
+
+        // Check that item options exist
+
+        // Check that item extras exist
+
+
+        // Check that item product has stock
+
+
+        // Check that item extras have stock
+
+
+
 
 
 	// Relationships

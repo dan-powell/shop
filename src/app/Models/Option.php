@@ -44,14 +44,36 @@ class Option extends Model {
 
     // Inverse Relationships
 
-	public function extra()
+	public function attachment()
 	{
-		return $this->morphTo('DanPowell\Shop\Models\Extra', 'attachment_id', 'attachment_type');
+		return $this->morphTo();
 	}
 
-	public function product()
+
+
+
+	protected static function boot()
 	{
-		return $this->morphTo('DanPowell\Shop\Models\Product', 'attachment_id', 'attachment_type');
+		parent::boot();
+
+		// Events
+
+		static::updated(function($option){
+
+			// On update, invalidate any associated cart items
+			if ($option->isDirty()) {
+				if($option->attachment_type == 'DanPowell\Shop\Models\Product') {
+					$option->attachment->cartItems->each(function ($cartItem) {
+						$cartItem->invalidate();
+					});
+				} elseif($option->attachment_type == 'DanPowell\Shop\Models\Extra') {
+					$option->attachment->product->cartItems->each(function ($cartItem) {
+						$cartItem->invalidate();
+					});
+				}
+
+			}
+		});
 	}
 
 }

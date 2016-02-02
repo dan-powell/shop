@@ -216,6 +216,15 @@ class Product extends Model {
 		static::deleting(function($model) {
 			$model->images()->detach();
 		});
+
+		static::updated(function($model){
+//			if ($model->isDirty('title') || $model->isDirty('price') || $model->isDirty('product_id')) {
+//				$option->cartItems->each(function ($cartItem) {
+//					$cartItem->invalidate();
+//				});
+//			}
+		});
+
 	}
 
 }

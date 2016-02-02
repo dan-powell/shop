@@ -6,7 +6,7 @@ class Extra extends Model {
 
     protected $fillable = [
         'title',
-        'type',
+		'price',
         'description'
     ];
 
@@ -14,7 +14,6 @@ class Extra extends Model {
 	{
 	    return [
     	    'title' => 'required',
-			'type' => 'integer',
 	    ];
 	}
 
@@ -48,5 +47,24 @@ class Extra extends Model {
 	{
 		return $this->belongsTo('DanPowell\Shop\Models\Product');
 	}
+
+
+
+	protected static function boot()
+	{
+		parent::boot();
+
+		// Events
+
+		static::updated(function($model){
+			// On update, invalidate any associated cart items
+			if ($model->isDirty('title') || $model->isDirty('price') || $model->isDirty('product_id')) {
+				$model->product->cartItems->each(function ($cartItem) {
+					$cartItem->invalidate();
+				});
+			}
+		});
+	}
+
 
 }
