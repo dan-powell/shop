@@ -36,7 +36,7 @@ class OrderController extends BaseController
     public function create()
     {
         // Get the cart
-        $cart = $this->cartItemRepository->getCart(['cartItems.product']);
+        $cart = $this->cartItemRepository->getCart(['cartItems.product.extras']);
 
         // Check that we have items
         if (count($cart->cartItems) <= 0) {
@@ -62,15 +62,18 @@ class OrderController extends BaseController
         $cart = $this->cartItemRepository->getCart(['cartItems.product']);
 
         // Validate the order
-        $this->validate($request, $this->repository->getRules($this->getFilteredShippingOptions($cart->cartItems)), $this->repository->getMessages());
+        //$this->validate($request, $this->repository->getRules($this->getFilteredShippingOptions($cart->cartItems)), $this->repository->getMessages());
 
 
 
 
         // Check the cart items
+        $verify = $this->verifyCart($cart);
 
-        $this->verifyCart($cart);
 
+        if(!$verify['check']) {
+            return redirect()->back()->withInput($verify['messages']);
+        }
 
 
         //
@@ -198,19 +201,56 @@ class OrderController extends BaseController
     private function verifyCart($cart)
     {
 
+        $check = true;
+        $messages = [];
+
+        // Check we actually have items
+        if(count($cart->cartItems) <= 0) {
+            $check = false;
+            $messages['warning'] = 'There are no items in your cart.';
+        }
 
 
-
-
-
-
+        // Check the validity of all cart items
         $cart->cartItems->each(function($item){
 
-            $item->verify();
-
-
+            if (!$item->valid){
+                $check = false;
+                $messages['warning'] = 'An item in your cart is invalid. Please either remove or replace it.';
+            }
 
         });
+
+        foreach($cart->cartItems->groupBy('product_id') as $itemGroup) {
+
+            $cartQuantity = 0;
+
+            foreach($itemGroup as $item) {
+                $cartQuantity += $item->quantity;
+            }
+
+            $product = $itemGroup->first()->product;
+
+            // Check product stock
+            if (!$product->checkStock($cartQuantity)) {
+                $check = false;
+                $messages['warning'] = 'We don\'t have enough of this product in stock.';
+            }
+
+            // Check product extras stock
+            foreach($product->extras as $extra) {
+                if (!$extra->checkStock($cartQuantity)) {
+                    $check = false;
+                    $messages['warning'] = 'We don\'t have enough of this product extra in stock.';
+                }
+            };
+
+        };
+
+        return [
+            'check' => $check,
+            'messages' => $messages
+        ];
 
 
         // Check that item products exist

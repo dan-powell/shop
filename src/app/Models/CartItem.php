@@ -137,12 +137,14 @@ class CartItem extends Model {
 	// Custom Methods
 
 
-	public function verify()
+	public function getValidAttribute()
 	{
-
-
-
-
+		if ($this->status == 1){
+			$bool = true;
+		} else {
+			$bool = false;
+		}
+		return $bool;
 	}
 
 

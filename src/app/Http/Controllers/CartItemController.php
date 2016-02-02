@@ -75,16 +75,18 @@ class CartItemController extends BaseController
 
 
 		// Check product stock
-		if(!$this->checkProductStock($product, $quantityToCheck)) {
+		if(!$product->checkStock($quantityToCheck)) {
 			dd('too many!');
 			return redirect()->route('shop.product.show', $product->slug);
 		}
 
 		// Check product extras stock
-		if(!$this->checkProductExtrasStock($product, $quantityToCheck)) {
-			dd('too many extras!');
-			return redirect()->route('shop.product.show', $product->slug);
-		}
+		$product->extras->each(function ($extra) use ($quantityToCheck, $product) {
+			if(!$extra->checkStock($quantityToCheck)) {
+				dd('too many Extras!');
+				return redirect()->route('shop.product.show', $product->slug);
+			}
+		});
 
 
 		$fill = [
@@ -198,28 +200,5 @@ class CartItemController extends BaseController
 		}
 
 	}
-
-
-	private function checkProductStock($product, $quantity) {
-		$bool = true;
-		if(!$product->allow_negative_stock) {
-			if($quantity > $product->stock) {
-				$bool = false;
-			}
-		}
-		return $bool;
-	}
-
-	private function checkProductExtrasStock($product, $quantity)
-	{
-		$bool = true;
-		foreach ($product->extras as $extra) {
-			if (!$extra->allow_negative_stock && isset($extra->stock) && $quantity > $extra->stock) {
-				$bool = false;
-			}
-		}
-		return $bool;
-	}
-
 
 }

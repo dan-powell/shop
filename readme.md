@@ -110,8 +110,13 @@ TODO: Replace hard-coded strings with language file (including validation messag
 
 TODO: Move cart validation & checks to models
 
+TODO: Add message bag (Notifcations)
 
+TODO: Check stock on Product/Extra controller
 
+TODO: Finish checkout process
+
+TODO: Add callback (send order ID as encrypted string)
 
 
 

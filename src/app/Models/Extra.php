@@ -26,13 +26,26 @@ class Extra extends Model {
 	public function getHasStockAttribute()
 	{
 		$bool = false;
-		foreach($this->options as $option) {
-			if($option->stock) {
-				$bool = true;
+		if($option->stock) {
+			$bool = true;
+		}
+		return $bool;
+	}
+
+
+
+
+	public function checkStock($quantity) {
+		$bool = true;
+		if(!$this->allow_negative_stock) {
+			if($quantity > $this->stock) {
+				$bool = false;
 			}
 		}
 		return $bool;
 	}
+
+
 
     // Relationships
 
