@@ -17,7 +17,7 @@ class CartItem extends Model {
 	 * @param $product Eloquent Collection (\Models\Product)
 	 * @return array
 	 */
-    public function rules($product)
+    public function validation($product)
 	{
 		$rules = [];
 		$messages = [];
@@ -180,6 +180,8 @@ class CartItem extends Model {
 
 		//dd($bool);
 	}
+
+
 
 
 

@@ -14,6 +14,7 @@
                     <th>Extras</th>
                     <th>Quantity</th>
                     <th>Sub Total</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -21,6 +22,32 @@
                         @include('shop::cart.partials.itemRow', ['item' => $item, 'display_product' => true])
                     @endforeach
                 </tbody>
+
+                <tr>
+                    <td colspan="3">
+                        <p class="text-right"><strong>Shipping</strong></p>
+                    </td>
+                    <td>
+                        {{ $shipping['title'] }}
+                    </td>
+                    <td>
+                        {{ $shipping['price'] }}
+                    </td>
+                    <td></td>
+                </tr>
+
+
+                <tr>
+                    <td colspan="4">
+                        <p class="text-right"><strong>Total</strong></p>
+                    </td>
+                    <td>
+                        {{ $total }}
+                    </td>
+                    <td></td>
+                </tr>
+
+
             </table>
 
         </div>

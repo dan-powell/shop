@@ -28,6 +28,7 @@ class Order extends Model {
         'shippingCountry',
         'notes',
         'instructions',
+        'shipping_type'
     ];
 
     public function rules($shipping_options)
@@ -67,7 +68,7 @@ class Order extends Model {
             'shippingState' => 'required|string',
             'shippingCountry' => 'required|string|in:' . $countries_shipping,
             'instructions' => 'string',
-            'shipping_option' => 'required|in:' . $valid_shipping
+            'shipping_type' => 'required|in:' . $valid_shipping
 	    ];
 	}
 

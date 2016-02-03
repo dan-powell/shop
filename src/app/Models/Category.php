@@ -25,16 +25,25 @@ class Category extends Node {
         'rank' => 'integer',
     ];
 
-    protected $appends = ['created_at_human', 'updated_at_human'];
+    protected $appends = ['created_at_string', 'updated_at_string'];
 
-    public function getUpdatedAtHumanAttribute()
+    public function getUpdatedAtStringAttribute()
     {
         return $this->updated_at->toFormattedDateString();
     }
 
-    public function getCreatedAtHumanAttribute()
+    public function getCreatedAtStringAttribute()
     {
         return $this->created_at->toFormattedDateString();
+    }
+
+    public function getPublishedAttribute()
+    {
+        if($this->published > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // Scopes

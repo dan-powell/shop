@@ -3,8 +3,6 @@
 @section('main')
     <h1>Cart</h1>
 
-    @include('shop::partials.messages')
-
     @if(isset($itemsGrouped))
 
         <div class="row">

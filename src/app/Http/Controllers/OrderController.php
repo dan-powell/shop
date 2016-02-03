@@ -75,6 +75,15 @@ class OrderController extends BaseController
             return redirect()->back()->withInput($verify['messages']);
         }
 
+        // Find the shipping type and save to cart
+        foreach(config('shop.shipping_types') as $shipping_type) {
+            if ($shipping_type['id'] == $request->get('shipping_type')) {
+                $cart->shipping_type = $shipping_type;
+            }
+        }
+
+        $total =  $this->getCartTotal($cart->cartItems) + $cart->shipping_type['price'];
+
 
         //
         $order = new Order;
@@ -83,14 +92,16 @@ class OrderController extends BaseController
 
         $order->fill([
             'cart' => $cart,
-            'total' => $this->getCartTotal($cart->cartItems)
+            'total' => $total
         ]);
 
         $order->save();
 
         return view('shop::order.confirm')->with([
             'order' => $order,
-            'cart' => $cart
+            'cart' => $cart,
+            'shipping' => $cart->shipping_type,
+            'total' => $total
         ]);
 
     }
@@ -120,13 +131,15 @@ class OrderController extends BaseController
         $card = \Omnipay::creditCard($order->toArray());
 
 
+        dd($order->id);
+
         $response = \Omnipay::purchase([
             'currency' => 'GBP',
-            'amount'    => $this->getCartTotal($cart->cartItems),
+            'amount'    => $order->total,
             'returnUrl' => 'http://google.co.uk',
             'cancelUrl' => 'http://google.co.uk',
             'description' => $desc,
-            'transactionId' => $cart->id,
+            'transactionId' => $order->id,
             'card' => $card,
         ])->send();
 
@@ -160,10 +173,6 @@ class OrderController extends BaseController
     public function cancel(Request $request)
     {
 
-        $cart = $this->cartRepository->getCart([
-            'cartProducts.product.images',
-            'cartProducts.configs'
-        ]);
 
     }
 

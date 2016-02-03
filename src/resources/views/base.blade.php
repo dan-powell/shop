@@ -93,6 +93,9 @@
             @include('shop::partials.sidebar')
         </div>
         <div class="col-sm-9">
+
+            @include('shop::partials.messages')
+
             @yield('main')
         </div>
 

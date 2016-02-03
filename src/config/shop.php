@@ -41,6 +41,24 @@ return [
         'length' => 'cm'
     ],
 
+
+    // TODO: Implement this (return as attribute)
+    'stock_strings' => [
+        [
+            'title' => 'Low Stock',
+            'max' => 10,
+        ],
+        [
+            'title' => 'In Stock',
+            'max' => null,
+        ]
+    ],
+
+
+    // TODO: Implement this (Maybe email?)
+    'low_stock_warning' => 10,
+
+
     'order_status_types' => [
         0 => [
             'title' => 'Prospective'

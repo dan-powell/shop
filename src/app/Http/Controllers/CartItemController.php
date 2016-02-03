@@ -41,9 +41,9 @@ class CartItemController extends BaseController
 			return redirect()->route('shop.product.show', $product->slug);
 		}
 
-		// Validate input
-		$modelValidation = $this->repository->getRules($product);
-		$this->validate($request, $modelValidation['rules'], $modelValidation['messages']);
+		// Validate request
+		$validation = $this->repository->getValidationRules($product);
+		$this->validate($request, $validation['rules'], $validation['messages']);
 
 
 		// Set the Product option values
@@ -71,19 +71,19 @@ class CartItemController extends BaseController
 
 
 		// Find all items of the same product, so we can calculate the total quantity in the cart
-		$quantityToCheck = $this->getProductQuantityInCart($product->id) + $request->get('quantity');
+		$quantityToCheck = $this->repository->getTotalProductQuantityInCart($product->id) + $request->get('quantity');
 
 
 		// Check product stock
 		if(!$product->checkStock($quantityToCheck)) {
-			dd('too many!');
+			session()->flash('alert-warning', 'Not enough product stock available.');
 			return redirect()->route('shop.product.show', $product->slug);
 		}
 
 		// Check product extras stock
 		$product->extras->each(function ($extra) use ($quantityToCheck, $product) {
 			if(!$extra->checkStock($quantityToCheck)) {
-				dd('too many Extras!');
+				session()->flash('alert-warning', 'Not enough stock available to add this extra.');
 				return redirect()->route('shop.product.show', $product->slug);
 			}
 		});
@@ -106,6 +106,7 @@ class CartItemController extends BaseController
 		}
 
 		// Take user to cart
+		session()->flash('alert-success', 'Product added to cart');
 		return redirect()->route('shop.cart.index');
 	}
 
@@ -137,32 +138,32 @@ class CartItemController extends BaseController
 			});
 
 			// Calc the total quantity to check
-			$quantityToCheck = ($this->getProductQuantityInCart($item->product->id) + $request->get('quantity')) - $item->quantity;
+			$quantityToCheck = ($this->repository->getTotalProductQuantityInCart($item->product->id) + $request->get('quantity')) - $item->quantity;
 
 			// Check product stock
-			if(!$this->checkProductStock($item->product, $quantityToCheck)) {
-				dd('too many!');
-				return redirect()->route('shop.cart.index');
+			if(!$item->product->checkStock($quantityToCheck)) {
+				session()->flash('alert-warning', 'Not enough product stock available.');
+				return redirect()->back();
 			}
 
 			// Check product extras stock
-			if(!$this->checkProductExtrasStock($item->product, $quantityToCheck)) {
-				dd('too many extras!');
-				return redirect()->route('shop.cart.index');
-			}
+			$item->product->extras->each(function ($extra) use ($quantityToCheck) {
+				if(!$extra->checkStock($quantityToCheck)) {
+					session()->flash('alert-warning', 'Not enough stock available to add this extra.');
+					return redirect()->back();
+				}
+			});
 
 			// Find & update the item
 			if($this->repository->update($id, $request->get('quantity'))){
-				$message = ['success' => 'Product quantity has been updated'];
-			} else {
-				$message = ['warning' => 'Product quantity has not been updated'];
+				session()->flash('alert-success', 'Product quantity has been updated');
 			}
 
 		} else {
-			$message = ['warning' => 'Product not found'];
+			session()->flash('alert-warning', 'Product not found');
 		}
 
-		return redirect()->route('shop.cart.index')->withInput($message);
+		return redirect()->route('shop.cart.index');
 
 	}
 
@@ -174,31 +175,11 @@ class CartItemController extends BaseController
 	public function destroy($id)
 	{
 		$this->repository->delete($id);
-		return redirect()->route('shop.cart.index', 301)->withInput(['warning' => 'Item has been removed from your cart']);
+		session()->flash('alert-danger', 'Product removed');
+		return redirect()->route('shop.cart.index', 301);
 	}
 
 
-	private function getProductQuantityInCart($product_id) {
 
-		// Find all items of the same product, so we can calculate the total quantity in the cart
-		$items = $this->repository->getCartItems()->where(
-			'product_id', $product_id
-		)->all();
-
-		// Get the total quantity of product in the cart
-		if($items) {
-			$quantity = 0;
-			// Sum all cart items linked to product
-			foreach($items as $item) {
-				$quantity += $item->quantity;
-			}
-
-			return $quantity;
-
-		} else {
-			return 0;
-		}
-
-	}
 
 }

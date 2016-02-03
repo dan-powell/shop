@@ -3,8 +3,6 @@
 @section('main')
     <h1>Checkout</h1>
 
-    @include('shop::partials.messages')
-
     @if(isset($itemsGrouped))
 
         <div class="row">
@@ -53,7 +51,7 @@
         <div class="well">
             <h2>Delivery</h2>
             @if(isset($shipping_options) && count($shipping_options))
-                <select name="shipping_option" id="shipping_option" class="form-control">
+                <select name="shipping_type" id="shipping_type" class="form-control">
                     @foreach($shipping_options as $option)
                         <option value="{{ $option['id'] }}">{{ $option['title'] }} ({{ $option['price_string'] }})</option>
                     @endforeach

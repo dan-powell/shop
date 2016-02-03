@@ -118,5 +118,5 @@ TODO: Finish checkout process
 
 TODO: Add callback (send order ID as encrypted string)
 
-
+TODO: Pagination
 

@@ -73,7 +73,7 @@ class Product extends Model {
 
 	public function getOnOfferAttribute()
 	{
-		if($this->price_offer > 0) {
+		if($this->price_offer != null && $this->price_offer > 0) {
 			return true;
 		} else {
 			return false;
@@ -88,6 +88,17 @@ class Product extends Model {
 			return false;
 		}
 	}
+
+
+	public function getStockStringAttribute()
+	{
+		if($this->stock > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 
 	public function getHasSpecificationsAttribute()
 	{

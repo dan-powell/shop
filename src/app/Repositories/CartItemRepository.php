@@ -79,7 +79,8 @@ class CartItemRepository extends AbstractRepository
      * @param $quantity
      * @return mixed
      */
-    public function update($id, $quantity) {
+    public function update($id, $quantity)
+    {
         return $this->makeQuery([], ['id' => $id])->where('cart_id', '=', $this->getCartId())->update(['quantity' => $quantity]);
     }
 
@@ -87,7 +88,8 @@ class CartItemRepository extends AbstractRepository
      * @param $id
      * @return mixed
      */
-    public function delete($id) {
+    public function delete($id)
+    {
         return $this->makeQuery([], ['id' => $id])->where('cart_id', '=', $this->getCartId())->delete();
     }
 
@@ -100,9 +102,35 @@ class CartItemRepository extends AbstractRepository
      * @param $quantity
      * @return mixed
      */
-    public function incrementQuantity(array $fill, $quantity) {
+    public function incrementQuantity(array $fill, $quantity)
+    {
         return $this->model->where($fill)->increment('quantity', $quantity);
     }
+
+
+
+    public function getTotalProductQuantityInCart($product_id)
+    {
+        // Find all items of the same product, so we can calculate the total quantity in the cart
+        $items = $this->getCartItems()->where(
+            'product_id', $product_id
+        )->all();
+
+        // Get the total quantity of product in the cart
+        if($items) {
+            $quantity = 0;
+            // Sum all cart items linked to product
+            foreach($items as $item) {
+                $quantity += $item->quantity;
+            }
+
+            return $quantity;
+
+        } else {
+            return 0;
+        }
+    }
+
 
 
     // Private methods
@@ -112,13 +140,13 @@ class CartItemRepository extends AbstractRepository
      */
     private function makeCart($with = [])
     {
-        
+
 
         if($this->cart == null) {
 
             // Get the session ID
             $cart_id = request()->cookie('cart_id');
-            
+
             // Find the user's cart
             $this->cart = Cart::where('id', '=', $cart_id)->with($with)->first();
 
@@ -131,12 +159,12 @@ class CartItemRepository extends AbstractRepository
                 ]);
 
                 $this->cart->save();
-                
-                
+
+
                 cookie()->queue('cart_id', $this->cart->id, 10080);
 
                 //return $response;
-                
+
             }
 
         }
