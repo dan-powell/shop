@@ -49,28 +49,25 @@ class ProductController extends BaseController
 
 		} else {
 
-			$product = $this->findItemOrFail($slug, ['images', 'related.images', 'options', 'extras.options']);
+			$product = $this->repository->getProductBySlug($slug);
 
-			// Group images on product
-			$this->addImageTypes($product);
+			if($product) {
 
-			// Group images on related products
-			$product->related->each(function ($m) {
-				$this->addImageTypes($m);
-			});
+				// Set the default template if not provided
+				/*
+                if ($product->template == null || $product->template == 'default') {
+                    $template = 'shop::product.show';
+                } else {
+                    $template = 'shop::templates.' . $product->template;
+                }
+                */
 
+				// Return view with projects
+				return view('shop::product.show')->with(['product' => $product]);
+			} else {
+				abort('404', 'Product not found');
+			}
 
-			// Set the default template if not provided
-			/*
-            if ($product->template == null || $product->template == 'default') {
-                $template = 'shop::product.show';
-            } else {
-                $template = 'shop::templates.' . $product->template;
-            }
-            */
-
-			// Return view with projects
-			return view('shop::product.show')->with(['product' => $product]);
 		}
 
 	}

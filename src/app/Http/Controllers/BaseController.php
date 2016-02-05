@@ -12,9 +12,6 @@ class BaseController extends Controller
     }
 
 
-
-
-
     protected function findItemOrFail($slug, array $with = [])
     {
 

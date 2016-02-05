@@ -39,7 +39,7 @@ class Category extends Node {
 
     public function getPublishedAttribute()
     {
-        if($this->published > 0) {
+        if($this->attributes['published'] > 0) {
             return true;
         } else {
             return false;
