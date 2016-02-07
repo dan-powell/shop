@@ -12,8 +12,8 @@
                 <ul>
                     @foreach($item->options as $option)
                         <li>
-                            <strong>{{ $option['title'] }}: </strong>
-                            {{ $option['value'] }}
+                            <strong>{{ $option->title }}: </strong>
+                            {{ $option->pivot->value }}
                         </li>
                     @endforeach
                 </ul>

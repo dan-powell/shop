@@ -38,7 +38,72 @@ class CartItemController extends BaseController
 	public function store(ProcessCartItemRequest $request)
 	{
 
-		$this->repository->store($request);
+		// Find product to be added
+//		$product = $this->productPublicRepository->getById($request->get('product_id'), ['extras.options', 'options']);
+//
+//		if(!$product) {
+//			return redirect()->route('shop.product.show', $product->slug);
+//		}
+
+
+
+
+
+		$options = [];
+
+		foreach($request->get('option') as $key => $option) {
+			$options[$key] = ['value' => $option];
+		}
+
+		//dd($request->product);
+
+
+		$extras = [];
+
+		foreach($request->get('extra') as $key => $extra) {
+			$extras[$key] = ['value' => $extra];
+		}
+
+
+
+		$item = $this->repository->makeModel();
+
+		$item->fill([
+			'cart_id' => $this->repository->getVerifiedCartId(),
+			'product_id' => $request->product->id,
+			'quantity' => $request->get('quantity')
+		]);
+
+		$item->save();
+
+
+		// Check if this item config is already saved & update quantity...
+		//$item = $this->incrementQuantity($fill, $request->get('quantity'));
+
+		// ...otherwise, if no matching items were found...
+		//if(!$item) {
+
+		//$item = $this->create($fill);
+		//}
+
+
+
+		//dd($product->options->keyBy('id')->get('id'));
+
+
+//		$collection = $product->options->keyBy('id')->filter(function($option) {
+//			unset($option['id']);
+//			return $option;
+//		});
+
+		//dd($collection);
+
+
+		//dd($item);
+
+		$item->options()->attach($options);
+
+		$item->extras()->attach($extras);
 
 		// Take user to cart
 		session()->flash('alert-success', 'Product added to cart');

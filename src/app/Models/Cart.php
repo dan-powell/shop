@@ -6,7 +6,6 @@ class Cart extends Model {
 
     protected $fillable = [
         'status',
-		'session_id'
     ];
 
     public function rules()

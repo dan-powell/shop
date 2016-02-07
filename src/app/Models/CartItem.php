@@ -4,6 +4,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class CartItem extends Model {
 
+	protected $table = 'cart_items';
+
+	protected $morphClass = 'DanPowell\Shop\Models\CartItem';
+
     protected $fillable = [
 		'product_id',
 		'cart_id',
@@ -42,39 +46,39 @@ class CartItem extends Model {
 		return config('shop.currency.symbol') . number_format($this->sub_total, 2);
 	}
 
-	/**
-	 * @param $value
-	 * @return mixed
-	 */
-	public function getOptionsAttribute()
-	{
-		return json_decode($this->attributes['options'], true);
-	}
-
-	/**
-	 * @param $value
-	 */
-	public function setOptionsAttribute($value)
-	{
-		$this->attributes['options'] = json_encode($value);
-	}
-
-	/**
-	 * @param $value
-	 * @return mixed
-	 */
-	public function getExtrasAttribute()
-	{
-		return json_decode($this->attributes['extras'], true);
-	}
-
-	/**
-	 * @param $value
-	 */
-	public function setExtrasAttribute($value)
-	{
-		$this->attributes['extras'] = json_encode($value);
-	}
+//	/**
+//	 * @param $value
+//	 * @return mixed
+//	 */
+//	public function getOptionsAttribute()
+//	{
+//		return json_decode($this->attributes['options'], true);
+//	}
+//
+//	/**
+//	 * @param $value
+//	 */
+//	public function setOptionsAttribute($value)
+//	{
+//		$this->attributes['options'] = json_encode($value);
+//	}
+//
+//	/**
+//	 * @param $value
+//	 * @return mixed
+//	 */
+//	public function getExtrasAttribute()
+//	{
+//		return json_decode($this->attributes['extras'], true);
+//	}
+//
+//	/**
+//	 * @param $value
+//	 */
+//	public function setExtrasAttribute($value)
+//	{
+//		$this->attributes['extras'] = json_encode($value);
+//	}
 
 
 	// Custom Methods
@@ -145,6 +149,16 @@ class CartItem extends Model {
 
 
 	// Relationships
+
+	public function extras()
+	{
+		return $this->belongsToMany('DanPowell\Shop\Models\Extra', 'cart_item_extras', 'cart_item_id', 'extra_id', 'extras')->withPivot('value');
+	}
+
+	public function options()
+	{
+		return $this->belongsToMany('DanPowell\Shop\Models\Option', 'cart_item_options', 'cart_item_id', 'option_id', 'options')->withPivot('value');
+	}
 
 
     // Inverse Relationships

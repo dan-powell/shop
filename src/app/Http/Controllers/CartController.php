@@ -26,6 +26,8 @@ class CartController extends BaseController
 
         // Get the cart & items
         $cartItems = $this->repository->getCartItems([
+            'options',
+            'extras.options',
             'product.images'
         ]);
 

@@ -10,6 +10,8 @@ class Option extends Model {
 		'config'
     ];
 
+	protected $hidden = ['attachment_id' ,'attachment_type'];
+
     public function rules()
 	{
 	    return [
@@ -49,6 +51,10 @@ class Option extends Model {
 		return $this->morphTo();
 	}
 
+	public function cartItems()
+	{
+		return $this->belongsToMany('DanPowell\Shop\Models\CartItem', 'cart_item_options', 'cart_item_id', 'option_id');
+	}
 
 
 

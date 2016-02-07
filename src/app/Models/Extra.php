@@ -4,6 +4,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Extra extends Model {
 
+	protected $table = 'extras';
+
+	protected $morphClass = 'DanPowell\Shop\Models\Extra';
+
     protected $fillable = [
         'title',
 		'price',
@@ -59,6 +63,11 @@ class Extra extends Model {
 	public function product()
 	{
 		return $this->belongsTo('DanPowell\Shop\Models\Product');
+	}
+
+	public function cartItems()
+	{
+		return $this->belongsToMany('DanPowell\Shop\Models\CartItem', 'cart_item_extras', 'cart_item_id', 'extra_id');
 	}
 
 
