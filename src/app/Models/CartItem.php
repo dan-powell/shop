@@ -165,4 +165,5 @@ class CartItem extends Model {
 	}
 
 
+
 }

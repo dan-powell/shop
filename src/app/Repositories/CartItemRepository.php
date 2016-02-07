@@ -12,7 +12,6 @@ class CartItemRepository extends AbstractRepository
 {
 
     protected $model;
-    protected $cart;
     protected $productPublicRepository;
 
     public function __construct(ProductPublicRepository $ProductPublicRepository)
@@ -29,15 +28,50 @@ class CartItemRepository extends AbstractRepository
      */
     public function getCartId()
     {
-        return $this->makeCart()->id;
+        // Get the session ID from cookie
+        $cart_id = request()->cookie('cart_id');
+
+        // if no cookie has been found, then create cart
+        if(!$cart_id) {
+
+            // Save to DB
+            $cart = Cart::create();
+
+            // Set the cookie
+            cookie()->queue('cart_id', $cart->id, 10080);
+
+            // Return the ID
+            $cart_id = $cart->id;
+
+        }
+
+        // Return the ID
+        return $cart_id;
+    }
+
+    public function getVerifiedCartId()
+    {
+        // Get the session ID from cookie
+        $cart_id = request()->cookie('cart_id');
+
+        $cart = Cart::where('id', '=', $cart_id)->first();
+
+        // Create the cart
+        if(!$cart) {
+            $cart = Cart::create();
+            cookie()->queue('cart_id', $cart->id, 10080);
+        }
+
+        // Return the ID
+        return $cart->id;
     }
 
     /**
      * @return mixed
      */
-    public function getCartItems()
+    public function getCartItems($with = [])
     {
-        return $this->makeCart(['cartItems'])->cartItems;
+        return $this->model->where('cart_id', '=', $this->getCartId())->with($with)->get();
     }
 
     /**
@@ -45,9 +79,8 @@ class CartItemRepository extends AbstractRepository
      */
     public function getCart($with = [])
     {
-        return $this->makeCart($with);
+        return Cart::with($with)->find($this->getCartId());
     }
-
 
     /**
      * @return Cart
@@ -64,7 +97,6 @@ class CartItemRepository extends AbstractRepository
     {
         return $this->makeQuery()->where('cart_id', '=', $this->getCartId())->where('product_id', '=', $id)->delete();
     }
-
 
 
     // Abstract class overrides
@@ -159,7 +191,7 @@ class CartItemRepository extends AbstractRepository
 
 
         $fill = [
-            'cart_id' => $this->getCartId(),
+            'cart_id' => $this->getVerifiedCartId(),
             'product_id' => $product->id,
             'options' => $product->options,
             'extras' => $product->extras
@@ -215,48 +247,6 @@ class CartItemRepository extends AbstractRepository
         } else {
             return 0;
         }
-    }
-
-
-
-    // Private methods
-
-    /**
-     * @return Cart
-     */
-    private function makeCart($with = [])
-    {
-
-
-        if($this->cart == null) {
-
-            // Get the session ID
-            $cart_id = request()->cookie('cart_id');
-
-            // Find the user's cart
-            $this->cart = Cart::where('id', '=', $cart_id)->with($with)->first();
-
-            // if no cart has been found, then create one
-            if(!$this->cart) {
-                $this->cart = new Cart();
-
-                $this->cart->fill([
-                    'session_id' => session()->getId()
-                ]);
-
-                $this->cart->save();
-
-
-                cookie()->queue('cart_id', $this->cart->id, 10080);
-
-                //return $response;
-
-            }
-
-        }
-
-        return $this->cart;
-
     }
 
 }

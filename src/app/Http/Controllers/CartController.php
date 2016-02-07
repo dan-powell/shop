@@ -25,15 +25,15 @@ class CartController extends BaseController
     {
 
         // Get the cart & items
-        $cart = $this->repository->getCart([
-            'cartItems.product.images'
+        $cartItems = $this->repository->getCartItems([
+            'product.images'
         ]);
 
         // Group the items by product
         return view('shop::cart.index')->with([
-            'items' => $cart->cartItems,
-            'total' => config('shop.currency.symbol') . number_format($this->getCartTotal($cart->cartItems), 2),
-            'itemsGrouped' => $this->groupCartItemsByProduct($cart->cartItems)
+            'items' => $cartItems,
+            'total' => config('shop.currency.symbol') . number_format($this->getCartTotal($cartItems), 2),
+            'itemsGrouped' => $this->groupCartItemsByProduct($cartItems)
         ]);
     }
 

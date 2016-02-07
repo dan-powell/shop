@@ -23,8 +23,8 @@ class CategorySeeder extends Seeder
     {
         $model = factory(DanPowell\Shop\Models\Category::class)->make()->toArray();
 
-        unset($model['created_at_human']);
-        unset($model['updated_at_human']);
+        unset($model['created_at_string']);
+        unset($model['updated_at_string']);
 
         return $model;
     }
