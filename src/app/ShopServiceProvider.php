@@ -83,6 +83,15 @@ class ShopServiceProvider extends \Illuminate\Support\ServiceProvider
             __DIR__.'/../tests' => base_path('tests') . '/Shop',
         ], 'tests');
 
+        // Publishes all stuff for dev
+        $this->publishes([
+            __DIR__.'/../database/seeds' => $this->app->databasePath().'/seeds',
+            __DIR__.'/../database/migrations' => $this->app->databasePath().'/migrations',
+            __DIR__.'/../database/factories' => $this->app->databasePath().'/factories',
+            __DIR__.'/../tests' => base_path('tests') . '/Shop',
+        ], 'dev');
+
+
     }
 
 }

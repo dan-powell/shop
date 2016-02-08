@@ -51,8 +51,10 @@ class CartItemController extends BaseController
 
 		$options = [];
 
-		foreach($request->get('option') as $key => $option) {
-			$options[$key] = ['value' => $option];
+		if($request->get('option')) {
+			foreach ($request->get('option') as $key => $option) {
+				$options[$key] = ['value' => $option];
+			}
 		}
 
 		//dd($request->product);
@@ -60,21 +62,53 @@ class CartItemController extends BaseController
 
 		$extras = [];
 
-		foreach($request->get('extra') as $key => $extra) {
-			$extras[$key] = ['value' => $extra];
+		if($request->get('extra')) {
+			foreach ($request->get('extra') as $key => $extra) {
+				$extras[$key] = ['value' => $extra];
+			}
 		}
+
 
 
 
 		$item = $this->repository->makeModel();
 
-		$item->fill([
-			'cart_id' => $this->repository->getVerifiedCartId(),
-			'product_id' => $request->product->id,
-			'quantity' => $request->get('quantity')
-		]);
+		$relations = ['options' => $options, 'extras' => $extras];
 
-		$item->save();
+
+		$findItem = $item->where([
+			'relations' => json_encode($relations),
+			'cart_id' => $this->repository->getVerifiedCartId(),
+			'product_id' => $request->product->id
+		])->increment('quantity', $request->get('quantity'));
+
+		//dd($findItem);
+
+
+		if(!$findItem) {
+
+			$item->fill([
+				'cart_id' => $this->repository->getVerifiedCartId(),
+				'product_id' => $request->product->id,
+				'quantity' => $request->get('quantity'),
+				'relations' => $relations,
+			]);
+
+			$item->save();
+
+
+			$item->options()->attach($options);
+
+			$item->extras()->attach($extras);
+
+			session()->flash('alert-success', 'Product added to cart');
+
+		} else {
+			session()->flash('alert-success', 'Product quantity updated');
+		}
+
+
+
 
 
 		// Check if this item config is already saved & update quantity...
@@ -101,12 +135,10 @@ class CartItemController extends BaseController
 
 		//dd($item);
 
-		$item->options()->attach($options);
 
-		$item->extras()->attach($extras);
 
 		// Take user to cart
-		session()->flash('alert-success', 'Product added to cart');
+
 		return redirect()->route('shop.cart.index');
 	}
 

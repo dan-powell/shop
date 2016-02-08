@@ -11,10 +11,8 @@ class CartItem extends Model {
     protected $fillable = [
 		'product_id',
 		'cart_id',
-		'options',
-		'extras',
+		'relations',
 		'quantity',
-		'status'
     ];
 
     protected $casts = [
@@ -32,8 +30,9 @@ class CartItem extends Model {
 	public function getSubTotalAttribute()
 	{
 		$arr = [$this->product->price];
+
 		foreach($this->extras as $extra) {
-			array_push($arr, $extra['price']);
+			array_push($arr, $extra->price);
 		}
 		return array_sum($arr) * $this->quantity;
 	}
@@ -63,22 +62,22 @@ class CartItem extends Model {
 //		$this->attributes['options'] = json_encode($value);
 //	}
 //
-//	/**
-//	 * @param $value
-//	 * @return mixed
-//	 */
-//	public function getExtrasAttribute()
-//	{
-//		return json_decode($this->attributes['extras'], true);
-//	}
-//
-//	/**
-//	 * @param $value
-//	 */
-//	public function setExtrasAttribute($value)
-//	{
-//		$this->attributes['extras'] = json_encode($value);
-//	}
+	/**
+	 * @param $value
+	 * @return mixed
+	 */
+	public function getRelationsAttribute()
+	{
+		return json_decode($this->attributes['relations'], true);
+	}
+
+	/**
+	 * @param $value
+	 */
+	public function setRelationsAttribute($value)
+	{
+		$this->attributes['relations'] = json_encode($value);
+	}
 
 
 	// Custom Methods
