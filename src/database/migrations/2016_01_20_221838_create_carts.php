@@ -15,7 +15,7 @@ class CreateCarts extends Migration {
         Schema::create('carts', function($table)
         {
             $table->increments('id');
-            $table->string('status', 128);
+            $table->string('status', 128)->nullable();
             $table->timestamps();
         });
 

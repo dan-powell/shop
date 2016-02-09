@@ -42,9 +42,10 @@ class CreateOrders extends Migration {
             $table->timestamps();
         });
 
-        $setIncrement = "ALTER TABLE orders AUTO_INCREMENT = " . rand(1000, 5000) . ";";
+        // TODO implement a way to solution to use large random order numbers without changing auto increment
+        //$setIncrement = "ALTER TABLE orders AUTO_INCREMENT = " . rand(1000, 5000) . ";";
+        //DB::unprepared($setIncrement);
 
-        DB::unprepared($setIncrement);
     }
 
     /**

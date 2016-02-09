@@ -120,9 +120,15 @@
             if($(el[i]).prop('checked')){//this is true if the switch is on
                 var target = $(el[i]).data("toggle-target");
                 $(target).show();
+                $('input', target).prop('disabled', false);
+                $('select', target).prop('disabled', false);
+                $('textarea', target).prop('disabled', false);
             }else{
                 var target = $(el[i]).data("toggle-target");
                 $(target).hide();
+                $('input', target).prop('disabled', true);
+                $('select', target).prop('disabled', true);
+                $('textarea', target).prop('disabled', true);
             }
         }
 
@@ -131,8 +137,14 @@
 
             if($(this).prop('checked')){//this is true if the switch is on
                 $(target).show();
+                $('input', target).prop('disabled', false);
+                $('select', target).prop('disabled', false);
+                $('textarea', target).prop('disabled', false);
             }else{
                 $(target).hide();
+                $('input', target).prop('disabled', true);
+                $('select', target).prop('disabled', true);
+                $('textarea', target).prop('disabled', true);
             }
         });
     });

@@ -76,22 +76,31 @@ class ProcessCartItemRequest extends Request
         $product = $this->getProduct();
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         // Set the Product option values
         $submittedOptions = $this->get('option');
         $product->options->each(function ($option) use ($submittedOptions) {
-
-            unset($option['title']);
-            unset($option['attachment_type']);
-            unset($option['attachment_id']);
-            unset($option['config']);
-            unset($option['type']);
-
             if (isset($submittedOptions[$option->id])) {
                 $option->value = $submittedOptions[$option->id];
             }
         });
-
-
 
 
 

@@ -45,3 +45,9 @@ $factory->defineAs(DanPowell\Shop\Models\Product::class, 'published', function (
 
 	return array_merge($model, ['published' => 1]);
 });
+
+$factory->defineAs(DanPowell\Shop\Models\Product::class, 'publishedWithStock', function ($faker) use ($factory) {
+	$model = $factory->raw(DanPowell\Shop\Models\Product::class);
+
+	return array_merge($model, ['published' => 1, 'stock' => 10]);
+});
