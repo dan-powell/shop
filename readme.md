@@ -74,35 +74,48 @@ Aliases
 # Testing
 
 
+
 config/database.php
 
-        'testing' => [
-            'driver'   => 'sqlite',
-            'database' => ':memory:',
-            'prefix'   => '',
-        ],
+    'testing' => [
+        'driver'    => 'mysql',
+        'host'      => 'localhost',
+        'database'  => 'shop_testing',
+        'username'  => 'homestead',
+        'password'  => 'secret',
+        'charset'   => 'utf8',
+        'collation' => 'utf8_unicode_ci',
+        'prefix'    => '',
+        'strict'    => false,
+    ],
         
-phpunit.xml
+tests/_bootstrap.php
 
-    <testsuite name="ShopIntegration">
-        <directory>./tests/Shop/Integration</directory>
-    </testsuite>
-    <testsuite name="ShopUnit">
-        <directory>./tests/Shop/Unit</directory>
-    </testsuite>
-    <testsuite name="ShopApi">
-        <directory>./tests/Shop/Api</directory>
-    </testsuite>
-
-    <php>
-        <env name="DB_CONNECTION" value="testing"/>
-    </php>
+    require 'bootstrap/autoload.php';
+    $app = require 'bootstrap/app.php';
+    $app->loadEnvironmentFrom('.env.testing');
+    $app->instance('request', new \Illuminate\Http\Request);
+    $app->make('Illuminate\Contracts\Http\Kernel')->bootstrap();
     
+.env.testing
+
+    APP_ENV=testing
+    APP_DEBUG=true
+    APP_KEY=AqBqHv6GYO2PSIY3PIVO3o4zdcKovDdN
+    
+    BASE_URL=http://shop.dev
+    
+    DB_HOST=localhost
+    DB_DATABASE=shop_testing
+    DB_USERNAME=homestead
+    DB_PASSWORD=secret
+    
+    CACHE_DRIVER=file
+    SESSION_DRIVER=file
+
 run
 
-    phpunit
-    
-    phpunit --testsuite ShopIntegration
+    php ./vendor/bin/codecept run
 
 # Roadmap
 
@@ -110,7 +123,7 @@ TODO: Replace hard-coded strings with language file (including validation messag
 
 TODO: Move cart validation & checks to models
 
-TODO: Add message bag (Notifcations)
+TODO: Add message bag (Notifications)
 
 TODO: Check stock on Product/Extra controller
 

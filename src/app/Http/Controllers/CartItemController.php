@@ -45,30 +45,25 @@ class CartItemController extends BaseController
 //			return redirect()->route('shop.product.show', $product->slug);
 //		}
 
-
+		$product = $request->getProduct();
 
 
 
 		$options = [];
-
-		if($request->get('option')) {
-			foreach ($request->get('option') as $key => $option) {
-				$options[$key] = ['value' => $option];
+		foreach ($product->options as $option) {
+			if($request->get('option')[$option->id]) {
+				$options[$option->id] = ['value' => $request->get('option')[$option->id]];
 			}
 		}
 
-		//dd($request->product);
 
 
 		$extras = [];
-
-		if($request->get('extra')) {
-			foreach ($request->get('extra') as $key => $extra) {
-				$extras[$key] = ['value' => $extra];
+		foreach ($product->extras as $extra) {
+			if($request->get('extra')[$extra->id]) {
+				$extras[$extra->id] = ['value' => $request->get('extra')[$extra->id]];
 			}
 		}
-
-
 
 
 		$item = $this->repository->makeModel();
@@ -79,7 +74,7 @@ class CartItemController extends BaseController
 		$findItem = $item->where([
 			'relations' => json_encode($relations),
 			'cart_id' => $this->repository->getVerifiedCartId(),
-			'product_id' => $request->product->id
+			'product_id' => $product->id
 		])->increment('quantity', $request->get('quantity'));
 
 		//dd($findItem);
@@ -89,7 +84,7 @@ class CartItemController extends BaseController
 
 			$item->fill([
 				'cart_id' => $this->repository->getVerifiedCartId(),
-				'product_id' => $request->product->id,
+				'product_id' => $product->id,
 				'quantity' => $request->get('quantity'),
 				'relations' => $relations,
 			]);

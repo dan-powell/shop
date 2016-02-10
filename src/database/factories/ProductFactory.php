@@ -27,7 +27,6 @@ $factory->define(DanPowell\Shop\Models\Product::class, function (Faker\Generator
 	    'length' => $faker->randomFloat(2, 0, 2000),
 	    'stock' => $faker->numberBetween(0, 100),
 	    'featured' => $faker->randomElement([0, 1]),
-	    'published' => $faker->randomElement([0, 1]),
 	    'meta_title' => $faker->sentence(rand(1, 4)),
 	    'meta_description' => $faker->paragraph(1),
 		'rank' => $faker->numberBetween(0, 100),
@@ -37,7 +36,7 @@ $factory->define(DanPowell\Shop\Models\Product::class, function (Faker\Generator
 $factory->defineAs(DanPowell\Shop\Models\Product::class, 'featured', function ($faker) use ($factory) {
 	$model = $factory->raw(DanPowell\Shop\Models\Product::class);
 
-	return array_merge($model, ['featured' => 1, 'published' => 1]);
+	return array_merge($model, ['featured' => 1]);
 });
 
 $factory->defineAs(DanPowell\Shop\Models\Product::class, 'published', function ($faker) use ($factory) {
@@ -46,8 +45,38 @@ $factory->defineAs(DanPowell\Shop\Models\Product::class, 'published', function (
 	return array_merge($model, ['published' => 1]);
 });
 
-$factory->defineAs(DanPowell\Shop\Models\Product::class, 'publishedWithStock', function ($faker) use ($factory) {
+$factory->defineAs(DanPowell\Shop\Models\Product::class, 'unpublished', function ($faker) use ($factory) {
 	$model = $factory->raw(DanPowell\Shop\Models\Product::class);
 
-	return array_merge($model, ['published' => 1, 'stock' => 10]);
+	return array_merge($model, ['published' => 0]);
+});
+
+$factory->defineAs(DanPowell\Shop\Models\Product::class, 'inStock', function ($faker) use ($factory) {
+	$model = $factory->raw(DanPowell\Shop\Models\Product::class);
+
+	return array_merge($model, ['stock' => 10]);
+});
+
+$factory->defineAs(DanPowell\Shop\Models\Product::class, 'inStockAllowNegative', function ($faker) use ($factory) {
+	$model = $factory->raw(DanPowell\Shop\Models\Product::class);
+
+	return array_merge($model, ['stock' => 10, 'allow_negative_stock' => 1]);
+});
+
+$factory->defineAs(DanPowell\Shop\Models\Product::class, 'outOfStock', function ($faker) use ($factory) {
+	$model = $factory->raw(DanPowell\Shop\Models\Product::class);
+
+	return array_merge($model, ['stock' => 0, ]);
+});
+
+$factory->defineAs(DanPowell\Shop\Models\Product::class, 'outOfStockAllowNegative', function ($faker) use ($factory) {
+	$model = $factory->raw(DanPowell\Shop\Models\Product::class);
+
+	return array_merge($model, ['stock' => 0, 'allow_negative_stock' => 1]);
+});
+
+$factory->defineAs(DanPowell\Shop\Models\Product::class, 'onOffer', function ($faker) use ($factory) {
+	$model = $factory->raw(DanPowell\Shop\Models\Product::class);
+
+	return array_merge($model, ['price' => 20, 'price_offer' => 10,]);
 });

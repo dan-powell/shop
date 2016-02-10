@@ -7,7 +7,7 @@ use DanPowell\Shop\Repositories\ProductPublicRepository;
 class ProcessCartItemRequest extends Request
 {
 
-    public $product;
+    protected $product;
     protected $productPublicRepository;
     protected $cartItemRepository;
 
@@ -27,7 +27,7 @@ class ProcessCartItemRequest extends Request
     }
 
 
-    private function getProduct() {
+    public function getProduct() {
 
         if (!$this->product) {
             $this->product = $this->productPublicRepository->getById($this->get('product_id'), ['extras.options', 'options']);
@@ -165,6 +165,7 @@ class ProcessCartItemRequest extends Request
 
         // Validate the Extra options
         foreach($product->extras as $extra) {
+            //$rules['extra.' . $extra->id] = 'in:';
             foreach($extra->options as $option) {
                 // Start creating rules string
                 $rule = 'string|required_with:extra.' . $extra->id;

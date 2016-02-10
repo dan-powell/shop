@@ -17,6 +17,9 @@
         "baum/baum": "~1.1",
         "ignited/laravel-omnipay": "2.*"
     },
+    "require-dev": {
+        "codeception/codeception": "*"
+    },
     "autoload": {
 		"psr-4": {
 			"DanPowell\\Shop\\": "/src/app"

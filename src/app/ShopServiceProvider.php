@@ -80,7 +80,7 @@ class ShopServiceProvider extends \Illuminate\Support\ServiceProvider
 
         // Publish Tests
         $this->publishes([
-            __DIR__.'/../tests' => base_path('tests') . '/Shop',
+            __DIR__.'/../tests' => base_path('tests'),
         ], 'tests');
 
         // Publishes all stuff for dev
@@ -88,7 +88,7 @@ class ShopServiceProvider extends \Illuminate\Support\ServiceProvider
             __DIR__.'/../database/seeds' => $this->app->databasePath().'/seeds',
             __DIR__.'/../database/migrations' => $this->app->databasePath().'/migrations',
             __DIR__.'/../database/factories' => $this->app->databasePath().'/factories',
-            __DIR__.'/../tests' => base_path('tests') . '/Shop',
+            __DIR__.'/../tests' => base_path('tests'),
         ], 'dev');
 
 

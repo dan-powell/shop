@@ -48,7 +48,7 @@
         </div>
         <div class="col-sm-6">
 
-            <form action="{{ route('shop.cart.item.store') }}" method="post">
+            <form action="{{ route('shop.cart.item.store') }}" method="post" id="addToCart">
 
                 {!! csrf_field() !!}
 
