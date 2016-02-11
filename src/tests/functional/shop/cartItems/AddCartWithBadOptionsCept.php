@@ -5,20 +5,23 @@ $I = new FunctionalTester($scenario);
 $I->wantTo('Add a product to cart that has bad options');
 
 $product = $I->createModel(DanPowell\Shop\Models\Product::class, [], 'inStock', 1);
-$option = $I->makeModel(DanPowell\Shop\Models\Option::class, [], null, 3);
 
-$product->options()->save($option);
+$options[] = $I->makeModel(DanPowell\Shop\Models\Option::class, [], 'radio', 1);
+$options[] = $I->makeModel(DanPowell\Shop\Models\Option::class, [], 'select', 1);
+$options[] = $I->makeModel(DanPowell\Shop\Models\Option::class, [], 'text', 1);
 
-$I->amOnPage(route('shop.product.show', $product->slug));
+$product->options()->saveMany($options);
+
+$I->amOnRoute('shop.product.show', $product->slug);
 
 $I->submitForm('#addToCart', [
-    'option[32]' => '23',
-    'option[butts]' => 'gdfgdgdfgfd',
-    'option[lush]' => '94'
+    'option[' . $options[0]->id . ']' => '23',
+    'option[' . $options[1]->id . ']' => 'rewe',
+    'option[' . $options[2]->id . ']' => 'Testing',
 ]);
 
 $I->dontSee('Product added to cart');
-
+$I->seeCurrentRouteIs('shop.product.show');
 $I->seeFormHasErrors();
 
 ?>

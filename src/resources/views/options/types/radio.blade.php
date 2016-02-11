@@ -4,7 +4,7 @@
         @foreach($option['config'] as $key => $value)
             <div class="radio">
                 <label>
-                    <input type="radio" name="option[{{ $option->id }}]" id="option{{ $option->id }}" value="{{ $value }}" @if($value == old('option.' . $option->id) || ($value != old('option.' . $option->id) && $key == 0))checked @endif>
+                    <input type="radio" name="option[{{ $option->id }}]" value="{{ $value }}" @if($value == old('option.' . $option->id) || ($value != old('option.' . $option->id) && $key == 0))checked @endif>
                     {{ $value }}
                 </label>
             </div>

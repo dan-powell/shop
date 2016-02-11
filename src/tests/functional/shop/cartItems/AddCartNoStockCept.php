@@ -1,9 +1,9 @@
 <?php
 
-//$I = new FunctionalTester($scenario);
-//
-//$I->wantTo('Add a product to cart that has no stock');
-//
+$I = new FunctionalTester($scenario);
+
+$I->wantTo('Add a product to cart that has no stock');
+
 //$product = $I->createModel(DanPowell\Shop\Models\Product::class, [], 'outOfStock', 1);
 //
 //$I->amOnPage(route('shop.product.show', $product->slug));
