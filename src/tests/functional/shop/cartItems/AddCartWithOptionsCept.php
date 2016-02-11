@@ -21,17 +21,22 @@ foreach($options as $option) {
         $I->selectOption('option[' . $option->id . ']', $option_values[$option->id]);
     } else {
         $option_values[$option->id] = "Testing";
+        $I->fillField('option[' . $option->id . ']', "Testing");
     }
 }
 
 $I->submitForm('#addToCart', []);
 $I->seeCurrentRouteIs('shop.cart.index');
-$I->see('Product added to cart');
-$I->see($product->title);
+$I->see('Product added to cart', '.alert');
+$I->see($product->title, '.CartTable-product-title');
 
 foreach($options as $option) {
-    $I->see($option->title);
-    $I->see($option_values[$option->id]);
+    $I->see($option->title, '.CartTable-item-options');
+    if($option->type == 'radio' || $option->type == 'select') {
+        $I->see($option_values[$option->id], '.CartTable-item-options');
+    } else {
+        $I->see('Testing', '.CartTable-item-options');
+    }
 }
 
 ?>

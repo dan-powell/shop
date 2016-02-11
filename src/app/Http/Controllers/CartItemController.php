@@ -56,12 +56,15 @@ class CartItemController extends BaseController
 			}
 		}
 
-
-
 		$extras = [];
 		foreach ($product->extras as $extra) {
 			if($request->get('extra')[$extra->id]) {
 				$extras[$extra->id] = ['value' => $request->get('extra')[$extra->id]];
+			}
+			foreach ($extra->options as $option) {
+				if($request->get('option')[$option->id]) {
+					$options[$option->id] = ['value' => $request->get('option')[$option->id]];
+				}
 			}
 		}
 

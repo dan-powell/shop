@@ -15,7 +15,7 @@ $factory->define(DanPowell\Shop\Models\Option::class, function (Faker\Generator 
     return [
         'title' => $faker->word,
         'type' => $faker->randomElement(['radio', 'select', 'text', 'textarea']),
-        'config' => ['Option1', 'Option 2'],
+        'config' => ['Option-' . $faker->word, 'Option-' . $faker->word],
     ];
 });
 

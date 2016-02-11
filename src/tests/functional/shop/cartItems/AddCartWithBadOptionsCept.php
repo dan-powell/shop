@@ -20,7 +20,7 @@ $I->submitForm('#addToCart', [
     'option[' . $options[2]->id . ']' => 'Testing',
 ]);
 
-$I->dontSee('Product added to cart');
+$I->dontSee('Product added to cart', '.alert');
 $I->seeCurrentRouteIs('shop.product.show');
 $I->seeFormHasErrors();
 

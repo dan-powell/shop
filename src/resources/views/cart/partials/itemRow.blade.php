@@ -9,7 +9,7 @@
 
         <td>
             @if(isset($item->options) && $item->options != '')
-                <ul>
+                <ul class="CartTable-item-options">
                     @foreach($item->options as $option)
                         <li>
                             <strong>{{ $option->title }}: </strong>
@@ -21,12 +21,12 @@
         </td>
         <td>
             @if(isset($item->extras) && $item->extras != '')
-                <ul>
+                <ul class="CartTable-item-extras">
                     @foreach($item->extras as $extra)
                         <li><strong>{{ $extra['title'] }}</strong> <span class="badge">{{ $extra['price'] }}</span>
 
                             @if(isset($extra['options']) && count($extra['options']))
-                                <ul>
+                                <ul class="">
                                     @foreach($extra['options'] as $option)
                                         <li>
                                             <strong>{{ $option['title'] }}: </strong>

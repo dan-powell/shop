@@ -18,9 +18,9 @@ $I->checkOption('extra[' . $extras[0]->id . ']');
 
 $I->submitForm('#addToCart', []);
 $I->seeCurrentRouteIs('shop.cart.index');
-$I->see('Product added to cart');
-$I->see($product->title);
-$I->see($extras[0]->title);
-$I->dontSee($extras[1]->title);
+$I->see('Product added to cart', '.alert');
+$I->see($product->title, '.CartTable-product-title');
+$I->see($extras[0]->title, '.CartTable-item-extras');
+$I->dontSee($extras[1]->title, '.CartTable-item-extas');
 
 ?>

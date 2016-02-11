@@ -12,9 +12,9 @@
 
     <td>
         <!-- Title -->
-        <a href="{{ route('shop.product.show', $itemGroup->product->slug) }}">
+        <h3 class="CartTable-product-title"><a href="{{ route('shop.product.show', $itemGroup->product->slug) }}">
             {{ $itemGroup->product->title }}
-        </a>
+        </a></h3>
 
     </td>
 
