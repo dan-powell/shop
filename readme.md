@@ -57,9 +57,7 @@ Aliases
 
 1. publish
 
-    php artisan vendor:publish --tag='migrations' --force
-    php artisan vendor:publish --tag='factories' --force
-    php artisan vendor:publish --tag='seeds' --force
+    php artisan vendor:publish --tag='dev' --force
 
 2. DatabaseSeeder.php
 
@@ -73,6 +71,9 @@ Aliases
 
 # Testing
 
+Publish those assets
+
+    php artisan vendor:publish --tag='tests' --force
 
 
 config/database.php
@@ -89,14 +90,15 @@ config/database.php
         'strict'    => false,
     ],
         
-tests/_bootstrap.php
 
-    require 'bootstrap/autoload.php';
-    $app = require 'bootstrap/app.php';
-    $app->loadEnvironmentFrom('.env.testing');
-    $app->instance('request', new \Illuminate\Http\Request);
-    $app->make('Illuminate\Contracts\Http\Kernel')->bootstrap();
-    
+test/functional.suite.yml
+
+    modules:
+      enabled:
+        - Laravel5:
+            environment_file: .env.testing
+
+
 .env.testing
 
     APP_ENV=testing
@@ -113,9 +115,15 @@ tests/_bootstrap.php
     CACHE_DRIVER=file
     SESSION_DRIVER=file
 
-run
+Migrate
+
+    php artisan migrate --database=testing
+
+Run
 
     php ./vendor/bin/codecept run
+
+
 
 # Roadmap
 
