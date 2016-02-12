@@ -38,17 +38,10 @@ class CartItemController extends BaseController
 	public function store(ProcessCartItemRequest $request)
 	{
 
-		// Find product to be added
-//		$product = $this->productPublicRepository->getById($request->get('product_id'), ['extras.options', 'options']);
-//
-//		if(!$product) {
-//			return redirect()->route('shop.product.show', $product->slug);
-//		}
-
+		// We've already queried the product to validate the request, so let's use that
 		$product = $request->getProduct();
 
-
-
+		// Gather the Product Options and their values
 		$options = [];
 		foreach ($product->options as $option) {
 			if($request->get('option')[$option->id]) {
@@ -56,11 +49,13 @@ class CartItemController extends BaseController
 			}
 		}
 
+		// Gather the Product Extras
 		$extras = [];
 		foreach ($product->extras as $extra) {
 			if($request->get('extra')[$extra->id]) {
 				$extras[$extra->id] = ['value' => $request->get('extra')[$extra->id]];
 			}
+			// Gather the Extra Options and their values
 			foreach ($extra->options as $option) {
 				if($request->get('option')[$option->id]) {
 					$options[$option->id] = ['value' => $request->get('option')[$option->id]];
@@ -71,13 +66,13 @@ class CartItemController extends BaseController
 
 		$item = $this->repository->makeModel();
 
-		$relations = ['options' => $options, 'extras' => $extras];
+		$config = ['options' => $options, 'extras' => $extras];
 
 
 		$findItem = $item->where([
-			'relations' => json_encode($relations),
 			'cart_id' => $this->repository->getVerifiedCartId(),
-			'product_id' => $product->id
+			'product_id' => $product->id,
+			'config' => json_encode($config)
 		])->increment('quantity', $request->get('quantity'));
 
 		//dd($findItem);
@@ -88,8 +83,8 @@ class CartItemController extends BaseController
 			$item->fill([
 				'cart_id' => $this->repository->getVerifiedCartId(),
 				'product_id' => $product->id,
+				'config' => $config,
 				'quantity' => $request->get('quantity'),
-				'relations' => $relations,
 			]);
 
 			$item->save();

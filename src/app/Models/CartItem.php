@@ -11,7 +11,7 @@ class CartItem extends Model {
     protected $fillable = [
 		'product_id',
 		'cart_id',
-		'relations',
+		'config',
 		'quantity',
     ];
 
@@ -45,23 +45,16 @@ class CartItem extends Model {
 		return config('shop.currency.symbol') . number_format($this->sub_total, 2);
 	}
 
-//	/**
-//	 * @param $value
-//	 * @return mixed
-//	 */
-//	public function getOptionsAttribute()
-//	{
-//		return json_decode($this->attributes['options'], true);
-//	}
-//
-//	/**
-//	 * @param $value
-//	 */
-//	public function setOptionsAttribute($value)
-//	{
-//		$this->attributes['options'] = json_encode($value);
-//	}
-//
+	public function getConfigAttribute()
+	{
+		return json_decode($this->attributes['config'], true);
+	}
+
+	public function setConfigAttribute($value)
+	{
+		$this->attributes['config'] = json_encode($value);
+	}
+
 	/**
 	 * @param $value
 	 * @return mixed
