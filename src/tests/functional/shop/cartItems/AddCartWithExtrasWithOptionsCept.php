@@ -8,7 +8,7 @@ $I->wantTo('Add a product to cart that has extras with options');
 $product = $I->createModel(DanPowell\Shop\Models\Product::class, [], 'inStock', 1);
 
 // Extra 1 - This extra has a few options and will be selected
-$extra1 = $I->makeModel(DanPowell\Shop\Models\Extra::class, [], null, 1);
+$extra1 = $I->makeModel(DanPowell\Shop\Models\Extra::class, [], 'inStock', 1);
 $extra1 = $product->extras()->save($extra1);
 
 $options1[] = $I->makeModel(DanPowell\Shop\Models\Option::class, [], 'radio', 1);
@@ -17,7 +17,7 @@ $options1[] = $I->makeModel(DanPowell\Shop\Models\Option::class, [], 'text', 1);
 $options1 = $extra1->options()->saveMany($options1);
 
 // Extra 2 - This extra will not be selected
-$extra2 = $I->makeModel(DanPowell\Shop\Models\Extra::class, [], null, 1);
+$extra2 = $I->makeModel(DanPowell\Shop\Models\Extra::class, [], 'inStock', 1);
 $extra2 = $product->extras()->save($extra2);
 
 $options2[] = $I->makeModel(DanPowell\Shop\Models\Option::class, [], 'radio', 1);
