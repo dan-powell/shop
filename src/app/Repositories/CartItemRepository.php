@@ -136,7 +136,28 @@ class CartItemRepository extends AbstractRepository
 
 
 
+    public function getTotalProductQuantityInCart($product_id)
+    {
+        // Find all items of the same product, so we can calculate the total quantity in the cart
+        $items = $this->getCartItems()->where(
+            'product_id', $product_id
+        )->all();
 
+        // Get the total quantity of Product currently in the cart
+        if($items) {
+            $quantity = 0;
+
+            // Sum all cart items linked to product
+            foreach($items as $item) {
+                $quantity += $item->quantity;
+            }
+
+            return $quantity;
+
+        } else {
+            return 0;
+        }
+    }
 
 
 

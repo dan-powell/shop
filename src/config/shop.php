@@ -58,6 +58,8 @@ return [
     // TODO: Implement this (Maybe email?)
     'low_stock_warning' => 10,
 
+    'maxProductCartQuantity' => 99,
+
 
     'order_status_types' => [
         0 => [

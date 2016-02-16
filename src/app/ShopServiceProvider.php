@@ -34,6 +34,8 @@ class ShopServiceProvider extends \Illuminate\Support\ServiceProvider
         // Tell Laravel where to load the views from
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'shop');
 
+
+
     }
 
     /**
@@ -43,6 +45,8 @@ class ShopServiceProvider extends \Illuminate\Support\ServiceProvider
      */
     public function boot()
     {
+
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'shop');
 
         // Setup some commands
         $this->commands('command.shop.adduser');
@@ -56,6 +60,10 @@ class ShopServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->publishes([
             __DIR__.'/../resources/views' => base_path('resources/views/vendor/shop'),
         ], 'views');
+
+        $this->publishes([
+            __DIR__.'/../resources/lang' => base_path('resources/lang/vendor/shop'),
+        ], 'lang');
 
         // Publish Config
         $this->publishes([

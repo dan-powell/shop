@@ -7,7 +7,7 @@ use DanPowell\Shop\Repositories\ProductPublicRepository;
 
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
-use DanPowell\Shop\Http\Requests\ProcessCartItemRequest;
+use DanPowell\Shop\Http\Requests\addCartItemRequest;
 
 
 
@@ -20,22 +20,15 @@ class CartItemController extends BaseController
 	protected $repository;
 	protected $productPublicRepository;
 
-	/**
-	 * CartItemController constructor.
-	 * @param CartRepository $CartRepository
-	 * @param ProductPublicRepository $ProductPublicRepository
-	 */
+
 	public function __construct(CartItemRepository $CartItemRepository, ProductPublicRepository $ProductPublicRepository)
 	{
 		$this->repository = $CartItemRepository;
 		$this->productPublicRepository = $ProductPublicRepository;
 	}
 
-	/**
-	 * @param Request $request
-	 * @return \Illuminate\Http\RedirectResponse
-	 */
-	public function store(ProcessCartItemRequest $request)
+
+	public function store(addCartItemRequest $request)
 	{
 
 		// We've already queried the product to validate the request, so let's use that
@@ -203,6 +196,8 @@ class CartItemController extends BaseController
 		session()->flash('alert-danger', 'Product removed');
 		return redirect()->route('shop.cart.index', 301);
 	}
+
+
 
 
 
