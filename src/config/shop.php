@@ -43,14 +43,24 @@ return [
 
 
     // TODO: Implement this (return as attribute)
-    'stock_strings' => [
+    'stock_status' => [
         [
-            'title' => 'Low Stock',
-            'max' => 10,
+            'max' => 0,
+            'key' => 'none',
+            'string' => 'No Stock',
+            'color' => '',
         ],
         [
-            'title' => 'In Stock',
+            'max' => 10,
+            'key' => 'low',
+            'title' => 'Low Stock',
+            'color' => '',
+        ],
+        [
             'max' => null,
+            'key' => 'ok',
+            'title' => 'Stock OK',
+            'color' => '',
         ]
     ],
 

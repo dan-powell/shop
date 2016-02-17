@@ -16,8 +16,10 @@ class CreateOptions extends Migration {
         {
             $table->increments('id');
             $table->string('title', 255);
+            $table->integer('stock')->nullable();
             $table->text('type', 128);
             $table->text('config');
+            $table->text('description');
 
             $table->integer('attachment_id');
             $table->string('attachment_type', 255);

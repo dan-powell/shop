@@ -11,7 +11,8 @@ class Extra extends Model {
     protected $fillable = [
         'title',
 		'price',
-        'description'
+        'description',
+		'stock'
     ];
 
     public function rules()
@@ -27,24 +28,61 @@ class Extra extends Model {
 
 	public $timestamps = false;
 
-	public function getHasStockAttribute()
+
+	/* States */
+
+	public function getIsAvailableAttribute()
+	{
+		return $this->getIsInStockAttribute();
+	}
+
+	public function getIsInStockAttribute()
+	{
+		if($this->stock > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function getHasOptionStockAttribute()
 	{
 		$bool = false;
-		if($option->stock) {
-			$bool = true;
+		foreach($this->options as $option) {
+			if($option->getIsInStockAttribute()){
+				$bool = true;
+			}
 		}
+
 		return $bool;
 	}
 
+	/* Attributes */
 
+	public function getStockStatusAttribute()
+	{
+		$key = null;
+		foreach(config('shop.stock_status') as $status) {
+			if ($this->stock < $status['max']) {
+				$key = $status;
+			}
+		}
+		return $key;
+	}
 
+	/* Strings */
+
+	public function getPriceStringAttribute()
+	{
+		return config('shop.currency.symbol') . $this->price;
+	}
+
+	/* Functions */
 
 	public function checkStock($quantity) {
 		$bool = true;
-		if(!$this->allow_negative_stock) {
-			if($quantity > $this->stock) {
-				$bool = false;
-			}
+		if($quantity > $this->stock) {
+			$bool = false;
 		}
 		return $bool;
 	}

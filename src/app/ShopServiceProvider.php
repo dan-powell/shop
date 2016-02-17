@@ -14,8 +14,6 @@ class ShopServiceProvider extends \Illuminate\Support\ServiceProvider
     public function register()
     {
 
-        $this->app->register('DanPowell\Shop\Providers\ViewComposerServiceProvider');
-
         // Create new instances of each command when called
         $this->app->bindShared('command.shop.adduser', function ($app) {
             return new AddUser();
@@ -34,8 +32,6 @@ class ShopServiceProvider extends \Illuminate\Support\ServiceProvider
         // Tell Laravel where to load the views from
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'shop');
 
-
-
     }
 
     /**
@@ -45,6 +41,8 @@ class ShopServiceProvider extends \Illuminate\Support\ServiceProvider
      */
     public function boot()
     {
+
+        $this->app->register('DanPowell\Shop\Providers\ViewComposerServiceProvider');
 
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'shop');
 

@@ -20,7 +20,6 @@ class CreateExtras extends Migration {
             $table->string('title', 255);
             $table->decimal('price', 8, 2)->nullable();
             $table->integer('stock')->nullable();
-            $table->tinyInteger('allow_negative_stock')->default(0);
             $table->text('description');
         });
 

@@ -59,7 +59,7 @@
                     <div class="panel-heading">
                         <div class="panel-title">
                             <strong>
-                                @if($product->onOffer)
+                                @if($product->isOnOffer)
                                     <s>{{ $product->price_string }}</s>
                                     <span class="label label-primary">Now {{ $product->price_offer_string }}</span>
                                     <span class="label label-danger">Save {{ $product->price_offer_difference_string }}!</span>
@@ -69,7 +69,7 @@
                             </strong>
 
                             <h6>
-                                @if($product->inStock)
+                                @if($product->isInStock)
                                     In Stock, <span class="badge">{{ $product->stock }}</span> Available
                                 @elseif($product->allow_negative_stock)
                                     Available
@@ -124,10 +124,12 @@
                     </div>
 
                     <div class="panel-footer clearfix">
-                        @if($product->inStock || $product->allow_negative_stock)
-                            <button class="btn btn-primary pull-right">Add to Cart</button>
+                        @if(!$product->isInStock)
+                            <button class="btn btn-disabled pull-right" disabled>Out of Stock</button>
+                        @elseif(!$product->isAvailable)
+                            <button class="btn btn-disabled pull-right" disabled>Currently unavailable</button>
                         @else
-                            <button class="btn btn-disabled pull-right" disabled>Sorry, Out of Stock</button>
+                            <button class="btn btn-primary pull-right">Add to Cart</button>
                         @endif
                     </div>
                 </div>

@@ -14,11 +14,13 @@
 $factory->define(DanPowell\Shop\Models\Option::class, function (Faker\Generator $faker) {
     return [
         'title' => 'OptionTitle-' . $faker->word . $faker->numberBetween(0, 99),
+        'stock' => $faker->randomElement([null, $faker->numberBetween(0, 100)]),
         'type' => $faker->randomElement(['radio', 'select', 'text', 'textarea']),
         'config' => [
             'OptionVal-' . $faker->word . $faker->numberBetween(0, 99),
             'OptionVal-' . $faker->word . $faker->numberBetween(0, 99)
-        ]
+        ],
+        'description' => $faker->paragraph(3),
     ];
 });
 

@@ -6,8 +6,10 @@ class Option extends Model {
 
     protected $fillable = [
 		'title',
+		'description',
 		'type',
-		'config'
+		'config',
+		'stock'
     ];
 
 	protected $hidden = ['attachment_id' ,'attachment_type'];
@@ -28,6 +30,24 @@ class Option extends Model {
     public $timestamps = false;
 
 
+	/* States */
+
+	public function getIsAvailableAttribute()
+	{
+		return $this->getIsInStockAttribute();
+	}
+
+	public function getIsInStockAttribute()
+	{
+		if($this->stock > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/* Attributes */
+
 	public function getConfigAttribute()
 	{
 		return json_decode($this->attributes['config'], true);
@@ -38,6 +58,28 @@ class Option extends Model {
 		$this->attributes['config'] = json_encode($value);
 	}
 
+	public function getStockStatusAttribute()
+	{
+		$key = null;
+		foreach(config('shop.stock_status') as $status) {
+			if ($this->stock < $status['max']) {
+				$key = $status;
+			}
+		}
+		return $key;
+	}
+
+	/* Functions */
+
+	public function checkStock($quantity) {
+		$bool = true;
+		if(!$this->allow_negative_stock) {
+			if($quantity > $this->stock) {
+				$bool = false;
+			}
+		}
+		return $bool;
+	}
 
 
     // Relationships

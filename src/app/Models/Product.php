@@ -61,17 +61,11 @@ class Product extends Model {
 
     protected $appends = ['created_at_string', 'updated_at_string'];
 
-    public function getUpdatedAtStringAttribute()
-    {
-        return $this->updated_at->toFormattedDateString();
-    }
 
-    public function getCreatedAtStringAttribute()
-    {
-        return $this->created_at->toFormattedDateString();
-    }
 
-	public function getOnOfferAttribute()
+	/* States */
+
+	public function getIsOnOfferAttribute()
 	{
 		if($this->price_offer != null && $this->price_offer > 0) {
 			return true;
@@ -80,7 +74,12 @@ class Product extends Model {
 		}
 	}
 
-	public function getInStockAttribute()
+	public function getIsAvailableAttribute()
+	{
+		return $this->getIsInStockAttribute();
+	}
+
+	public function getIsInStockAttribute()
 	{
 		if($this->stock > 0) {
 			return true;
@@ -89,40 +88,65 @@ class Product extends Model {
 		}
 	}
 
-
-	public function getStockStringAttribute()
+	public function getHasOptionStockAttribute()
 	{
-		if($this->stock > 0) {
-			return true;
-		} else {
-			return false;
+		$bool = false;
+		foreach($this->options as $option) {
+			if($option->getIsInStockAttribute()){
+				$bool = true;
+			}
 		}
-	}
 
+		return $bool;
+	}
 
 	public function getHasSpecificationsAttribute()
 	{
-		if(
+		if (
 			($this->width != '' && $this->width > 0) ||
 			($this->height != '' && $this->height > 0) ||
 			($this->length != '' && $this->length > 0) ||
 			($this->weight != '' && $this->weight > 0)
-		){
+		) {
 			return true;
 		} else {
 			return false;
 		}
 	}
 
-
-	public function getPriceStringAttribute()
-	{
-		return config('shop.currency.symbol') . $this->price;
-	}
+	/* Attributes */
 
 	public function getPriceOfferDifferenceAttribute()
 	{
 		return $this->price - $this->price_offer;
+	}
+
+	public function getStockStatusAttribute()
+	{
+		$key = null;
+		foreach(config('shop.stock_status') as $status) {
+			if ($this->stock < $status['max']) {
+				$key = $status;
+			}
+		}
+		return $key;
+	}
+
+	/* Strings */
+
+	public function getUpdatedAtStringAttribute()
+	{
+		return $this->updated_at->toFormattedDateString();
+	}
+
+	public function getCreatedAtStringAttribute()
+	{
+		return $this->created_at->toFormattedDateString();
+	}
+
+	public function getPriceStringAttribute()
+	{
+		return config('shop.currency.symbol') . $this->price;
 	}
 
 	public function getPriceOfferDifferenceStringAttribute()
@@ -155,20 +179,7 @@ class Product extends Model {
 		return $this->weight . config('shop.units.weight');
 	}
 
-	public function getHasOptionStockAttribute()
-	{
-		$bool = false;
-		foreach($this->optionGroups as $optionGroup) {
-			if($optionGroup->getHasStockAttribute()){
-				$bool = true;
-			}
-		}
-
-		return $bool;
-	}
-
-
-
+	/* Functions */
 
 	public function checkStock($quantity) {
 		$bool = true;
@@ -179,9 +190,6 @@ class Product extends Model {
 		}
 		return $bool;
 	}
-
-
-
 
 	// Scopes
 

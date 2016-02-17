@@ -17,7 +17,6 @@ $factory->define(DanPowell\Shop\Models\Extra::class, function (Faker\Generator $
         'description' => $faker->paragraph(3),
         'price' => $faker->randomElement([0, $faker->randomFloat(2, 0, 1500)]),
         'stock' => $faker->randomElement([null, $faker->numberBetween(0, 100)]),
-        'allow_negative_stock' => $faker->randomElement([0, 1]),
     ];
 });
 
@@ -31,10 +30,4 @@ $factory->defineAs(DanPowell\Shop\Models\Extra::class, 'outOfStock', function ($
     $model = $factory->raw(DanPowell\Shop\Models\Extra::class);
 
     return array_merge($model, ['stock' => 0]);
-});
-
-$factory->defineAs(DanPowell\Shop\Models\Extra::class, 'outOfStockAllowNegative', function ($faker) use ($factory) {
-    $model = $factory->raw(DanPowell\Shop\Models\Extra::class);
-
-    return array_merge($model, ['stock' => 0, 'allow_negative_stock' => 1]);
 });
