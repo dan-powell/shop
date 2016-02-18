@@ -77,8 +77,6 @@ class addCartItemRequest extends Request
             }
         };
 
-
-
         $messages['quantity.max'] = trans('shop::cartItem.rules.noProductStock');
 
         return $messages;
@@ -91,75 +89,14 @@ class addCartItemRequest extends Request
     {
         $product = $this->getProduct();
 
-
-
-//        // Set the Product option values
-//        $submittedOptions = $this->get('option');
-//        $product->options->each(function ($option) use ($submittedOptions) {
-//            if (isset($submittedOptions[$option->id])) {
-//                $option->value = $submittedOptions[$option->id];
-//            }
-//        });
-//
-//
-//
-//
-
-//
-//        // Set the chosen Extras values
-//        $product->extras->each(function ($extra) use ($submittedOptions) {
-//            $extra->options->each(function ($option) use ($submittedOptions) {
-//                $option->value = $submittedOptions[$option->id];
-//            });
-//        });
-
-
-        // Find all items of the same product, so we can calculate the total quantity in the cart
-        //$quantityToCheck = $this->cartItemRepository->getTotalProductQuantityInCart($product->id) + $this->get('quantity');
-
-
-//        // Check product stock
-//        if(!$product->checkStock($quantityToCheck)) {
-//            session()->flash('alert-warning', 'Not enough product stock available.');
-//            //return redirect()->route('shop.product.show', $product->slug);
-//        }
-//
-//        // Check product extras stock
-//        $product->extras->each(function ($extra) use ($quantityToCheck, $product) {
-//            if(!$extra->checkStock($quantityToCheck)) {
-//                session()->flash('alert-warning', 'Not enough stock available to add this extra.');
-//                //return redirect()->route('shop.product.show', $product->slug);
-//            }
-//        });
-
-
-
-
-
-
-
-
         $rules = [];
 
-
-
-
+        // TODO: This is all kinds of horrible
 
         // Add rules for the Product options
         foreach($product->options as $option) {
-            // Start creating rules string
-            $rule = 'string';
-            // Make sure the radio & selects exist and have legit values
-            if($option->type == 'radio' || $option->type == 'select') {
-                $rule .= '|required|in:';
-                foreach ($option->config as $value) {
-                    $rule .= $value . ',';
-                }
-            }
-            // Add rule to array
-            $rules['option.' . $option->id] = $rule;
+            $rules['option.' . $option->id] = $this->getRuleOption($option);
         };
-
 
         // Set the Extras (filter out extras user has not selected)
         $submittedExtras = $this->get('extra');
@@ -171,33 +108,28 @@ class addCartItemRequest extends Request
 
         // Validate the Extra options
         foreach($product->extras as $extra) {
-
-            //
-            //$rules['extra.' . $extra->id] = 'in:';
-
             foreach($extra->options as $option) {
-                // Start creating rules string
-                $rule = 'string|required_with:extra.' . $extra->id;
-
-                // This should only apply to radios and selects where values are pre-defined
-                if ($option->type == 'radio' || $option->type == 'select') {
-                    $rule .= '|in:';
-                    foreach ($option->config as $value) {
-                        $rule .= $value . ',';
-                    }
-                }
-
-                // Add rule to array
-                $rules['option.' . $option->id] = $rule;
+                $rules['option.' . $option->id] = 'required_with:extra.' . $extra->id  . '|' . $this->getRuleOption($option);
             }
         };
-
-
 
         // Validate the quantities
         $rules['quantity'] = $this->getRuleQuantity();
 
         return $rules;
+    }
+
+    private function getRuleOption($option) {
+        // Start creating rules string
+        $rule = '';
+        // Make sure the radio & selects exist and have legit values
+        if($option->type == 'radio' || $option->type == 'select') {
+            $rule .= 'required|in:';
+            foreach ($option->config as $value) {
+                $rule .= $value . ',';
+            }
+        }
+        return 'string|' . $rule;
     }
 
     private function getRuleQuantity() {
@@ -212,14 +144,5 @@ class addCartItemRequest extends Request
 
         return 'required|integer|min:1|max:' . $max;
     }
-
-
-
-
-
-
-
-
-
 
 }
