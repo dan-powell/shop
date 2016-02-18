@@ -4,13 +4,12 @@ use App\Http\Requests\Request;
 use DanPowell\Shop\Repositories\CartItemRepository;
 use DanPowell\Shop\Repositories\ProductPublicRepository;
 
-class addCartItemRequest extends Request
+class CartItemStoreRequest extends Request
 {
 
     protected $product;
     protected $productPublicRepository;
     protected $cartItemRepository;
-
 
     //protected $productPublicRepository;
 
@@ -42,16 +41,6 @@ class addCartItemRequest extends Request
     {
         return true;
     }
-
-
-    public function getProduct() {
-        if (!$this->product) {
-            $this->product = $this->productPublicRepository->getById($this->get('product_id'), ['extras.options', 'options']);
-        }
-        return $this->product;
-    }
-
-
 
     public function messages()
     {
@@ -119,11 +108,19 @@ class addCartItemRequest extends Request
         return $rules;
     }
 
-    private function getRuleOption($option) {
+    public function getProduct() {
+        if (!$this->product) {
+            $this->product = $this->productPublicRepository->getById($this->get('product_id'), ['extras.options', 'options']);
+        }
+        return $this->product;
+    }
+
+    private function getRuleOption($option)
+    {
         // Start creating rules string
         $rule = '';
         // Make sure the radio & selects exist and have legit values
-        if($option->type == 'radio' || $option->type == 'select') {
+        if ($option->type == 'radio' || $option->type == 'select') {
             $rule .= 'required|in:';
             foreach ($option->config as $value) {
                 $rule .= $value . ',';
@@ -132,14 +129,16 @@ class addCartItemRequest extends Request
         return 'string|' . $rule;
     }
 
-    private function getRuleQuantity() {
+    private function getRuleQuantity()
+    {
 
+        // Get the product
         $product = $this->getProduct();
 
-        if($product->allow_negative_stock) {
+        if ($product->allow_negative_stock) {
             $max = config('shop.maxProductCartQuantity') - $this->cartItemRepository->getTotalProductQuantityInCart($product->id);
         } else {
-            $max = $product->stock  - $this->cartItemRepository->getTotalProductQuantityInCart($product->id);
+            $max = $product->stock - $this->cartItemRepository->getTotalProductQuantityInCart($product->id);
         }
 
         return 'required|integer|min:1|max:' . $max;
