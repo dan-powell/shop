@@ -4,8 +4,8 @@ return [
 
 
     'routes' => [
-        'public' => [
-            'home' => 'shop',
+        'front' => [
+            'prefix' => 'shop',
             'category' => [
                 'index' => 'categories',
                 'show' => 'category/{slug}'
@@ -15,8 +15,9 @@ return [
                 'show' => 'product/{slug}'
             ],
             'cart' => [
-                'index' => 'cart',
-                'item' => 'cart/item',
+                'prefix' => 'cart',
+                'show' => 'cart',
+                'item' => 'item',
                 'clearproduct' => 'cart/clearproduct/{id}',
                 'clear' => 'cart/clear'
             ],
@@ -99,10 +100,18 @@ return [
     ],
 
     'option_types' => [
-        'radio',
-        'select',
-        'text',
-        'textarea'
+        'radio' => [
+            'view' => 'optionTypeRadio',
+        ],
+        'select' => [
+            'view' => 'optionTypeSelect',
+        ],
+        'text' => [
+            'view' => 'optionTypeText',
+        ],
+        'textarea' => [
+            'view' => 'optionTypeTextarea',
+        ]
     ],
 
 

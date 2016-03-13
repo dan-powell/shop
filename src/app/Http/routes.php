@@ -11,65 +11,80 @@
 |
 */
 
-Route::get(config('shop.routes.public.home'),
-    ['as' => 'shop.home', 'uses' => 'DanPowell\Shop\Http\Controllers\ShopController@home']);
-
-Route::get(config('shop.routes.public.product.index'),
-    ['as' => 'shop.product.index', 'uses' => 'DanPowell\Shop\Http\Controllers\ProductController@index']);
-
-Route::get(config('shop.routes.public.product.show'),
-    ['as' => 'shop.product.show', 'uses' => 'DanPowell\Shop\Http\Controllers\ProductController@show']);
-
-Route::get(config('shop.routes.public.category.index'),
-    ['as' => 'shop.category.index', 'uses' => 'DanPowell\Shop\Http\Controllers\CategoryController@index']);
-
-Route::get(config('shop.routes.public.category.show'),
-    ['as' => 'shop.category.show', 'uses' => 'DanPowell\Shop\Http\Controllers\CategoryController@show']);
-
-Route::get(config('shop.routes.public.cart.index'),
-    ['as' => 'shop.cart.index', 'uses' => 'DanPowell\Shop\Http\Controllers\CartController@index']);
+Route::group(['prefix' => config('shop.routes.front.prefix')], function() {
 
 
-Route::delete(config('shop.routes.public.cart.clearproduct'),
-    ['as' => 'shop.cart.clearproduct', 'uses' => 'DanPowell\Shop\Http\Controllers\CartController@clearProduct']);
+    Route::get(config('shop.routes.front.product.index'),
+        ['as' => 'shop.product.index', 'uses' => 'DanPowell\Shop\Http\Controllers\Front\ProductController@index']);
 
-Route::delete(config('shop.routes.public.cart.clear'),
-    ['as' => 'shop.cart.clear', 'uses' => 'DanPowell\Shop\Http\Controllers\CartController@clear']);
+    Route::get(config('shop.routes.front.product.show'),
+        ['as' => 'shop.product.show', 'uses' => 'DanPowell\Shop\Http\Controllers\Front\ProductController@show']);
 
-Route::resource(
-    config('shop.routes.public.cart.item'),
-    'DanPowell\Shop\Http\Controllers\CartItemController',
-    [
-        'except' => ['create', 'show', 'edit', 'index'],
-        'names' => [
-            //'index' => 'shop.cart.index',
-            'store' => 'shop.cart.item.store',
-            'destroy' => 'shop.cart.item.delete',
-            'update' => 'shop.cart.item.update'
-        ],
-    ]
-);
+    Route::get(config('shop.routes.front.category.index'),
+        ['as' => 'shop.category.index', 'uses' => 'DanPowell\Shop\Http\Controllers\Front\CategoryController@index']);
+
+    Route::get(config('shop.routes.front.category.show'),
+        ['as' => 'shop.category.show', 'uses' => 'DanPowell\Shop\Http\Controllers\Front\CategoryController@show']);
+
+    Route::get(config('shop.routes.front.cart.show'),
+        ['as' => 'shop.cart.show', 'uses' => 'DanPowell\Shop\Http\Controllers\Front\CartController@show']);
 
 
+    Route::delete(config('shop.routes.front.cart.clearproduct'),
+        [
+            'as' => 'shop.cart.clearproduct',
+            'uses' => 'DanPowell\Shop\Http\Controllers\Front\CartController@clearProduct'
+        ]
+    );
+
+    Route::delete(config('shop.routes.front.cart.clear'),
+        [
+            'as' => 'shop.cart.clear',
+            'uses' => 'DanPowell\Shop\Http\Controllers\Front\CartController@clear'
+        ]
+    );
+
+    Route::resource(
+        config('shop.routes.front.cart.item'),
+        'DanPowell\Shop\Http\Controllers\Front\CartItemController',
+        [
+            //'as' => 'shop.cart',
+            'except' => ['create', 'show', 'edit', 'index'],
+            'names' => [
+                //'index' => 'shop.cart.index',
+                'store' => 'shop.cart.item.store',
+                'destroy' => 'shop.cart.item.delete',
+                'update' => 'shop.cart.item.update'
+            ],
+        ]
+    );
+
+
+    Route::get(config('shop.routes.front.order.create'),
+        ['as' => 'shop.order.create', 'uses' => 'DanPowell\Shop\Http\Controllers\Front\OrderController@create']);
+
+    Route::post(config('shop.routes.front.order.store'),
+        ['as' => 'shop.order.store', 'uses' => 'DanPowell\Shop\Http\Controllers\Front\OrderController@store']);
+
+    Route::post(config('shop.routes.front.order.confirm'),
+        ['as' => 'shop.order.confirm', 'uses' => 'DanPowell\Shop\Http\Controllers\Front\OrderController@confirm']);
 
 
 
 
-Route::get(config('shop.routes.public.order.create'),
-    ['as' => 'shop.order.create', 'uses' => 'DanPowell\Shop\Http\Controllers\OrderController@create']);
+});
 
-Route::post(config('shop.routes.public.order.store'),
-    ['as' => 'shop.order.store', 'uses' => 'DanPowell\Shop\Http\Controllers\OrderController@store']);
 
-Route::post(config('shop.routes.public.order.confirm'),
-    ['as' => 'shop.order.confirm', 'uses' => 'DanPowell\Shop\Http\Controllers\OrderController@confirm']);
+
+
+
 
 
 
 
 /*
 
-Route::get(config('shop.routes.public.showPage'), ['as' => 'projects.page', 'uses' => 'DanPowell\Shop\Http\Controllers\ProjectController@page']);
+Route::get(config('shop.routes.front.showPage'), ['as' => 'projects.page', 'uses' => 'DanPowell\Shop\Http\Controllers\ProjectController@page']);
 
 
 // Admin area
