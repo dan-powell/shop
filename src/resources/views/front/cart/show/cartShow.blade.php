@@ -72,7 +72,7 @@
                             </td>
 
                             <td>
-                                {{ $total }}
+                                {{ $cart->price_total_string }}
                             </td>
 
                         </tr>

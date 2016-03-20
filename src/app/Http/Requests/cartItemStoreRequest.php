@@ -1,6 +1,7 @@
 <?php namespace DanPowell\Shop\Http\Requests;
 
 use App\Http\Requests\Request;
+use DanPowell\Shop\Repositories\CartRepository;
 use DanPowell\Shop\Repositories\CartItemRepository;
 use DanPowell\Shop\Repositories\ProductPublicRepository;
 
@@ -10,31 +11,17 @@ class CartItemStoreRequest extends Request
     protected $product;
     protected $productPublicRepository;
     protected $cartItemRepository;
+    protected $cartRepository;
 
-    //protected $productPublicRepository;
-
-    public function __construct(ProductPublicRepository $ProductPublicRepository, CartItemRepository $cartItemRepository)
+    public function __construct(
+        CartRepository $CartRepository,
+        ProductPublicRepository $ProductPublicRepository,
+        CartItemRepository $CartItemRepository)
     {
         $this->productPublicRepository = $ProductPublicRepository;
-        $this->cartItemRepository = $cartItemRepository;
+        $this->cartItemRepository = $CartItemRepository;
+        $this->cartRepository = $CartRepository;
     }
-
-
-//    public function validate()
-//    {
-//        $v = $this->getValidatorInstance();
-//
-//        $v->sometimes('quantity', 'url', function($input)
-//        {
-//            return $input->quantity == 50;
-//        });
-//
-//        if (! $this->passesAuthorization()) {
-//            $this->failedAuthorization();
-//        } elseif (! $v->passes()) {
-//            $this->failedValidation($v);
-//        }
-//    }
 
 
     public function authorize()
@@ -42,34 +29,6 @@ class CartItemStoreRequest extends Request
         return true;
     }
 
-    public function messages()
-    {
-
-        $product = $this->getProduct();
-
-        $messages = [];
-
-        // Add rules for the Product options
-        foreach($product->options as $option) {
-
-            $messages['option.' . $option->id . '.in'] = 'The ' . $option->title . ' option is invalid.';
-            $messages['option.' . $option->id . '.required'] = 'The ' . $option->title . ' option is required.';
-            $messages['option.' . $option->id . '.string'] = 'The ' . $option->title . ' option must be text.';
-        };
-
-        // Validate the Extra options
-        foreach($product->extras as $extra) {
-            foreach($extra->options as $option) {
-                $messages['option.' . $option->id . '.in'] = 'The ' . $option->title . 'option is invalid';
-                $messages['option.' . $option->id . '.required_with'] = 'The ' . $option->title . ' option is required with this extra.';
-                $messages['option.' . $option->id . '.string'] = 'The ' . $option->title . ' option must be text.';
-            }
-        };
-
-        $messages['quantity.max'] = trans('shop::cartItem.rules.noProductStock');
-
-        return $messages;
-    }
 
     /**
      * @return array
@@ -108,6 +67,35 @@ class CartItemStoreRequest extends Request
         return $rules;
     }
 
+    public function messages()
+    {
+
+        $product = $this->getProduct();
+
+        $messages = [];
+
+        // Add rules for the Product options
+        foreach($product->options as $option) {
+
+            $messages['option.' . $option->id . '.in'] = 'The ' . $option->title . ' option is invalid.';
+            $messages['option.' . $option->id . '.required'] = 'The ' . $option->title . ' option is required.';
+            $messages['option.' . $option->id . '.string'] = 'The ' . $option->title . ' option must be text.';
+        };
+
+        // Validate the Extra options
+        foreach($product->extras as $extra) {
+            foreach($extra->options as $option) {
+                $messages['option.' . $option->id . '.in'] = 'The ' . $option->title . 'option is invalid';
+                $messages['option.' . $option->id . '.required_with'] = 'The ' . $option->title . ' option is required with this extra.';
+                $messages['option.' . $option->id . '.string'] = 'The ' . $option->title . ' option must be text.';
+            }
+        };
+
+        $messages['quantity.max'] = trans('shop::cartItem.rules.noProductStock');
+
+        return $messages;
+    }
+
     public function getProduct() {
         if (!$this->product) {
             $this->product = $this->productPublicRepository->getById($this->get('product_id'), ['extras.options', 'options']);
@@ -135,10 +123,16 @@ class CartItemStoreRequest extends Request
         // Get the product
         $product = $this->getProduct();
 
+        // Get the cart
+        $cart = $this->cartRepository->getCart();
+
+        // Count the number of items in cart matching product
+        $totalProductQuantityInCart = count($cart->getCartItemsByProductId($product->id));
+
         if ($product->allow_negative_stock) {
-            $max = config('shop.maxProductCartQuantity') - $this->cartItemRepository->getTotalProductQuantityInCart($product->id);
+            $max = config('shop.maxProductCartQuantity') - $totalProductQuantityInCart;
         } else {
-            $max = $product->stock - $this->cartItemRepository->getTotalProductQuantityInCart($product->id);
+            $max = $product->stock - $totalProductQuantityInCart;
         }
 
         return 'required|integer|min:1|max:' . $max;

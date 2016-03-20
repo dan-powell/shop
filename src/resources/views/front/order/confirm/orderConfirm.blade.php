@@ -18,7 +18,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                    @foreach($cart->cartItems as $item)
+                    @foreach($order->cart['cartItems'] as $item)
                         @include('shop::front.cartItem.excerpt.partials.itemRow', ['item' => $item, 'display_product' => true])
                     @endforeach
                 </tbody>
@@ -28,10 +28,10 @@
                         <p class="text-right"><strong>Shipping</strong></p>
                     </td>
                     <td>
-                        {{ $shipping['title'] }}
+                        {{ $order->shipping_type['title'] }}
                     </td>
                     <td>
-                        {{ $shipping['price'] }}
+                        {{ $shipping_price }}
                     </td>
                     <td></td>
                 </tr>
@@ -42,7 +42,7 @@
                         <p class="text-right"><strong>Total</strong></p>
                     </td>
                     <td>
-                        {{ $total }}
+                        {{ $order->price_total_string }}
                     </td>
                     <td></td>
                 </tr>

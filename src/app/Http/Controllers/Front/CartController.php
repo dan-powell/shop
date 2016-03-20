@@ -1,7 +1,6 @@
 <?php namespace DanPowell\Shop\Http\Controllers\Front;
 
-use Illuminate\Http\Request;
-
+use DanPowell\Shop\Repositories\CartRepository;
 use DanPowell\Shop\Repositories\CartItemRepository;
 
 use DanPowell\Shop\Traits\ImageTrait;
@@ -14,45 +13,54 @@ class CartController extends BaseController
     use CartTrait;
 
     protected $repository;
+    protected $cartItemRepository;
 
-    public function __construct(CartItemRepository $CartItemRepository)
+    public function __construct(CartRepository $CartRepository, CartItemRepository $CartItemRepository)
     {
-        $this->repository = $CartItemRepository;
+        $this->repository = $CartRepository;
+        $this->cartItemRepository = $CartItemRepository;
     }
 
-
-    public function show(Request $request)
+    /**
+     * Show the Cart page and items
+     * @return $this
+     */
+    public function show()
     {
-
         // Get the cart & items
-        $cartItems = $this->repository->getCartItems([
-            'options',
-            'extras.options',
-            'product.images'
+        $cart = $this->repository->getCart([
+            'cartItems.options',
+            'cartItems.extras.options',
+            'cartItems.product.images'
         ]);
 
         // Group the items by product
         return view('shop::front.cart.show.cartShow')->with([
-            'items' => $cartItems,
-            'total' => config('shop.currency.symbol') . number_format($this->getCartTotal($cartItems), 2),
-            'itemsGrouped' => $this->groupCartItemsByProduct($cartItems)
+            'cart' => $cart,
+            'itemsGrouped' => $this->groupCartItemsByProduct($cart->cartItems)
         ]);
     }
 
 
+    /**
+     * Clear all CartItems from the cart
+     * @return $this
+     */
     public function clear()
     {
-
-        $this->repository->clearCart();
-
+        $this->cartItemRepository->clear();
         return redirect()->route('shop.cart.show', 301)->withInput(['warning' => 'Cart Cleared']);
     }
 
 
+    /**
+     * Clear all CartItems with given Product ID
+     * @param $id - Product ID
+     * @return $this
+     */
     public function clearProduct($id)
     {
-        $this->repository->clearCartProduct($id);
-
+        $this->cartItemRepository->clearProduct($id);
         return redirect()->route('shop.cart.show', 301)->withInput(['warning' => 'Product has been removed from your cart']);
     }
 

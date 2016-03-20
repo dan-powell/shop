@@ -21,13 +21,15 @@ class CartItem extends Model {
 		'quantity' => 'integer'
     ];
 
-	protected $appends = ['sub_total_string'];
+	protected $appends = ['price_sub_total_string'];
 
+
+	// Attributes
 
 	/**
 	 * @return number
 	 */
-	public function getSubTotalAttribute()
+	public function getPriceSubTotalAttribute()
 	{
 		$arr = [$this->product->price];
 
@@ -40,9 +42,21 @@ class CartItem extends Model {
 	/**
 	 * @return string
 	 */
-	public function getSubTotalStringAttribute()
+	public function getPriceSubTotalStringAttribute()
 	{
-		return config('shop.currency.symbol') . number_format($this->sub_total, 2);
+		return config('shop.currency.symbol') . number_format($this->price_sub_total, 2);
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getWeightSubTotalAttribute()
+	{
+		if ($this->product->weight) {
+			return $this->product->weight * $this->quantity;
+		} else {
+			return 0;
+		}
 	}
 
 	public function getConfigAttribute()
@@ -117,25 +131,7 @@ class CartItem extends Model {
 			}
 		});
 
-		//dd($bool);
 	}
-
-
-
-
-
-		// Check that item products exist
-
-        // Check that item options exist
-
-        // Check that item extras exist
-
-
-        // Check that item product has stock
-
-
-        // Check that item extras have stock
-
 
 
 

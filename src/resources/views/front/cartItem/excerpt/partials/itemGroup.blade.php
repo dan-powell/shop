@@ -30,7 +30,7 @@
 
     <td>
         <!-- Sub Total -->
-        {{ $itemGroup->sub_total_string }}
+        {{ $itemGroup->price_sub_total_string }}
     </td>
 
     @if(isset($editable) && $editable)

@@ -115,33 +115,46 @@ return [
     ],
 
 
-    'shipping_tier_property' => 'weight',
+    'shipping_tier_property' => 'price',
 
     'shipping_types' => [
         [
             'id' => 'standard_uk',
             'title' => 'Standard UK',
-            'min' => '0',
-            'max' => '300',
+            'min' => 0,
+            'max' => 300,
             'price' => 500
         ],
         [   'id' => 'express_uk',
             'title' => 'Express UK',
-            'min' => '0',
-            'max' => '300',
+            'min' => 0,
+            'max' => 300,
             'price' => 1000
         ],
         [   'id' => 'standard_uk_heavy',
             'title' => 'Standard UK Large',
-            'min' => '300.00001',
-            'max' => '9000000000',
+            'min' => 300.01,
+            'max' => 5000,
             'price' => 2000
         ],
         [
             'id' => 'express_uk_heavy',
             'title' => 'Express UK Large',
-            'min' => '300.00001',
-            'max' => '9000000000',
+            'min' => 300.01,
+            'max' => 5000,
+            'price' => 5000
+        ],
+        [   'id' => 'standard_uk_ridiculous',
+            'title' => 'Standard UK Ridiculous',
+            'min' => 5005.01,
+            'max' => 0,
+            'price' => 2000
+        ],
+        [
+            'id' => 'express_uk_ridiculous',
+            'title' => 'Express UK Ridiculous',
+            'min' => 5001.01,
+            'max' => 0,
             'price' => 5000
         ]
     ],

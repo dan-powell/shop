@@ -56,7 +56,7 @@
         </td>
 
         <td>
-            {{ $item->sub_total_string }}
+            {{ $item->price_sub_total_string }}
         </td>
         <td>
             <!-- Actions -->

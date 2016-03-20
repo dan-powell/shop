@@ -1,15 +1,13 @@
 <?php namespace DanPowell\Shop\Http\Controllers\Front;
 
-use Illuminate\Http\Request;
-
+// Repositories
+use DanPowell\Shop\Repositories\CartRepository;
 use DanPowell\Shop\Repositories\CartItemRepository;
 use DanPowell\Shop\Repositories\ProductPublicRepository;
 
 // Requests
 use DanPowell\Shop\Http\Requests\CartItemStoreRequest;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-
-
 
 
 class CartItemController extends BaseController
@@ -19,15 +17,26 @@ class CartItemController extends BaseController
 
 	protected $repository;
 	protected $productPublicRepository;
+	protected $cartRepository;
 
-
-	public function __construct(CartItemRepository $CartItemRepository, ProductPublicRepository $ProductPublicRepository)
+	/**
+	 * CartItemController constructor.
+	 * @param CartItemRepository $CartItemRepository
+	 * @param ProductPublicRepository $ProductPublicRepository
+	 */
+	public function __construct(CartRepository $CartRepository, CartItemRepository $CartItemRepository, ProductPublicRepository $ProductPublicRepository)
 	{
 		$this->repository = $CartItemRepository;
+		$this->cartRepository = $CartRepository;
 		$this->productPublicRepository = $ProductPublicRepository;
 	}
 
 
+	/**
+	 * Add/update a cartItem to the cart
+	 * @param CartItemStoreRequest $request
+	 * @return \Illuminate\Http\RedirectResponse
+	 */
 	public function store(CartItemStoreRequest $request)
 	{
 
@@ -64,7 +73,7 @@ class CartItemController extends BaseController
 
 		// Find if item already exists in cart and update config if so
 		$findItem = $item->where([
-			'cart_id' => $this->repository->getVerifiedCartId(),
+			'cart_id' => $this->cartRepository->getCartId(),
 			'product_id' => $product->id,
 			'config' => json_encode($config)
 		])->increment('quantity', $request->get('quantity'));
@@ -73,7 +82,7 @@ class CartItemController extends BaseController
 		if(!$findItem) {
 
 			$item->fill([
-				'cart_id' => $this->repository->getVerifiedCartId(),
+				'cart_id' => $this->cartRepository->getCartId(),
 				'product_id' => $product->id,
 				'config' => $config,
 				'quantity' => $request->get('quantity'),
@@ -98,7 +107,7 @@ class CartItemController extends BaseController
 	/**
 	 * @param $id
 	 * @param Request $request
-	 * @return $this
+	 * @return \Illuminate\Http\RedirectResponse
 	 */
 	public function update($id, Request $request)
 	{
@@ -124,7 +133,7 @@ class CartItemController extends BaseController
 
 
 		// Find & update the item
-		if($this->repository->update($id, $request->get('quantity'))){
+		if($this->repository->update($id, ['quantity' => $request->get('quantity')])){
 			session()->flash('alert-success', 'Product quantity has been updated');
 		}
 

@@ -4,38 +4,20 @@
 trait CartTrait
 {
 
-
-    private function getCartProductAttributeTotal($cartItems, $attribute) {
-
-        $arr = [];
-        foreach($cartItems as $item) {
-            array_push($arr, $item->product->$attribute * $item->quantity);
-        };
-
-        return array_sum($arr);
-
-    }
-
-
-    private function getCartTotal($cartItems) {
-
-        $arr = [];
-        foreach($cartItems as $item) {
-            array_push($arr, $item->sub_total);
-        };
-
-        return array_sum($arr);
-
-    }
-
-
-    private function groupCartItemsByProduct($cartItems)
+    /**
+     * Takes a collection of CartItems and returns Collection grouped by product
+     * Can optionally return only CartItems which have Options or Extras
+     * @param $cartItems - Eloquent Collection
+     * @param bool $onlyOptionsOrExtras
+     * @return mixed
+     */
+    private function groupCartItemsByProduct($cartItems, $onlyOptionsOrExtras = false)
     {
         // Group items by product ID
         $itemsGrouped = $cartItems->groupBy('product.id');
 
         // For each product...
-        $itemsGrouped->each(function ($itemGroup) {
+        $itemsGrouped->each(function ($itemGroup) use ($onlyOptionsOrExtras) {
 
             // Get the product info and save to collection
             $itemGroup->product = $itemGroup->first()->product;
@@ -49,30 +31,29 @@ trait CartTrait
                 $itemGroup->quantity += $item->quantity;
             }
 
-
             // Get the product line total base on items
-            $sub_total = [];
+            $price_sub_total = [];
             foreach ($itemGroup as $item) {
-                array_push($sub_total, $item->sub_total);
+                array_push($price_sub_total, $item->price_sub_total);
             };
-            $itemGroup->sub_total = array_sum($sub_total);
+            $itemGroup->price_sub_total = array_sum($price_sub_total);
 
-            $itemGroup->sub_total_string = config('shop.currency.symbol') . number_format($itemGroup->sub_total, 2);
+            $itemGroup->price_sub_total_string = config('shop.currency.symbol') . number_format($itemGroup->price_sub_total, 2);
 
-            // Filter the items so only those with option/products are displayed
-//            $itemGroup->cartItems = $itemGroup->filter(function ($item) {
-//
-//                // Only return items with options OR personalisations
-//                if (
-//                    (isset($item->options) && count($item->options)) ||
-//                    (isset($item->personalisations) && count($item->personalisations))
-//                ) {
-//                    return $item;
-//                };
-//
-//            });
-
-            $itemGroup->cartItems = $itemGroup;
+            if($onlyOptionsOrExtras) {
+                // Filter the items so only those with options/products are displayed
+                $itemGroup->cartItems = $itemGroup->filter(function ($item) {
+                    // Only return items with options OR personalisations
+                    if (
+                        (isset($item->options) && count($item->options)) ||
+                        (isset($item->personalisations) && count($item->personalisations))
+                    ) {
+                        return $item;
+                    };
+                });
+            } else {
+                $itemGroup->cartItems = $itemGroup;
+            }
 
         });
 
@@ -81,6 +62,3 @@ trait CartTrait
     }
 
 }
-
-
-

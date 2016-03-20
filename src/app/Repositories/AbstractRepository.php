@@ -57,7 +57,7 @@ abstract class AbstractRepository
      * @param $fill
      * @return mixed
      */
-    public function update($id, $fill)
+    public function update($id, array $fill)
     {
         return $this->makeQuery([], ['id' => $id])->update($fill);
     }

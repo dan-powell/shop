@@ -30,7 +30,8 @@
                             </td>
 
                             <td>
-                                {{ $total }}
+                                {{ $cart->price_total_string }}
+                                Weight: {{ $cart->weight_total }}
                             </td>
 
                         </tr>

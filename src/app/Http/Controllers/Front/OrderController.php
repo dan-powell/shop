@@ -4,15 +4,13 @@ use Illuminate\Http\Request;
 
 use DanPowell\Shop\Repositories\OrderRepository;
 use DanPowell\Shop\Repositories\CartRepository;
-use DanPowell\Shop\Repositories\CartItemRepository;
 
-use DanPowell\Shop\Models\Cart;
-use DanPowell\Shop\Models\CartProduct;
-use DanPowell\Shop\Models\CartOption;
-use DanPowell\Shop\Models\CartPersonalisation;
-use DanPowell\Shop\Models\Order;
+use DanPowell\Shop\Models\Order; // TEMP
+
+use DanPowell\Shop\Http\Requests\OrderStoreRequest;
 
 use Illuminate\Foundation\Validation\ValidatesRequests;
+
 use DanPowell\Shop\Traits\ImageTrait;
 use DanPowell\Shop\Traits\CartTrait;
 
@@ -25,18 +23,19 @@ class OrderController extends BaseController
 
     protected $repository;
     protected $cartItemRepository;
+    protected $cartRepository;
 
-    public function __construct(OrderRepository $OrderRepository, CartItemRepository $CartItemRepository)
+    public function __construct(OrderRepository $OrderRepository, CartRepository $CartRepository)
     {
         $this->repository = $OrderRepository;
-        $this->cartItemRepository = $CartItemRepository;
+        $this->cartRepository = $CartRepository;
     }
 
 
     public function create()
     {
         // Get the cart
-        $cart = $this->cartItemRepository->getCart(['cartItems.product.extras']);
+        $cart = $this->cartRepository->getCart(['cartItems.product.extras']);
 
         // Check that we have items
         if (count($cart->cartItems) <= 0) {
@@ -45,27 +44,25 @@ class OrderController extends BaseController
 
         // Return the view
         return view('shop::front.order.create.orderCreate')->with([
+            'cart' => $cart,
             'itemsGrouped' => $this->groupCartItemsByProduct($cart->cartItems),
-            'total' => $this->getCartTotal($cart->cartItems),
-            'shipping_options' => $this->getFilteredShippingOptions($cart->cartItems),
+            'shipping_options' => $this->repository->getShippingOptions($cart),
             'order' => session()->get('order', [])
         ]);
 
     }
 
-    public function store(Request $request)
+    public function store(OrderStoreRequest $request)
     {
         // Save order values to session
         session()->put('order', $request->all());
 
+        $order = new Order;
+
+        $order->fill($request->all());
+
         // Get the cart
-        $cart = $this->cartItemRepository->getCart(['cartItems.product']);
-
-        // Validate the order
-        //$this->validate($request, $this->repository->getRules($this->getFilteredShippingOptions($cart->cartItems)), $this->repository->getMessages());
-
-
-
+        $cart = $this->cartRepository->getCart(['cartItems.product']);
 
         // Check the cart items
         $verify = $this->verifyCart($cart);
@@ -75,33 +72,25 @@ class OrderController extends BaseController
             return redirect()->back()->withInput($verify['messages']);
         }
 
+        $order_shipping = null;
         // Find the shipping type and save to cart
         foreach(config('shop.shipping_types') as $shipping_type) {
             if ($shipping_type['id'] == $request->get('shipping_type')) {
-                $cart->shipping_type = $shipping_type;
+                $order_shipping = $shipping_type;
             }
         }
 
-        $total =  $this->getCartTotal($cart->cartItems) + $cart->shipping_type['price'];
-
-
-        //
-        $order = new Order;
-
-        $order->fill($request->all());
-
         $order->fill([
             'cart' => $cart,
-            'total' => $total
+            'total' => $cart->price_total + $order_shipping['price'],
+            'shipping_type' => $order_shipping
         ]);
 
         $order->save();
 
         return view('shop::front.order.confirm.orderConfirm')->with([
             'order' => $order,
-            'cart' => $cart,
-            'shipping' => $cart->shipping_type,
-            'total' => $total
+            'shipping_price' => config('shop.currency.symbol') . number_format($order_shipping['price'], 2)
         ]);
 
     }
@@ -110,7 +99,7 @@ class OrderController extends BaseController
     public function confirm(Request $request)
     {
 
-        $cart = $this->cartItemRepository->getCart(['cartItems.product']);
+        $cart = $this->cartRepository->getCart(['cartItems.product']);
 
         $order = Order::find($request->get('id'));
 
@@ -131,7 +120,6 @@ class OrderController extends BaseController
         $card = \Omnipay::creditCard($order->toArray());
 
 
-        dd($order->id);
 
         $response = \Omnipay::purchase([
             'currency' => 'GBP',
@@ -177,34 +165,7 @@ class OrderController extends BaseController
     }
 
 
-    private function getFilteredShippingOptions($cartItems)
-    {
 
-        $value = $this->getCartProductAttributeTotal($cartItems, config('shop.shipping_tier_property'));
-
-        foreach(config('shop.shipping_types') as $option) {
-            $option['price_string'] = config('shop.currency.symbol') . number_format($option['price'], 2);
-            if($option['min'] <= $value && $option['max'] >= $value) {
-                $arr[] = $option;
-            }
-        }
-
-        return $arr;
-
-    }
-
-    private function getShippingOptions()
-    {
-
-        $options = config('shop.shipping_types');
-
-        foreach($options as $option) {
-            $option['price_string'] = config('shop.currency.symbol') . number_format($option['price'], 2);
-        }
-
-        return $options;
-
-    }
 
 
     private function verifyCart($cart)
