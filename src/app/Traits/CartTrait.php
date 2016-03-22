@@ -43,11 +43,8 @@ trait CartTrait
             if($onlyOptionsOrExtras) {
                 // Filter the items so only those with options/products are displayed
                 $itemGroup->cartItems = $itemGroup->filter(function ($item) {
-                    // Only return items with options OR personalisations
-                    if (
-                        (isset($item->options) && count($item->options)) ||
-                        (isset($item->personalisations) && count($item->personalisations))
-                    ) {
+                    // Only return items with options
+                    if (isset($item->options) && count($item->options)) {
                         return $item;
                     };
                 });
