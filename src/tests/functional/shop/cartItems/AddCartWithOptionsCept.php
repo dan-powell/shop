@@ -38,7 +38,7 @@ $I->submitForm('#addToCart', [
     'option[' . $unrelatedOption->id . ']' => $unrelatedOption->config[0]
 ]);
 
-$I->seeCurrentRouteIs('shop.cart.index');
+$I->seeCurrentRouteIs('shop.cart.show');
 
 // Check that we see the product
 $I->see('Product added to cart', '.alert');

@@ -27,7 +27,7 @@ $I->submitForm('#addToCart', [
     // include an unrelated extra
     'extra[' . $unrelatedExtra->id . ']' => 'on'
 ]);
-$I->seeCurrentRouteIs('shop.cart.index');
+$I->seeCurrentRouteIs('shop.cart.show');
 
 $I->see('Product added to cart', '.alert');
 $I->see($product->title, '.CartTable-product-title');

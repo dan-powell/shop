@@ -5,6 +5,11 @@ use DanPowell\Shop\Repositories\CartRepository;
 use DanPowell\Shop\Repositories\CartItemRepository;
 use DanPowell\Shop\Repositories\ProductPublicRepository;
 
+/**
+ * Provide rules for the
+ * Class CartItemStoreRequest
+ * @package DanPowell\Shop\Http\Requests
+ */
 class CartItemStoreRequest extends Request
 {
 
@@ -23,7 +28,10 @@ class CartItemStoreRequest extends Request
         $this->cartRepository = $CartRepository;
     }
 
-
+    /**
+     * Always authorize this request
+     * @return bool
+     */
     public function authorize()
     {
         return true;
@@ -31,6 +39,7 @@ class CartItemStoreRequest extends Request
 
 
     /**
+     * Create an array of rules for Laravel's validator
      * @return array
      */
     public function rules()
@@ -67,6 +76,10 @@ class CartItemStoreRequest extends Request
         return $rules;
     }
 
+    /**
+     * Create an array of message for Laravel's validator
+     * @return array
+     */
     public function messages()
     {
 
@@ -96,6 +109,10 @@ class CartItemStoreRequest extends Request
         return $messages;
     }
 
+    /**
+     * Get the Product we are trying to add (once).
+     * @return mixed
+     */
     public function getProduct() {
         if (!$this->product) {
             $this->product = $this->productPublicRepository->getById($this->get('product_id'), ['extras.options', 'options']);
@@ -103,6 +120,11 @@ class CartItemStoreRequest extends Request
         return $this->product;
     }
 
+    /**
+     * Return the rule string for a particular Option
+     * @param $option
+     * @return string
+     */
     private function getRuleOption($option)
     {
         // Start creating rules string
@@ -117,6 +139,10 @@ class CartItemStoreRequest extends Request
         return 'string|' . $rule;
     }
 
+    /**
+     * Return the rule string for quantity input
+     * @return string
+     */
     private function getRuleQuantity()
     {
 
@@ -127,7 +153,7 @@ class CartItemStoreRequest extends Request
         $cart = $this->cartRepository->getCart();
 
         // Count the number of items in cart matching product
-        $totalProductQuantityInCart = count($cart->getCartItemsByProductId($product->id));
+        $totalProductQuantityInCart = $cart->getCartItemsByProductIdCount($product->id);
 
         if ($product->allow_negative_stock) {
             $max = config('shop.maxProductCartQuantity') - $totalProductQuantityInCart;

@@ -45,7 +45,7 @@
 
 
 
-    <form action="{{ route('shop.order.store') }}" method="post">
+    <form action="{{ route('shop.order.store') }}" method="post" id="createOrder">
 
         {!! csrf_field() !!}
 

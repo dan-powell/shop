@@ -9,7 +9,7 @@ $product = $I->createModel(DanPowell\Shop\Models\Product::class, [], 'outOfStock
 $I->amOnRoute('shop.product.show', $product->slug);
 
 $I->submitForm('#addToCart', []);
-$I->seeCurrentRouteIs('shop.cart.index');
+$I->seeCurrentRouteIs('shop.cart.show');
 $I->see('Product added to cart', '.alert');
 $I->see($product->title);
 

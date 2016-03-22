@@ -38,20 +38,26 @@ $factory->define(DanPowell\Shop\Models\Order::class, function (Faker\Generator $
 		'billingCity' => $faker->city,
 		'billingPostcode' => $faker->postcode,
 		'billingState' => $faker->county,
-		'billingCountry' => $faker->country,
+		'billingCountry' => $faker->randomElement(config('shop.countries_allow_billing')),
 		'billingPhone' => $faker->phoneNumber,
 		'shippingAddress1' => $faker->address,
 		'shippingAddress2' => $faker->secondaryAddress,
 		'shippingCity' => $faker->city,
 		'shippingPostcode' => $faker->postcode,
 		'shippingState' => $faker->county,
-		'shippingCountry' => $faker->country,
+		'shippingCountry' => $faker->randomElement(config('shop.countries_allow_shipping')),
 		'shippingPhone' => $faker->phoneNumber,
 		'email' => $faker->safeEmail,
 		'notes' => $faker->paragraphs(2, true),
 		'instructions' => $faker->paragraphs(1, true)
 
     ];
+});
+
+$factory->defineAs(DanPowell\Shop\Models\Order::class, 'paid', function ($faker) use ($factory) {
+	$model = $factory->raw(DanPowell\Shop\Models\Order::class);
+
+	return array_merge($model, ['status' => 1]);
 });
 
 $factory->defineAs(DanPowell\Shop\Models\Order::class, 'paid', function ($faker) use ($factory) {

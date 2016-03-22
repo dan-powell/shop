@@ -12,7 +12,7 @@ $I->submitForm('#addToCart', [
     'quantity' => 6
 ]);
 
-$I->seeCurrentRouteIs('shop.cart.index');
+$I->seeCurrentRouteIs('shop.cart.show');
 
 $I->see('Product added to cart', '.alert');
 

@@ -8,7 +8,7 @@ $product = $I->createModel(DanPowell\Shop\Models\Product::class, [], 'published'
 
 $I->amOnRoute('shop.product.show', $product->slug);
 $I->click('Add to Cart');
-$I->seeCurrentRouteIs('shop.cart.index');
+$I->seeCurrentRouteIs('shop.cart.show');
 $I->see('Product added to cart', '.alert');
 $I->see($product->title, '.CartTable-product-title');
 

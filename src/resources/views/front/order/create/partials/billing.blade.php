@@ -21,7 +21,7 @@
     <div class="form-group {{ $errors->has('billingCity') ? 'has-error' : '' }}">
         <label for="billingCity" class="col-sm-2 control-label">City<span class="req"> *</span></label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" id="billingCity" name="billingCity" value="{{ $order['billingCity'] or old('') }}">
+            <input type="text" class="form-control" id="billingCity" name="billingCity" value="{{ $order['billingCity'] or old('billingCity') }}">
             {!! $errors->first('billingCity', '<p class="help-block">:message</p>') !!}
         </div>
     </div>
@@ -46,12 +46,17 @@
         <label for="billingCountry" class="col-sm-2 control-label">Country<span class="req"> *</span></label>
         <div class="col-sm-10">
             <select class="form-control" id="billingCountry" name="billingCountry">
-                @foreach(config('shop.countries') as $country)
-                    <option value="{{ $country['code'] }}" @if((isset($order['billingCountry']) && $country['name'] == $order['billingCountry']) || $country['name'] == old('billingCountry'))selected @endif>
-                        {{ $country['name'] }} @if(!$country['allow_billing'])* @endif
+                @foreach(config('shop.countries') as $key => $country)
+                    <option value="{{ $key }}"
+                            @if((isset($order['billingCountry']) && $key == $order['billingCountry']) || $key == old('billingCountry'))selected @endif
+                            @if(!in_array($key, config('shop.countries_allow_billing')))disabled @endif
+                    >
+                        {{ $country['name'] }}
+                        @if(!in_array($key, config('shop.countries_allow_billing')))&dagger; @endif
                     </option>
                 @endforeach
             </select>
+            <p><small>&dagger; We do not currently support payments from these countries.</small></p>
             {!! $errors->first('billingCountry', '<p class="help-block">:message</p>') !!}
         </div>
     </div>

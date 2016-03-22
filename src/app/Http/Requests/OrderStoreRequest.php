@@ -32,18 +32,8 @@ class OrderStoreRequest extends Request
 
         $valid_shipping = implode(",", $valid_shipping);
 
-        $countries_billing = [];
-        $countries_shipping = [];
-        foreach(config('shop.countries') as $country) {
-            if ($country['allow_billing']) {
-                $countries_billing[] = $country['code'];
-            }
-            if ($country['allow_shipping']) {
-                $countries_shipping[] = $country['code'];
-            }
-        }
-        $countries_billing = implode(",", $countries_billing);
-        $countries_shipping = implode(",", $countries_shipping);
+        $countries_billing = implode(",", config('shop.countries_allow_billing'));
+        $countries_shipping = implode(",", config('shop.countries_allow_shipping'));
 
         return [
             'firstName' => 'required|string',

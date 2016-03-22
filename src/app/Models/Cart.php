@@ -60,6 +60,21 @@ class Cart extends Model {
 
 	// Functions
 
+
+	public function getCartItemsCount($id) {
+
+		$items = $this->cartItems;
+
+		$int = 0;
+		foreach($items as $item) {
+			$int += $item->quantity;
+		}
+
+		return $int;
+	}
+
+
+
 	/**
 	 * Return a collection of CartItems matching given product ID
 	 * @param $id
@@ -69,6 +84,23 @@ class Cart extends Model {
 		return $this->cartItems->where('product_id', $id);
 	}
 
+
+	/**
+	 * Return the total number of items
+	 * @param $id
+	 * @return mixed
+	 */
+	public function getCartItemsByProductIdCount($id) {
+
+		$items = $this->cartItems->where('product_id', $id);
+
+		$int = 0;
+		foreach($items as $item) {
+			$int += $item->quantity;
+		}
+
+		return $int;
+	}
 
     // Relationships
 

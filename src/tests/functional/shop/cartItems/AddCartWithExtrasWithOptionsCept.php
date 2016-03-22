@@ -43,7 +43,7 @@ foreach(array_merge($options1, $options2) as $option) {
 
 // Submit the form
 $I->submitForm('#addToCart', []);
-$I->seeCurrentRouteIs('shop.cart.index');
+$I->seeCurrentRouteIs('shop.cart.show');
 $I->see('Product added to cart', '.alert');
 $I->see($product->title, '.CartTable-product-title');
 

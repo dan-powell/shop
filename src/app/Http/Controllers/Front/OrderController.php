@@ -72,6 +72,8 @@ class OrderController extends BaseController
             return redirect()->back()->withInput($verify['messages']);
         }
 
+        
+
         $order_shipping = null;
         // Find the shipping type and save to cart
         foreach(config('shop.shipping_types') as $shipping_type) {

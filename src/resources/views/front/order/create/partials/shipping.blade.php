@@ -46,12 +46,16 @@
         <label for="shippingCountry" class="col-sm-2 control-label">Country<span class="req"> *</span></label>
         <div class="col-sm-10">
             <select class="form-control" id="shippingCountry" name="shippingCountry">
-                @foreach(config('shop.countries') as $country)
-                    <option value="{{ $country['code'] }}" @if((isset($order['shippingCountry']) && $order['shippingCountry'] == $country['code']) || $country['code'] == old('shippingCountry'))selected @endif>
-                        {{ $country['name'] }} @if(!$country['allow_shipping'])* @endif
+                @foreach(config('shop.countries') as $key => $country)
+                    <option value="{{ $key }}"
+                            @if((isset($order['shippingCountry']) && $order['shippingCountry'] == $key) || $key == old('shippingCountry'))selected @endif
+                            @if(!in_array($key, config('shop.countries_allow_shipping')))disabled @endif
+                    >
+                        {{ $country['name'] }} @if(!in_array($key, config('shop.countries_allow_shipping')))&dagger;  @endif
                     </option>
                 @endforeach
             </select>
+            <p><small>&dagger; We do not currently support delivery to these countries.</small></p>
             {!! $errors->first('shippingCountry', '<p class="help-block">:message</p>') !!}
         </div>
     </div>
