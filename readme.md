@@ -18,7 +18,7 @@ This software is pre-alpha, don't bother to use it just yet...
     
 Aliases
 
-    'String' => Illuminate\Support\Str::class,
+    'Str' => Illuminate\Support\Str::class,
     'Markdown'  => AlfredoRamos\ParsedownExtra\Facades\ParsedownExtra::class,
     'Omnipay' => Ignited\LaravelOmnipay\Facades\OmnipayFacade::class
 

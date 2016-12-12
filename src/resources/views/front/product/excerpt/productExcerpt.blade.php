@@ -12,6 +12,6 @@
 
 <div class="caption">
     <h3>{{ $product->title }}</h3>
-    <p>{{ String::words($product->description, 10) }}</p>
+    <p>{{ Str::words($product->description, 10) }}</p>
 </div>
 </a>

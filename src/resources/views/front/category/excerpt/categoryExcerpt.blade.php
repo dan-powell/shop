@@ -18,7 +18,7 @@
                 {{ $category->title }}
             </a>
         </h3>
-        <p>{{ String::words($category->description, 10) }}</p>
+        <p>{{ Str::words($category->description, 10) }}</p>
 
         @if( isset($category->children) && count($category->children) )
             @include('shop::front.category.excerpt.partials.categoryExcerptChildren', ['children' => $category->children] )
