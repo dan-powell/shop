@@ -43,7 +43,7 @@
         </td>
 
         <td>
-            <form class="" action="{{ route('shop.cart.item.update', $item->id) }}" method="POST">
+            <form class="" action="{{ route('shop.cart.item.update', $item->id) }}" method="POST" id="update">
                 {!! csrf_field() !!}
                 <input type="hidden" name="_method" value="PUT">
                 <div class="form-group form-group-sm">

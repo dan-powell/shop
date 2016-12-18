@@ -23,7 +23,8 @@ class Product extends Model {
 	    'published',
 	    'meta_title',
 	    'meta_description',
-		'rank'
+		'rank',
+        'stock'
     ];
 
 	public function rules($id = null)
@@ -39,6 +40,7 @@ class Product extends Model {
 			'quantity' => 'integer',
 	        'featured' => 'integer',
 			'published' => 'integer',
+            'stock' => 'integer',
 			'rank' => 'integer',
 	    ];
 	}
@@ -54,6 +56,7 @@ class Product extends Model {
 		'quantity' => 'integer',
 		'featured' => 'integer',
 		'published' => 'integer',
+        'stock' => 'integer',
 		'rank' => 'integer',
     ];
 

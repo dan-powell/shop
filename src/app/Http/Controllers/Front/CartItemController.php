@@ -7,6 +7,7 @@ use DanPowell\Shop\Repositories\ProductPublicRepository;
 
 // Requests
 use DanPowell\Shop\Http\Requests\CartItemStoreRequest;
+use DanPowell\Shop\Http\Requests\CartItemUpdateRequest;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
 
@@ -109,26 +110,10 @@ class CartItemController extends BaseController
 	 * @param Request $request
 	 * @return \Illuminate\Http\RedirectResponse
 	 */
-	public function update($id, Request $request)
+	public function update(CartItemUpdateRequest $request, $id)
 	{
 
-		// Find the item to update
-		$item = $this->repository->getById($id, ['product']);
-		if(!$item) {
-			session()->flash('alert-warning', 'Cart item not found');
-			return redirect()->route('shop.cart.index');
-		}
 
-		if ($item->product->allow_negative_stock) {
-			$max = config('shop.maxProductCartQuantity') - $this->repository->getTotalProductQuantityInCart($item->product->id);
-		} else {
-			$max = $item->product->stock - $this->repository->getTotalProductQuantityInCart($item->product->id);
-		}
-
-		// Validate the request
-		$this->validate($request, [
-			'quantity' => 'required|integer|min:1|max:' . $max
-		]);
 
 
 

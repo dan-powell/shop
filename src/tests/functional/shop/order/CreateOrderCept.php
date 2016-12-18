@@ -17,7 +17,7 @@ $order = $I->makeModel(DanPowell\Shop\Models\Order::class, [], null, 1);
 $I->submitForm('#createOrder', $order->toArray());
 
 
-$I->seeCurrentRouteIs('shop.order.confirm');
+$I->seeCurrentRouteIs('shop.order.store');
 
 
 // Continue to confirmation

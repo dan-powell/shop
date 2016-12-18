@@ -17,7 +17,7 @@ return [
             'cart' => [
                 'prefix' => 'cart',
                 'show' => 'cart',
-                'item' => 'item',
+                'item' => 'cart/item',
                 'clearproduct' => 'cart/clearproduct/{id}',
                 'clear' => 'cart/clear'
             ],
