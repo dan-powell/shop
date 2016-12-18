@@ -39,7 +39,8 @@ class OrderController extends BaseController
 
         // Check that we have items
         if (count($cart->cartItems) <= 0) {
-            return redirect()->back()->withInput(['warning' => 'Please add some items to your cart']);
+            \Notification::warning('Please add some items to your cart');
+            return redirect()->back();
         }
 
         // Return the view
@@ -54,25 +55,15 @@ class OrderController extends BaseController
 
     public function store(OrderStoreRequest $request)
     {
+
         // Save order values to session
         session()->put('order', $request->all());
 
         $order = new Order;
-
         $order->fill($request->all());
 
         // Get the cart
         $cart = $this->cartRepository->getCart(['cartItems.product']);
-
-        // Check the cart items
-        $verify = $this->verifyCart($cart);
-
-
-        if(!$verify['check']) {
-            return redirect()->back()->withInput($verify['messages']);
-        }
-
-        
 
         $order_shipping = null;
         // Find the shipping type and save to cart
@@ -80,6 +71,12 @@ class OrderController extends BaseController
             if ($shipping_type['id'] == $request->get('shipping_type')) {
                 $order_shipping = $shipping_type;
             }
+        }
+
+        // Check the cart items
+        $verify = $this->verifyCart($cart);
+        if(!$verify['check']) {
+            return redirect()->back();
         }
 
         $order->fill([
@@ -179,16 +176,18 @@ class OrderController extends BaseController
         // Check we actually have items
         if(count($cart->cartItems) <= 0) {
             $check = false;
-            $messages['warning'] = 'There are no items in your cart.';
+            \Notification::warning('There are no items in your cart.');
         }
 
 
         // Check the validity of all cart items
         $cart->cartItems->each(function($item){
 
+            dd($item);
+
             if (!$item->valid){
                 $check = false;
-                $messages['warning'] = 'An item in your cart is invalid. Please either remove or replace it.';
+                \Notification::warning('An item in your cart is invalid. Please either remove or replace it.');
             }
 
         });
@@ -206,14 +205,14 @@ class OrderController extends BaseController
             // Check product stock
             if (!$product->checkStock($cartQuantity)) {
                 $check = false;
-                $messages['warning'] = 'We don\'t have enough of this product in stock.';
+                \Notification::warning('We don\'t have enough of this product in stock.');
             }
 
             // Check product extras stock
             foreach($product->extras as $extra) {
                 if (!$extra->checkStock($cartQuantity)) {
                     $check = false;
-                    $messages['warning'] = 'We don\'t have enough of this product extra in stock.';
+                    \Notification::warning('We don\'t have enough of this product extra in stock.');
                 }
             };
 

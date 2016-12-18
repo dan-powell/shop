@@ -15,12 +15,20 @@ This software is pre-alpha, don't bother to use it just yet...
     AlfredoRamos\ParsedownExtra\ParsedownExtraServiceProvider::class,
     Baum\Providers\BaumServiceProvider::class,
     Ignited\LaravelOmnipay\LaravelOmnipayServiceProvider::class
+    Krucas\Notification\NotificationServiceProvider::class,
     
 Aliases
 
     'Str' => Illuminate\Support\Str::class,
     'Markdown'  => AlfredoRamos\ParsedownExtra\Facades\ParsedownExtra::class,
     'Omnipay' => Ignited\LaravelOmnipay\Facades\OmnipayFacade::class
+    'Notification' => Krucas\Notification\Facades\Notification::class,
+
+
+Kernel middleware array (must be placed after 'Illuminate\Session\Middleware\StartSession' middleware)
+
+    \Krucas\Notification\Middleware\NotificationMiddleware::class,
+
 
 
 3. publish assets

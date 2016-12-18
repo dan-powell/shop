@@ -49,7 +49,10 @@ class CartController extends BaseController
     public function clear()
     {
         $this->cartItemRepository->clear();
-        return redirect()->route('shop.cart.show', 301)->withInput(['warning' => 'Cart Cleared']);
+
+        \Notification::info('Cart Cleared');
+
+        return redirect()->route('shop.cart.show', 301);
     }
 
 
@@ -61,7 +64,10 @@ class CartController extends BaseController
     public function clearProduct($id)
     {
         $this->cartItemRepository->clearProduct($id);
-        return redirect()->route('shop.cart.show', 301)->withInput(['warning' => 'Product has been removed from your cart']);
+
+        \Notification::info('Product has been removed from your cart');
+
+        return redirect()->route('shop.cart.show', 301);
     }
 
 }

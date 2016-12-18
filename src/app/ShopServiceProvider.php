@@ -21,16 +21,16 @@ class ShopServiceProvider extends \Illuminate\Support\ServiceProvider
 
         // Merge configs
         $this->mergeConfigFrom(
-            __DIR__.'/../config/shop.php', 'shop'
+            __DIR__ . '/../config/shop.php', 'shop'
         );
 
         // Include package routes
         if (!$this->app->routesAreCached()) {
-            include __DIR__.'/Http/routes.php';
+            include __DIR__ . '/Http/routes.php';
         }
 
         // Tell Laravel where to load the views from
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'shop');
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'shop');
 
     }
 
@@ -44,57 +44,57 @@ class ShopServiceProvider extends \Illuminate\Support\ServiceProvider
 
         $this->app->register('DanPowell\Shop\Providers\ViewComposerServiceProvider');
 
-        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'shop');
+        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'shop');
 
         // Setup some commands
         $this->commands('command.shop.adduser');
 
         // Publish Frontend Assets
         $this->publishes([
-            __DIR__.'/../public' => public_path('vendor/shop'),
+            __DIR__ . '/../public' => public_path('vendor/shop'),
         ], 'public');
 
         // Publish Views
         $this->publishes([
-            __DIR__.'/../resources/views' => base_path('resources/views/vendor/shop'),
+            __DIR__ . '/../resources/views' => base_path('resources/views/vendor/shop'),
         ], 'views');
 
         $this->publishes([
-            __DIR__.'/../resources/lang' => base_path('resources/lang/vendor/shop'),
+            __DIR__ . '/../resources/lang' => base_path('resources/lang/vendor/shop'),
         ], 'lang');
 
         // Publish Config
         $this->publishes([
-            __DIR__.'/../config/shop.php' => config_path('shop.php'),
+            __DIR__ . '/../config/shop.php' => config_path('shop.php'),
         ], 'configs');
 
         // Publish Migrations
         $this->publishes([
-            __DIR__.'/../database/migrations' => $this->app->databasePath().'/migrations',
+            __DIR__ . '/../database/migrations' => $this->app->databasePath().'/migrations',
         ], 'migrations');
 
         // Publish Factories
         $this->publishes([
-            __DIR__.'/../database/factories' => $this->app->databasePath().'/factories',
+            __DIR__ . '/../database/factories' => $this->app->databasePath().'/factories',
         ], 'factories');
 
         // Publish Seeds
         $this->publishes([
-            __DIR__.'/../database/seeds' => $this->app->databasePath().'/seeds',
+            __DIR__ . '/../database/seeds' => $this->app->databasePath().'/seeds',
         ], 'seeds');
 
 
         // Publish Tests
         $this->publishes([
-            __DIR__.'/../tests' => base_path('tests'),
+            __DIR__ . '/../tests' => base_path('tests'),
         ], 'tests');
 
         // Publishes all stuff for dev
         $this->publishes([
-            __DIR__.'/../database/seeds' => $this->app->databasePath().'/seeds',
-            __DIR__.'/../database/migrations' => $this->app->databasePath().'/migrations',
-            __DIR__.'/../database/factories' => $this->app->databasePath().'/factories',
-            __DIR__.'/../tests' => base_path('tests'),
+            __DIR__ . '/../database/seeds' => $this->app->databasePath().'/seeds',
+            __DIR__ . '/../database/migrations' => $this->app->databasePath().'/migrations',
+            __DIR__ . '/../database/factories' => $this->app->databasePath().'/factories',
+            __DIR__ . '/../tests' => base_path('tests'),
         ], 'dev');
 
 

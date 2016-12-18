@@ -15,7 +15,10 @@
         "fzaninotto/faker": "~1",
         "alfredo-ramos/parsedown-extra-laravel": "~0.3",
         "baum/baum": "~1.1",
-        "ignited/laravel-omnipay": "2.*"
+        "ignited/laravel-omnipay": "2.*",
+        "omnipay/paypal": "~2.0",
+        "edvinaskrucas/notification": "5.*",
+        "laravelcollective/html": "5.1.*"
     },
     "require-dev": {
         "codeception/codeception": "*"

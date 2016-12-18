@@ -79,7 +79,7 @@ class CartItemController extends BaseController
 			'config' => json_encode($config)
 		])->increment('quantity', $request->get('quantity'));
 
-		// If we did'nt find existing item, create a new one
+		// If we didn't find existing item, create a new one
 		if(!$findItem) {
 
 			$item->fill([
@@ -95,9 +95,9 @@ class CartItemController extends BaseController
 
 			$item->extras()->attach($extras);
 
-			session()->flash('alert-success', 'Product added to cart');
+            \Notification::success('Product added to cart');
 		} else {
-			session()->flash('alert-success', 'Product quantity updated');
+            \Notification::success('Product quantity updated');
 		}
 
 		// Take the user to the cart page
@@ -113,15 +113,10 @@ class CartItemController extends BaseController
 	public function update(CartItemUpdateRequest $request, $id)
 	{
 
-
-
-
-
 		// Find & update the item
 		if($this->repository->update($id, ['quantity' => $request->get('quantity')])){
-			session()->flash('alert-success', 'Product quantity has been updated');
+            \Notification::success('Product quantity has been updated');
 		}
-
 
 		return redirect()->route('shop.cart.show');
 
@@ -135,7 +130,7 @@ class CartItemController extends BaseController
 	public function destroy($id)
 	{
 		$this->repository->delete($id);
-		session()->flash('alert-danger', 'Product removed');
+        \Notification::info('Product removed');
 		return redirect()->route('shop.cart.show', 301);
 	}
 
