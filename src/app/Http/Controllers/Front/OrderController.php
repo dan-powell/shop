@@ -5,9 +5,8 @@ use Illuminate\Http\Request;
 use DanPowell\Shop\Repositories\OrderRepository;
 use DanPowell\Shop\Repositories\CartRepository;
 
-use DanPowell\Shop\Models\Order; // TEMP
-
 use DanPowell\Shop\Http\Requests\OrderStoreRequest;
+use DanPowell\Shop\Http\Requests\OrderConfirmRequest;
 
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
@@ -59,11 +58,17 @@ class OrderController extends BaseController
         // Save order values to session
         session()->put('order', $request->all());
 
-        $order = new Order;
+        $order = $this->repository->makeModel();
         $order->fill($request->all());
 
-        // Get the cart
-        $cart = $this->cartRepository->getCart(['cartItems.product']);
+        // We've already queried the cart in the request, so let's use that instance
+        $cart = $request->getCart();
+
+        // Check the cart items
+        $verify = $this->cartRepository->validateCart($cart);
+        if(!$verify['check']) {
+            return redirect()->back();
+        }
 
         $order_shipping = null;
         // Find the shipping type and save to cart
@@ -71,12 +76,6 @@ class OrderController extends BaseController
             if ($shipping_type['id'] == $request->get('shipping_type')) {
                 $order_shipping = $shipping_type;
             }
-        }
-
-        // Check the cart items
-        $verify = $this->verifyCart($cart);
-        if(!$verify['check']) {
-            return redirect()->back();
         }
 
         $order->fill([
@@ -95,53 +94,41 @@ class OrderController extends BaseController
     }
 
 
-    public function confirm(Request $request)
+    public function confirm(OrderConfirmRequest $request)
     {
 
-        $cart = $this->cartRepository->getCart(['cartItems.product']);
+        $cart = $request->getCart();
 
-        $order = Order::find($request->get('id'));
+        // Check the cart items
+        $verify = $this->cartRepository->validateCart($cart);
+        if(!$verify['check']) {
+            return redirect()->back();
+        }
 
+        // Get the order
+        $order = $this->repository->getById($request->get('id'));
 
-        $gateway = \Omnipay::gateway('paypal');
-
-
-        $settings = $gateway->getDefaultParameters();
-
-        //dd($settings);
+        //$gateway = \Omnipay::gateway('paypal');
+        //dd($gateway->getDefaultParameters());
 
         $desc = '';
         foreach($cart->cartItems as $item) {
             $desc .= "> " . $item->product->title . "\r\n";
         }
 
-
         $card = \Omnipay::creditCard($order->toArray());
 
-
+        //dd($card);
 
         $response = \Omnipay::purchase([
             'currency' => 'GBP',
             'amount'    => $order->total,
-            'returnUrl' => 'http://google.co.uk',
-            'cancelUrl' => 'http://google.co.uk',
+            'returnUrl' => route('shop.order.show', $order->id),
+            'cancelUrl' => route('shop.order.cancel', $order->id),
             'description' => $desc,
             'transactionId' => $order->id,
             'card' => $card,
         ])->send();
-
-        //dd($response);
-
-//        $purchaseRequest = $this->omnipay->purchase($data);
-//
-//        // Grab the parameters
-//        $purchaseParameters = $purchaseRequest->getData();
-//
-//        // Add our additional parameters
-//        $purchaseParameters['MC_paymentType'] = 'payment';
-//
-//        // Send off the request
-//        $response = $purchaseRequest->sendData($purchaseParameters);
 
         // Check we got a redirect response
         if ($response->isRedirect()) {
@@ -153,93 +140,29 @@ class OrderController extends BaseController
             throw new Exception();
         }
 
+    }
 
+    public function cancel($id)
+    {
+        return view('shop::front.order.cancel.orderCancel');
 
     }
 
-    public function cancel(Request $request)
+
+    // TODO - Make this secure by checking that the user has the corresponding session ID for this order
+    public function show($id)
     {
 
+        $order = $this->repository->getById($id);
 
+        return view('shop::front.order.show.orderShow')->with([
+            'order' => $order
+        ]);
     }
 
 
 
 
-
-    private function verifyCart($cart)
-    {
-
-        $check = true;
-        $messages = [];
-
-        // Check we actually have items
-        if(count($cart->cartItems) <= 0) {
-            $check = false;
-            \Notification::warning('There are no items in your cart.');
-        }
-
-
-        // Check the validity of all cart items
-        $cart->cartItems->each(function($item){
-
-            dd($item);
-
-            if (!$item->valid){
-                $check = false;
-                \Notification::warning('An item in your cart is invalid. Please either remove or replace it.');
-            }
-
-        });
-
-        foreach($cart->cartItems->groupBy('product_id') as $itemGroup) {
-
-            $cartQuantity = 0;
-
-            foreach($itemGroup as $item) {
-                $cartQuantity += $item->quantity;
-            }
-
-            $product = $itemGroup->first()->product;
-
-            // Check product stock
-            if (!$product->checkStock($cartQuantity)) {
-                $check = false;
-                \Notification::warning('We don\'t have enough of this product in stock.');
-            }
-
-            // Check product extras stock
-            foreach($product->extras as $extra) {
-                if (!$extra->checkStock($cartQuantity)) {
-                    $check = false;
-                    \Notification::warning('We don\'t have enough of this product extra in stock.');
-                }
-            };
-
-        };
-
-        return [
-            'check' => $check,
-            'messages' => $messages
-        ];
-
-
-        // Check that item products exist
-
-        // Check that item options exist
-
-        // Check that item extras exist
-
-
-        // Check that item product has stock
-
-
-        // Check that item extras have stock
-
-
-
-
-    }
 
 
 }

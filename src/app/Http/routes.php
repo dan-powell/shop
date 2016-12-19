@@ -69,6 +69,11 @@ Route::group(['prefix' => config('shop.routes.front.prefix')], function() {
     Route::post(config('shop.routes.front.order.confirm'),
         ['as' => 'shop.order.confirm', 'uses' => 'DanPowell\Shop\Http\Controllers\Front\OrderController@confirm']);
 
+    Route::get(config('shop.routes.front.order.cancel'),
+        ['as' => 'shop.order.cancel', 'uses' => 'DanPowell\Shop\Http\Controllers\Front\OrderController@cancel']);
+
+    Route::get(config('shop.routes.front.order.show'),
+        ['as' => 'shop.order.show', 'uses' => 'DanPowell\Shop\Http\Controllers\Front\OrderController@show']);
 
 
 

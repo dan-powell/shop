@@ -1,9 +1,9 @@
 @extends('shop::front.frontBase')
 
 @section('base')
-    <h1>Confirm your order</h1>
+    <h1>Your Order</h1>
 
-    {{route('shop.order.cancel', '3')}}
+    {{ dd($order->cart) }}
 
     <div class="row">
         <div class="col-sm-12">
@@ -19,13 +19,13 @@
                 </tr>
                 </thead>
                 <tbody>
-                    @foreach($order->cart['cartItems'] as $item)
-                        @include('shop::front.cartItem.excerpt.partials.itemRow', [
-                            'item' => $item,
-                            'display_product' => true,
-                            'editable' => false
-                        ])
-                    @endforeach
+                @foreach($order->cart as $item)
+                    @include('shop::front.cartItem.excerpt.partials.itemRow', [
+                        'item' => $item,
+                        'display_product' => true,
+                        'editable' => false
+                    ])
+                @endforeach
                 </tbody>
 
                 <tr>
@@ -36,7 +36,7 @@
                         {{ $order->shipping_type['title'] }}
                     </td>
                     <td>
-                        <strong>{{ $shipping_price }}</strong>
+                        <strong>{{ 'honk' }}</strong>
                     </td>
                 </tr>
 
@@ -53,18 +53,4 @@
 
         </div>
     </div>
-
-
-    <a href="{{ route('shop.order.cancel', $order->id) }}" class="btn btn-default pull-right">Cancel</a>
-
-    <form action="{{ route('shop.order.confirm') }}" method="POST">
-
-        {!! csrf_field() !!}
-
-        <input type="hidden" name="id" value="{{ $order->id }}"/>
-
-        <button class="btn btn-primary pull-right">
-            Confirm &amp; Pay
-        </button>
-    </form>
 @stop

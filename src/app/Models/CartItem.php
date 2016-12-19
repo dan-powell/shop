@@ -13,12 +13,14 @@ class CartItem extends Model {
 		'cart_id',
 		'config',
 		'quantity',
+        'status',
     ];
 
     protected $casts = [
         'id' => 'integer',
         'sub_total' => 'decimal',
-		'quantity' => 'integer'
+		'quantity' => 'integer',
+        'status' => 'integer'
     ];
 
 	protected $appends = ['price_sub_total_string'];

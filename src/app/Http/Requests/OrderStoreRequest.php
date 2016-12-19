@@ -2,16 +2,20 @@
 
 use App\Http\Requests\Request;
 
+use DanPowell\Shop\Repositories\CartRepository;
 use DanPowell\Shop\Repositories\OrderRepository;
 
 class OrderStoreRequest extends Request
 {
 
     protected $orderRepository;
+    protected $cartRepository;
+    protected $cart;
 
-    public function __construct(OrderRepository $orderRepository)
+    public function __construct(OrderRepository $orderRepository, CartRepository $cartRepository)
     {
         $this->orderRepository = $orderRepository;
+        $this->cartRepository = $cartRepository;
     }
 
     public function authorize()
@@ -26,7 +30,7 @@ class OrderStoreRequest extends Request
     {
 
         $valid_shipping = [];
-        foreach($this->orderRepository->getShippingOptions() as $option) {
+        foreach($this->orderRepository->getShippingOptions($this->getCart()) as $option) {
             $valid_shipping[] = $option['id'];
         }
 
@@ -65,5 +69,17 @@ class OrderStoreRequest extends Request
         ];
     }
 
+    /**
+     * Get the Cart we are trying to add (once).
+     * @return mixed
+     */
+    public function getCart() {
+
+        if (!$this->cart) {
+            // We eager load a lot of relations here because we know that these are6 probably going to be used by other methods when processing order.
+            $this->cart = $this->cartRepository->getCart(['cartItems.product', 'cartItems.extras.options', 'cartItems.options']);
+        }
+        return $this->cart;
+    }
 
 }

@@ -24,7 +24,9 @@ return [
             'order' => [
                 'create' => 'order/create',
                 'store' => 'order/store',
-                'confirm' => 'order/confirm'
+                'confirm' => 'order/confirm',
+                'cancel' => 'order/cancel/{id}',
+                'show' => 'order/show/{id}'
             ]
         ]
     ],
@@ -170,8 +172,8 @@ return [
     ],
 
     'countries' => [
-        'US' => ['name' => 'United States'],
         'GB' => ['name' => 'United Kingdom'],
+        'US' => ['name' => 'United States'],
         'CA' => ['name' => 'Canada'],
         'AU' => ['name' => 'Australia'],
         'FR' => ['name' => 'France'],
@@ -418,6 +420,9 @@ return [
         'YE' => ['name' => 'Yemen'],
         'ZM' => ['name' => 'Zambia'],
         'ZW' => ['name' => 'Zimbabwe']
-    ]
+    ],
+
+
+    'cartCookieTime' => 10080
 
 ];
