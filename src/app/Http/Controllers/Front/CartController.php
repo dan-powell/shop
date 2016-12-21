@@ -27,6 +27,7 @@ class CartController extends BaseController
      */
     public function show()
     {
+
         // Get the cart & items
         $cart = $this->repository->getCart([
             'cartItems.options',

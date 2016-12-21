@@ -3,6 +3,14 @@
 @section('base')
     <h1>Cart</h1>
 
+    {{ app()->make('cart')->getCart() }}
+
+    {{ app('cart')->getCart() }}
+    {{ app('cart')->getCart() }}
+    {{ app('cart')->getCart() }}
+    {{ app('cart')->getCart() }}
+
+
     @if(isset($itemsGrouped))
 
         <div class="row">

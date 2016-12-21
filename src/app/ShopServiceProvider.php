@@ -1,5 +1,7 @@
 <?php namespace DanPowell\Shop;
 
+use DanPowell\Shop\Services\Cart;
+
 use DanPowell\Shop\Console\Commands\Seed;
 use DanPowell\Shop\Console\Commands\AddUser;
 
@@ -32,6 +34,10 @@ class ShopServiceProvider extends \Illuminate\Support\ServiceProvider
         // Tell Laravel where to load the views from
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'shop');
 
+        $this->app->register('DanPowell\Shop\Providers\ViewComposerServiceProvider');
+
+        $this->app->singleton('cart', 'DanPowell\Shop\Services\Cart');
+
     }
 
     /**
@@ -41,8 +47,6 @@ class ShopServiceProvider extends \Illuminate\Support\ServiceProvider
      */
     public function boot()
     {
-
-        $this->app->register('DanPowell\Shop\Providers\ViewComposerServiceProvider');
 
         $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'shop');
 
