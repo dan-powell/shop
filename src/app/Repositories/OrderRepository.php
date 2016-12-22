@@ -19,12 +19,10 @@ class OrderRepository extends AbstractRepository
      * @param null $cart
      * @return array
      */
-    public function getShippingOptions($cart = null)
+    public function getShippingOptions()
     {
         // If the cart Collection is not passed in, let's get it.
-        if (!$cart) {
-            $cart = $this->cartRepository->getCart();
-        }
+        $cart = app('cart')->cart;
 
         // Set the cart value to use depending upon the config
         if (config('shop.shipping_tier_property') == 'weight') {

@@ -48,11 +48,16 @@
                     {!! csrf_field() !!}
                     <input type="hidden" name="_method" value="PUT">
                     <div class="form-group form-group-sm">
-                        <div class="col-xs-6">
-                            <input type="number" name="quantity" id="quantity" value="{{ $item->quantity }}" class="form-control"/>
-                        </div>
+                        <select name="quantity" id="quantity" class="form-control" onchange="this.form.submit()">
+                            @for($i = 1; $i <= 10; $i++)
+                                <option value="{{ $i }}" @if($item->quantity == $i)selected="selected" @endif>{{ $i }}</option>
+                            @endfor
+                        </select>
+                        {{--<input type="number" name="quantity" id="quantity" value="{{ $item->quantity }}" class="form-control"/>--}}
                     </div>
-                    <button type="submit" class="btn btn-default btn-xs">Update</button>
+                    <noscript>
+                        <button type="submit" class="btn btn-default btn-xs">Update</button>
+                    </noscript>
                 </form>
             @else
                 x{{ $item->quantity }}

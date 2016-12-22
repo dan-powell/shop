@@ -3,6 +3,8 @@
 @section('base')
     <h1>Confirm your order</h1>
 
+    {{ app('cart')->cart }}
+
     {{route('shop.order.cancel', '3')}}
 
     <div class="row">

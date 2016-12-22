@@ -86,7 +86,7 @@
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="{{ route('shop.cart.show') }}">Cart</a></li>
+                <li><a href="{{ route('shop.cart.show') }}">Cart ({{ app('cart')->getQuantity() }})</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->

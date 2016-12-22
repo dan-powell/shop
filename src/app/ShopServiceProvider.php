@@ -36,7 +36,7 @@ class ShopServiceProvider extends \Illuminate\Support\ServiceProvider
 
         $this->app->register('DanPowell\Shop\Providers\ViewComposerServiceProvider');
 
-        $this->app->singleton('cart', 'DanPowell\Shop\Services\Cart');
+        $this->app->singleton('cart', 'DanPowell\Shop\Services\CartService');
 
     }
 

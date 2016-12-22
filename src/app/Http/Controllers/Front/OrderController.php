@@ -62,7 +62,7 @@ class OrderController extends BaseController
         $order->fill($request->all());
 
         // We've already queried the cart in the request, so let's use that instance
-        $cart = $request->getCart();
+        $cart = app('cart')->cart;
 
         // Check the cart items
         $verify = $this->cartRepository->validateCart($cart);

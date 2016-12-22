@@ -30,7 +30,7 @@ class OrderStoreRequest extends Request
     {
 
         $valid_shipping = [];
-        foreach($this->orderRepository->getShippingOptions($this->getCart()) as $option) {
+        foreach($this->orderRepository->getShippingOptions() as $option) {
             $valid_shipping[] = $option['id'];
         }
 
