@@ -4,7 +4,7 @@ $I = new FunctionalTester($scenario);
 
 $I->wantTo('Add a product to cart that has no stock but allows negative stock levels');
 
-$product = $I->createModel(DanPowell\Shop\Models\Product::class, [], 'outOfStockAllowNegative', 1);
+$product = $I->have(DanPowell\Shop\Models\Product::class, [], 'outOfStockAllowNegative', 1);
 
 $I->amOnRoute('shop.product.show', $product->slug);
 

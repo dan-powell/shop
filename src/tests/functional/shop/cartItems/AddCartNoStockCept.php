@@ -4,7 +4,7 @@ $I = new FunctionalTester($scenario);
 
 $I->wantTo('Add a product to cart that has no stock');
 
-$product = $I->createModel(DanPowell\Shop\Models\Product::class, [], 'outOfStock', 1);
+$product = $I->have(DanPowell\Shop\Models\Product::class, [], 'outOfStock', 1);
 
 $I->amOnRoute('shop.product.show', $product->slug);
 

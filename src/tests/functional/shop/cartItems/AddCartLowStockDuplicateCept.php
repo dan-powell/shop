@@ -4,7 +4,7 @@ $I = new FunctionalTester($scenario);
 
 $I->wantTo('Add a duplicate product to cart that has low stock');
 
-$product = $I->createModel(DanPowell\Shop\Models\Product::class, [], 'inStock', 1);
+$product = $I->have(DanPowell\Shop\Models\Product::class, [], 'inStock', 1);
 
 $I->amOnRoute('shop.product.show', $product->slug);
 

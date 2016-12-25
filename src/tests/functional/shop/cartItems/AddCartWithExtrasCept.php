@@ -5,15 +5,15 @@ $I = new FunctionalTester($scenario);
 $I->wantTo('Add a product to cart that has extras');
 
 // Create a Product and add some Extras
-$product = $I->createModel(DanPowell\Shop\Models\Product::class, [], 'inStock', 1);
+$product = $I->have(DanPowell\Shop\Models\Product::class, [], 'inStock', 1);
 for($i = 0; $i < 2; $i++) {
-    $extras[] = $I->makeModel(DanPowell\Shop\Models\Extra::class, [], 'inStock', 1);
+    $extras[] = factory(DanPowell\Shop\Models\Extra::class, 'inStock', 1)->make();
 }
 $product->extras()->saveMany($extras);
 
 // Create another product so we can try and force it's option on to the 'correct' product
-$unrelatedProduct = $I->createModel(DanPowell\Shop\Models\Product::class, [], 'inStock', 1);
-$unrelatedExtra = $I->makeModel(DanPowell\Shop\Models\Extra::class, [], 'inStock', 1);
+$unrelatedProduct = $I->have(DanPowell\Shop\Models\Product::class, [], 'inStock', 1);
+$unrelatedExtra = factory(DanPowell\Shop\Models\Extra::class, 'inStock', 1)->make();
 $unrelatedProduct->extras()->save($unrelatedExtra);
 
 

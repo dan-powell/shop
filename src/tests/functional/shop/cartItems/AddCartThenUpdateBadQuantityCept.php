@@ -4,7 +4,7 @@ $I = new FunctionalTester($scenario);
 
 $I->wantTo('Add a product to cart, then update with a bad quantity value');
 
-$product = $I->createModel(DanPowell\Shop\Models\Product::class, [], 'inStock', 1);
+$product = $I->have(DanPowell\Shop\Models\Product::class, [], 'inStock', 1);
 
 $I->amOnRoute('shop.product.show', $product->slug);
 $I->click('Add to Cart');

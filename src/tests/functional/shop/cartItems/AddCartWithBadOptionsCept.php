@@ -4,11 +4,11 @@ $I = new FunctionalTester($scenario);
 
 $I->wantTo('Add a product to cart that has bad options');
 
-$product = $I->createModel(DanPowell\Shop\Models\Product::class, [], 'inStock', 1);
+$product = $I->have(DanPowell\Shop\Models\Product::class, [], 'inStock', 1);
 
-$options[] = $I->makeModel(DanPowell\Shop\Models\Option::class, [], 'radio', 1);
-$options[] = $I->makeModel(DanPowell\Shop\Models\Option::class, [], 'select', 1);
-$options[] = $I->makeModel(DanPowell\Shop\Models\Option::class, [], 'text', 1);
+$options[] = $I->have(DanPowell\Shop\Models\Option::class, [], 'radio', 1);
+$options[] = $I->have(DanPowell\Shop\Models\Option::class, [], 'select', 1);
+$options[] = $I->have(DanPowell\Shop\Models\Option::class, [], 'text', 1);
 
 $product->options()->saveMany($options);
 

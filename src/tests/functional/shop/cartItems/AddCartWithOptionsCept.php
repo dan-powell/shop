@@ -6,15 +6,15 @@ $I->wantTo('Add a product to cart that has options');
 
 // Make models
 // Create a product with some options
-$product = $I->createModel(DanPowell\Shop\Models\Product::class, [], 'inStock', 1);
-$options[] = $I->makeModel(DanPowell\Shop\Models\Option::class, [], 'radio', 1);
-$options[] = $I->makeModel(DanPowell\Shop\Models\Option::class, [], 'select', 1);
-$options[] = $I->makeModel(DanPowell\Shop\Models\Option::class, [], 'text', 1);
+$product = $I->have(DanPowell\Shop\Models\Product::class, [], 'inStock', 1);
+$options[] = $I->have(DanPowell\Shop\Models\Option::class, [], 'radio', 1);
+$options[] = $I->have(DanPowell\Shop\Models\Option::class, [], 'select', 1);
+$options[] = $I->have(DanPowell\Shop\Models\Option::class, [], 'text', 1);
 $product->options()->saveMany($options);
 
 // Create another product so we can try and force it's option on to the 'correct' product
-$unrelatedProduct = $I->createModel(DanPowell\Shop\Models\Product::class, [], 'inStock', 1);
-$unrelatedOption = $I->makeModel(DanPowell\Shop\Models\Option::class, [], 'select', 1);
+$unrelatedProduct = $I->have(DanPowell\Shop\Models\Product::class, [], 'inStock', 1);
+$unrelatedOption = $I->have(DanPowell\Shop\Models\Option::class, [], 'select', 1);
 $unrelatedProduct->options()->save($unrelatedOption);
 
 

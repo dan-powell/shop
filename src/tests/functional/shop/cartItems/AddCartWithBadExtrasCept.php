@@ -5,15 +5,14 @@ $I = new FunctionalTester($scenario);
 $I->wantTo('Add a product to cart that has bad extras');
 
 // Create the models
-$product = $I->createModel(DanPowell\Shop\Models\Product::class, [], 'inStock', 1);
+$product = $I->have(DanPowell\Shop\Models\Product::class, [], 'inStock', 1);
 
 // Extra 1 - This extra has a few options and will be selected
-$extra1 = $I->makeModel(DanPowell\Shop\Models\Extra::class, [], 'inStock', 1);
+$extra1 = factory(DanPowell\Shop\Models\Extra::class, 'inStock', 1)->make();
 $extra1 = $product->extras()->save($extra1);
 
-$option1 = $I->makeModel(DanPowell\Shop\Models\Option::class, [], 'text', 1);
+$option1 = factory(DanPowell\Shop\Models\Option::class, 'text', 1)->make();
 $option1 = $extra1->options()->save($option1);
-
 
 $I->amOnRoute('shop.product.show', $product->slug);
 

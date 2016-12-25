@@ -5,23 +5,23 @@ $I = new FunctionalTester($scenario);
 $I->wantTo('Add a product to cart that has extras with options');
 
 // Create the models
-$product = $I->createModel(DanPowell\Shop\Models\Product::class, [], 'inStock', 1);
+$product = $I->have(DanPowell\Shop\Models\Product::class, [], 'inStock', 1);
 
 // Extra 1 - This extra has a few options and will be selected
-$extra1 = $I->makeModel(DanPowell\Shop\Models\Extra::class, [], 'inStock', 1);
+$extra1 = factory(DanPowell\Shop\Models\Extra::class, 'inStock', 1)->make();
 $extra1 = $product->extras()->save($extra1);
 
-$options1[] = $I->makeModel(DanPowell\Shop\Models\Option::class, [], 'radio', 1);
-$options1[] = $I->makeModel(DanPowell\Shop\Models\Option::class, [], 'select', 1);
-$options1[] = $I->makeModel(DanPowell\Shop\Models\Option::class, [], 'text', 1);
+$options1[] = factory(DanPowell\Shop\Models\Option::class, 'radio', 1)->make();
+$options1[] = factory(DanPowell\Shop\Models\Option::class, 'select', 1)->make();
+$options1[] = factory(DanPowell\Shop\Models\Option::class, 'text', 1)->make();
 $options1 = $extra1->options()->saveMany($options1);
 
 // Extra 2 - This extra will not be selected
-$extra2 = $I->makeModel(DanPowell\Shop\Models\Extra::class, [], 'inStock', 1);
+$extra2 = factory(DanPowell\Shop\Models\Extra::class, 'inStock', 1)->make();
 $extra2 = $product->extras()->save($extra2);
 
-$options2[] = $I->makeModel(DanPowell\Shop\Models\Option::class, [], 'radio', 1);
-$options2[] = $I->makeModel(DanPowell\Shop\Models\Option::class, [], 'select', 1);
+$options2[] = factory(DanPowell\Shop\Models\Option::class, 'radio', 1)->make();
+$options2[] = factory(DanPowell\Shop\Models\Option::class, 'select', 1)->make();
 $options2 = $extra2->options()->saveMany($options2);
 
 $I->amOnRoute('shop.product.show', $product->slug);
