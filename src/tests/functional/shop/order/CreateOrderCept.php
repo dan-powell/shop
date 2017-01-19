@@ -5,14 +5,14 @@ $I = new FunctionalTester($scenario);
 $I->wantTo('Create an order');
 
 // Add a product to the cart
-$product = $I->createModel(DanPowell\Shop\Models\Product::class, [], 'published', 1);
+$product = $I->have(DanPowell\Shop\Models\Product::class, [], 'published', 1);
 $I->amOnRoute('shop.product.show', $product->slug);
 $I->click('Add to Cart');
 
 // Checkout
 $I->click('Checkout');
 
-$order = $I->makeModel(DanPowell\Shop\Models\Order::class, [], null, 1);
+$order = factory(DanPowell\Shop\Models\Order::class)->make();
 
 $I->submitForm('#createOrder', $order->toArray());
 
